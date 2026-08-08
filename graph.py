@@ -28,7 +28,7 @@ DATETIME_FORMAT = "%Y-%m-%d %H:%M"
 
 @dataclass(frozen=True)
 class Airport:
-    code: str
+    port_name: str
     is_crew_base: int  # 1 = hub / crew base, 0 = not
 
 
@@ -58,12 +58,15 @@ def _parse_datetime(date_str: str, time_str: str) -> datetime:
 
 def _get_or_create_airport(
     airports: Dict[str, Airport],
-    code: str,
+    port_name: str,
     hub_status: Mapping[str, int],
 ) -> Airport:
-    if code not in airports:
-        airports[code] = Airport(code=code, is_crew_base=hub_status.get(code, 0))
-    return airports[code]
+    if port_name not in airports:
+        airports[port_name] = Airport(
+            port_name=port_name,
+            is_crew_base=hub_status.get(port_name, 0),
+        )
+    return airports[port_name]
 
 
 def load_hub_status(bases_csv_path: str | Path) -> Dict[str, int]:
@@ -74,8 +77,8 @@ def load_hub_status(bases_csv_path: str | Path) -> Dict[str, int]:
         reader = csv.DictReader(csv_file, skipinitialspace=True)
         for raw_row in reader:
             row = _clean_row(raw_row)
-            code = row[AIRPORT_CODE_FIELD]
-            hub_status[code] = int(row[AIRPORT_STATUS_FIELD])
+            port_name = row[AIRPORT_CODE_FIELD]
+            hub_status[port_name] = int(row[AIRPORT_STATUS_FIELD])
 
     return hub_status
 
@@ -88,12 +91,13 @@ def load_flights(
     Load flights and airports from CSV files.
 
     Returns:
-        airports: unique airports keyed by code
+        airports: unique airports keyed by port_name
         flights: flights keyed by flight_id
     """
     hub_status = load_hub_status(hubs_csv_path)
     airports: Dict[str, Airport] = {
-        code: Airport(code=code, is_crew_base=status) for code, status in hub_status.items()
+        port_name: Airport(port_name=port_name, is_crew_base=status)
+        for port_name, status in hub_status.items()
     }
     flights: Dict[str, Flight] = {}
 
@@ -132,7 +136,7 @@ def can_connect(
     max_connection: timedelta = DEFAULT_MAX_CONNECTION,
 ) -> bool:
     """Return True if second can follow first as a valid connection."""
-    if first.destination.code != second.origin.code:
+    if first.destination.port_name != second.origin.port_name:
         return False
     if second.departure_datetime <= first.arrival_datetime:
         return False
