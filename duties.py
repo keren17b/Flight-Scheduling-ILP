@@ -111,24 +111,3 @@ def generate_duties(
 
     return duties
 
-
-def load_duties(
-    flights_csv_path: str | Path,
-    hubs_csv_path: str | Path,
-    max_duty_time: timedelta = MAX_DUTY_TIME,
-    max_flights: int = MAX_FLIGHTS_PER_DUTY,
-    min_connection: timedelta = DEFAULT_MIN_CONNECTION,
-    max_connection: timedelta = DEFAULT_MAX_CONNECTION,
-) -> Dict[str, Duty]:
-    """Load the flight network from CSV files and generate its duties."""
-    _, _, graph = load_flight_network(
-        flights_csv_path,
-        hubs_csv_path,
-        min_connection=min_connection,
-        max_connection=max_connection,
-    )
-    return generate_duties(
-        graph,
-        max_duty_time=max_duty_time,
-        max_flights=max_flights,
-    )
