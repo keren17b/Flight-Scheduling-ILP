@@ -87,28 +87,32 @@ ordered sequences of flights.
 
 Each generated `Duty` stores:
 
-- `flights` - the ordered tuple of flights in the duty
+- `duty_id` - the unique duty identifier (`D1`, `D2`, ...)
+- `flights` - the ordered list of flights in the duty
 - `total_time` - the elapsed time from the first flight's departure until the
   last flight's arrival, including connection time between flights
+- `start_airport` and `end_airport` - derived from the first and last flights
+- `start_time` and `end_time` - derived from the first departure and last arrival
 
 ### Duty Rules
 
 A generated duty must satisfy all of the following rules:
 
-1. The first flight departs from an airport marked as a crew base.
-2. Every following flight is a successor of the current flight in the flight
+1. Every following flight is a successor of the current flight in the flight
    connection graph.
-3. Total duty time does not exceed `MAX_DUTY_TIME`, currently 12 hours.
-4. The number of flights does not exceed `MAX_FLIGHTS_PER_DUTY`, currently 5.
-5. A flight cannot appear twice in the same duty.
+2. Total duty time does not exceed `MAX_DUTY_TIME`, currently 12 hours.
+3. The number of flights does not exceed `MAX_FLIGHTS_PER_DUTY`, currently 5.
+4. A flight cannot appear twice in the same duty.
 
-Every non-empty valid DFS prefix is stored as a candidate duty. DFS stops
-expanding a path as soon as it reaches the flight-count limit. A possible next
-flight is skipped when adding it would exceed the duty-time limit.
+DFS starts separately from every flight in the graph. Every non-empty valid DFS
+prefix, including a single flight, is stored immediately as a candidate duty.
+DFS stops expanding a path as soon as it reaches the flight-count limit. A
+possible next flight is skipped when adding it would exceed the duty-time limit.
 
 ### Duty API
 
-`generate_duties(graph, ...)` generates duties from an existing flight graph.
+`generate_duties(graph, ...)` generates duties from an existing flight graph
+and returns a dictionary keyed by duty ID.
 
 `load_duties(flights_csv_path, hubs_csv_path, ...)` calls
 `load_flight_network(...)` and then generates duties from the returned graph.

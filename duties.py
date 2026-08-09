@@ -2,14 +2,15 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
-from datetime import timedelta
+from dataclasses import dataclass, field
+from datetime import datetime, timedelta
 from pathlib import Path
-from typing import List
+from typing import Dict, List
 
 from graph import (
     DEFAULT_MAX_CONNECTION,
     DEFAULT_MIN_CONNECTION,
+    Airport,
     Flight,
     FlightGraph,
     load_flight_network,
@@ -21,25 +22,41 @@ MAX_DUTY_TIME = timedelta(hours=12)
 MAX_FLIGHTS_PER_DUTY = 5
 
 
-@dataclass(frozen=True)
+@dataclass
 class Duty:
-    """A feasible ordered sequence of flights and its total elapsed time."""
+    """A feasible ordered sequence of flights and its derived metadata."""
 
-    flights: tuple[Flight, ...]
+    duty_id: str
+    flights: List[Flight]
     total_time: timedelta
+    start_airport: Airport = field(init=False)
+    end_airport: Airport = field(init=False)
+    start_time: datetime = field(init=False)
+    end_time: datetime = field(init=False)
+
+    def __post_init__(self) -> None:
+        if not self.flights:
+            raise ValueError("a duty must contain at least one flight")
+
+        # Keep each duty's flight sequence independent from the mutable DFS path.
+        self.flights = list(self.flights)
+        self.start_airport = self.flights[0].origin
+        self.end_airport = self.flights[-1].destination
+        self.start_time = self.flights[0].departure_datetime
+        self.end_time = self.flights[-1].arrival_datetime
 
 
 def generate_duties(
     graph: FlightGraph,
     max_duty_time: timedelta = MAX_DUTY_TIME,
     max_flights: int = MAX_FLIGHTS_PER_DUTY,
-) -> List[Duty]:
+) -> Dict[str, Duty]:
     """
     Generate all feasible duties with depth-first search.
 
-    A duty starts with a flight departing from a crew base. Every non-empty
-    prefix reached by DFS is a candidate duty. Its total time is measured from
-    the first flight's departure until the last flight's arrival, including
+    DFS starts once from every flight in the graph. Every non-empty legal prefix
+    reached during the traversal is saved immediately as a separate Duty. Total
+    time is measured from the first departure until the last arrival, including
     connection time between flights.
     """
     if max_duty_time <= timedelta(0):
@@ -47,14 +64,19 @@ def generate_duties(
     if max_flights < 1:
         raise ValueError("max_flights must be at least 1")
 
-    duties: List[Duty] = []
+    duties: Dict[str, Duty] = {}
 
     def dfs(
         current_flight: Flight,
         path: List[Flight],
         total_time: timedelta,
     ) -> None:
-        duties.append(Duty(flights=tuple(path), total_time=total_time))
+        duty_id = f"D{len(duties) + 1}"
+        duties[duty_id] = Duty(
+            duty_id=duty_id,
+            flights=path.copy(),
+            total_time=total_time,
+        )
 
         if len(path) >= max_flights:
             return
@@ -81,9 +103,6 @@ def generate_duties(
             path.pop()
 
     for first_flight in graph:
-        if first_flight.origin.is_crew_base != 1:
-            continue
-
         first_flight_time = (
             first_flight.arrival_datetime - first_flight.departure_datetime
         )
@@ -100,7 +119,7 @@ def load_duties(
     max_flights: int = MAX_FLIGHTS_PER_DUTY,
     min_connection: timedelta = DEFAULT_MIN_CONNECTION,
     max_connection: timedelta = DEFAULT_MAX_CONNECTION,
-) -> List[Duty]:
+) -> Dict[str, Duty]:
     """Load the flight network from CSV files and generate its duties."""
     _, _, graph = load_flight_network(
         flights_csv_path,
