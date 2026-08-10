@@ -234,13 +234,7 @@ For example:
 
 # 4. Building the Duty Graph
 
-This is the next stage to implement.
-
-Suggested file:
-
-```text
-duty_graph.py
-```
+File: `duty_graph.py`
 
 Input:
 
@@ -275,13 +269,27 @@ To create an edge:
 D1 -> D2
 ```
 
-at least the following conditions must be checked:
+the following conditions must be checked:
 
 - `D1` ends at the airport where `D2` starts.
 - `D2` starts after `D1` ends.
-- There is sufficient rest time between the two duties.
+- The rest / layover time between `D1` and `D2` is greater than or equal to the minimum rest.
+- The rest / layover time between `D1` and `D2` is less than or equal to the maximum layover.
 
-The exact connection constraints will be defined before implementing this stage.
+The current default values in the code are:
+
+```text
+Minimum rest between duties = 10 hours   # legality / safety constraint
+Maximum layover between duties = 48 hours  # modeling / pruning constraint
+```
+
+These values can be changed according to the constraints defined for the project.
+
+The output of `duty_graph.py` is:
+
+```python
+DutyGraph = Dict[Duty, List[Duty]]
+```
 
 ---
 
