@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Dict, List
+from typing import Dict, List, Tuple
 
 from graph import (
     DEFAULT_MAX_CONNECTION,
@@ -18,32 +18,38 @@ from graph import (
 
 
 # Duty-level limits. These are separate from the connection-time limits in graph.py.
-MAX_DUTY_TIME = timedelta(hours=12)
+MAX_DUTY_TIME = timedelta(hours=8)
 MAX_FLIGHTS_PER_DUTY = 5
 
 
-@dataclass
+@dataclass(frozen=True)
 class Duty:
     """A feasible ordered sequence of flights and its derived metadata."""
 
     duty_id: str
-    flights: List[Flight]
+    flights: Tuple[Flight, ...]
     total_time: timedelta
-    start_airport: Airport = field(init=False)
-    end_airport: Airport = field(init=False)
-    start_time: datetime = field(init=False)
-    end_time: datetime = field(init=False)
+    sitting_time: timedelta
 
     def __post_init__(self) -> None:
         if not self.flights:
             raise ValueError("a duty must contain at least one flight")
 
-        # Keep each duty's flight sequence independent from the mutable DFS path.
-        self.flights = list(self.flights)
-        self.start_airport = self.flights[0].origin
-        self.end_airport = self.flights[-1].destination
-        self.start_time = self.flights[0].departure_datetime
-        self.end_time = self.flights[-1].arrival_datetime
+    @property
+    def start_airport(self) -> Airport:
+        return self.flights[0].origin
+
+    @property
+    def end_airport(self) -> Airport:
+        return self.flights[-1].destination
+
+    @property
+    def start_time(self) -> datetime:
+        return self.flights[0].departure_datetime
+
+    @property
+    def end_time(self) -> datetime:
+        return self.flights[-1].arrival_datetime
 
 
 def generate_duties(
@@ -57,7 +63,7 @@ def generate_duties(
     DFS starts once from every flight in the graph. Every non-empty legal prefix
     reached during the traversal is saved immediately as a separate Duty. Total
     time is measured from the first departure until the last arrival, including
-    connection time between flights.
+    connection time between flights. Sitting time is the sum of those waits.
     """
     if max_duty_time <= timedelta(0):
         raise ValueError("max_duty_time must be positive")
@@ -70,12 +76,14 @@ def generate_duties(
         current_flight: Flight,
         path: List[Flight],
         total_time: timedelta,
+        sitting_time: timedelta,
     ) -> None:
         duty_id = f"D{len(duties) + 1}"
         duties[duty_id] = Duty(
             duty_id=duty_id,
-            flights=path.copy(),
+            flights=tuple(path),
             total_time=total_time,
+            sitting_time=sitting_time,
         )
 
         if len(path) >= max_flights:
@@ -94,12 +102,13 @@ def generate_duties(
                 next_flight.arrival_datetime - next_flight.departure_datetime
             )
             next_total_time = total_time + connection_time + next_flight_time
+            next_sitting_time = sitting_time + connection_time
 
             if next_total_time > max_duty_time:
                 continue
 
             path.append(next_flight)
-            dfs(next_flight, path, next_total_time)
+            dfs(next_flight, path, next_total_time, next_sitting_time)
             path.pop()
 
     for first_flight in graph:
@@ -107,7 +116,7 @@ def generate_duties(
             first_flight.arrival_datetime - first_flight.departure_datetime
         )
         if timedelta(0) <= first_flight_time <= max_duty_time:
-            dfs(first_flight, [first_flight], first_flight_time)
+            dfs(first_flight, [first_flight], first_flight_time, timedelta(0))
 
     return duties
 
