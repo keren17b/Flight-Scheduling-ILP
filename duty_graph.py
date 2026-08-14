@@ -9,7 +9,7 @@ from duties import Duty
 
 
 # Legality / safety: minimum rest required between consecutive duties.
-MIN_REST_BETWEEN_DUTIES = timedelta(hours=10)
+MIN_REST_BETWEEN_DUTIES = timedelta(hours=12)
 
 # Modeling / pruning: maximum layover allowed when linking two duties.
 MAX_LAYOVER_BETWEEN_DUTIES = timedelta(hours=48)
