@@ -42,7 +42,7 @@ Flight CSV + Crew Bases CSV
 
 ## Stage 1 – Load the Data and Build the Flight Graph
 
-File: `graph.py`
+File: `flights_graph.py`
 
 The input is:
 
@@ -123,7 +123,7 @@ Maximum connection time = 8 hours
 
 These values can be changed according to the constraints defined for the project.
 
-The output of `graph.py` is:
+The output of `flights_graph.py` is:
 
 ```python
 FlightGraph = Dict[Flight, List[Flight]]
@@ -518,7 +518,7 @@ That is:
 ```text
 main.py
    |
-   +--> graph.py
+   +--> flights_graph.py
    |
    +--> duties.py
    |
@@ -538,7 +538,7 @@ The existing `main_tmp.py` is currently used as a temporary test runner for conn
 The suggested project structure is:
 
 ```text
-graph.py
+flights_graph.py
     Flight/Airport data
     CSV loading
     Flight graph creation

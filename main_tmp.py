@@ -4,7 +4,7 @@ from itertools import islice
 
 from duties import generate_duties
 from duty_graph import build_duty_graph
-from graph import load_flight_network
+from flights_graph import load_flight_network
 from pairings import generate_pairings
 
 

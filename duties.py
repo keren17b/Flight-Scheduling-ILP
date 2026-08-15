@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Dict, List, Tuple
 
-from graph import (
+from flights_graph import (
     DEFAULT_MAX_CONNECTION,
     DEFAULT_MIN_CONNECTION,
     Airport,
@@ -17,7 +17,7 @@ from graph import (
 )
 
 
-# Duty-level limits. These are separate from the connection-time limits in graph.py.
+# Duty-level limits. These are separate from the connection-time limits in flights_graph.py.
 MAX_DUTY_TIME = timedelta(hours=8)
 MAX_FLIGHTS_PER_DUTY = 5
 

@@ -8,7 +8,7 @@ from typing import Dict, List, Optional, Tuple
 
 from duties import Duty
 from duty_graph import DutyGraph
-from graph import Airport
+from flights_graph import Airport
 
 
 # Pairing-level limits. Rest between duties is included in MAX_PAIRING_TIME.
