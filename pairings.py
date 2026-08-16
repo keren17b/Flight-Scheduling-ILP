@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Tuple
 
 from duties import Duty
 from duty_graph import DutyGraph
@@ -23,7 +23,8 @@ class Pairing:
     pairing_id: str
     duties: Tuple[Duty, ...]
     total_time: timedelta
-    cost: Optional[float] = None
+    rest: timedelta
+    cost: timedelta
 
     def __post_init__(self) -> None:
         if not self.duties:
@@ -46,10 +47,18 @@ class Pairing:
         return self.duties[-1].end_time
 
 
-def calculate_pairing_cost(duties: Tuple[Duty, ...]) -> Optional[float]:
-    """Return the pairing cost once the project's cost model is defined."""
-    # TODO: Add the pairing cost calculation here.
-    return None
+def calculate_pairing_rest(duties: Tuple[Duty, ...]) -> timedelta:
+    """Return the total layover time between consecutive duties."""
+    rest = timedelta(0)
+    for previous_duty, next_duty in zip(duties, duties[1:]):
+        rest += next_duty.start_time - previous_duty.end_time
+    return rest
+
+
+def calculate_pairing_cost(duties: Tuple[Duty, ...], rest: timedelta) -> timedelta:
+    """Return rest plus the sitting time of every duty in the pairing."""
+    sitting_time = sum((duty.sitting_time for duty in duties), timedelta(0))
+    return rest + sitting_time
 
 
 def generate_pairings(
@@ -86,12 +95,13 @@ def generate_pairings(
         ):
             pairing_id = f"P{len(pairings) + 1}"
             pairing_duties = tuple(path)
+            rest = calculate_pairing_rest(pairing_duties)
             pairings[pairing_id] = Pairing(
                 pairing_id=pairing_id,
                 duties=pairing_duties,
                 total_time=total_time,
-                # Future pairing cost calculation is performed here.
-                cost=calculate_pairing_cost(pairing_duties),
+                rest=rest,
+                cost=calculate_pairing_cost(pairing_duties, rest),
             )
 
         if len(path) >= max_duties:

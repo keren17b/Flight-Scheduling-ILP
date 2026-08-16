@@ -162,11 +162,14 @@ Duty
 - duty_id
 - flights
 - total_time
+- sitting_time
 - start_airport
 - end_airport
 - start_time
 - end_time
 ```
+
+`sitting_time` is the total connection wait between flights inside the duty. A single-flight duty has `sitting_time = 0`.
 
 ## Crew Base Rule
 
@@ -347,12 +350,14 @@ Unlike a single Duty, a Pairing is closed: it must start at a crew base and end 
 
 A Duty in the middle of a pairing may start or end at any airport, as long as consecutive duties connect at the same airport in the Duty Graph.
 
-A `Pairing` object is expected to contain at least:
+A `Pairing` object contains:
 
 ```python
 Pairing
 - pairing_id
 - duties
+- total_time
+- rest
 - start_airport
 - end_airport
 - start_time
@@ -360,29 +365,30 @@ Pairing
 - cost
 ```
 
-Additional fields may be added later.
+`rest` is the total layover time between consecutive duties in the pairing:
+
+```text
+rest = Σ (duty[i+1].start_time - duty[i].end_time)
+```
+
+A pairing with a single duty has `rest = 0`.
 
 ---
 
 # 6. Cost Calculation
 
-Cost information will be added to duties and pairings.
-
-A distinction should be made between:
+Pairing cost is:
 
 ```text
-Duty cost
+cost = rest + Σ sitting_time of every duty in the pairing
 ```
 
-and:
+That is:
 
-```text
-Pairing cost
-```
+- `rest` is the total layover time between consecutive duties.
+- `sitting_time` of a duty is the total connection wait between flights inside that duty.
 
-The exact cost function will be defined according to the selected model and the literature on which the project is based.
-
-The pairing cost will ultimately be used by the Solver in the objective function.
+The pairing cost is stored on the `Pairing` object and will be used by the Solver in the objective function.
 
 ---
 
