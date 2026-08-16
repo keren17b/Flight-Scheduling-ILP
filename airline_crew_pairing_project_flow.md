@@ -168,6 +168,12 @@ Duty
 - end_time
 ```
 
+## Crew Base Rule
+
+A Duty does not have to start at a crew base and does not have to end at a crew base.
+
+DFS starts from every flight in the graph. Start and return at a crew base are pairing-level rules only.
+
 ## Generating Duties Using DFS
 
 DFS starts from every flight in the graph and tries to continue to flights that can legally follow it.
@@ -330,7 +336,16 @@ Day 2: D4
 Day 3: D8
 ```
 
-Unlike a single Duty, a complete Pairing must start at a crew base and eventually return to a crew base, according to the project definitions.
+Unlike a single Duty, a Pairing is closed: it must start at a crew base and end at the same crew base it started from.
+
+## Crew Base Rule
+
+- DFS starts only from duties that depart from a crew base.
+- A pairing is saved only when the last duty ends at a crew base and that airport is the same crew base the pairing started from (`end_airport.port_name == start_airport.port_name`).
+- Ending at a different crew base is not enough; the pairing must return to the original base.
+- After a pairing is saved, DFS continues so both a shorter pairing that already returned to that base and a longer pairing can be kept.
+
+A Duty in the middle of a pairing may start or end at any airport, as long as consecutive duties connect at the same airport in the Duty Graph.
 
 A `Pairing` object is expected to contain at least:
 
