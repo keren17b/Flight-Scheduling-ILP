@@ -14,6 +14,7 @@ from flights_graph import Airport
 # Pairing-level limits. Rest between duties is included in MAX_PAIRING_TIME.
 MAX_PAIRING_TIME = timedelta(days=5)
 MAX_DUTIES_PER_PAIRING = 5
+SECONDS_PER_HOUR = 3600
 
 
 @dataclass(frozen=True)
@@ -24,7 +25,7 @@ class Pairing:
     duties: Tuple[Duty, ...]
     total_time: timedelta
     rest: timedelta
-    cost: timedelta
+    cost: float
 
     def __post_init__(self) -> None:
         if not self.duties:
@@ -55,10 +56,10 @@ def calculate_pairing_rest(duties: Tuple[Duty, ...]) -> timedelta:
     return rest
 
 
-def calculate_pairing_cost(duties: Tuple[Duty, ...], rest: timedelta) -> timedelta:
-    """Return rest plus the sitting time of every duty in the pairing."""
+def calculate_pairing_cost(duties: Tuple[Duty, ...], rest: timedelta) -> float:
+    """Return rest plus sitting time, in hours."""
     sitting_time = sum((duty.sitting_time for duty in duties), timedelta(0))
-    return rest + sitting_time
+    return (rest + sitting_time).total_seconds() / SECONDS_PER_HOUR
 
 
 def generate_pairings(

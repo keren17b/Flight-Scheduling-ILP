@@ -377,16 +377,17 @@ A pairing with a single duty has `rest = 0`.
 
 # 6. Cost Calculation
 
-Pairing cost is:
+Pairing cost is a number of hours:
 
 ```text
-cost = rest + Σ sitting_time of every duty in the pairing
+cost = (rest + Σ sitting_time of every duty in the pairing) in hours
 ```
 
 That is:
 
 - `rest` is the total layover time between consecutive duties.
 - `sitting_time` of a duty is the total connection wait between flights inside that duty.
+- `cost` is that sum converted to hours, not a clock time.
 
 The pairing cost is stored on the `Pairing` object and will be used by the Solver in the objective function.
 
