@@ -44,7 +44,7 @@ def simple_model(mat, cost_lst):
                 total_cost += cost_lst[i]
             
 
-        print("Total cost:", total_cost)
+        return solution, total_cost 
 
 
 if __name__ == "__main__":

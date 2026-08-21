@@ -30,6 +30,9 @@ Flight CSV + Crew Bases CSV
       List of Pairings
             |
             v
+ Pairing-Flight Matrix
+            |
+            v
           Solver
             |
             v
@@ -393,7 +396,68 @@ The pairing cost is stored on the `Pairing` object and will be used by the Solve
 
 ---
 
-# 7. Optimization Solver
+# 7. Pairing-Flight Matrix
+
+File: `pairing_to_metrix.py`
+
+Input:
+
+```text
+flights  – Dict[str, Flight] from load_flight_network
+pairings – Dict[str, Pairing] from generate_pairings
+```
+
+Output:
+
+```text
+Binary Pairing-Flight Matrix
+Cost List
+```
+
+The function `pairings_to_matrix(flights, pairings)` builds the two objects that `solver.py` expects.
+
+## Matrix Structure
+
+```text
+Row    = Pairing  (dict order of pairings)
+Column = Flight   (dict order of flights)
+```
+
+The matrix is binary:
+
+```text
+matrix[i][j] = 1  if pairing i contains flight j
+matrix[i][j] = 0  otherwise
+```
+
+A pairing contains a flight when that flight appears in any duty of the pairing:
+
+```text
+for each pairing
+    for each duty in pairing.duties
+        for each flight in duty.flights
+            matrix[pairing_row][flight_column] = 1
+```
+
+## Cost List
+
+`costs[i]` is `pairing.cost` of the pairing in row `i`. The row order of the matrix and the order of the cost list match, so they can be passed together to the Solver:
+
+```python
+matrix, costs = pairings_to_matrix(flights, pairings)
+solution, total_cost = simple_model(matrix, costs)
+```
+
+The output types are:
+
+```python
+matrix: np.ndarray   # shape (num_pairings, num_flights), values in {0, 1}
+costs:  List[float]  # length num_pairings
+```
+
+---
+
+# 8. Optimization Solver
 
 File: `solver.py`
 
@@ -468,11 +532,9 @@ The initial implementation in `solver.py` already:
 2. Defines an objective function that minimizes total cost.
 3. Adds a constraint requiring every flight to be covered exactly once.
 4. Runs MOSEK.
-5. Returns/prints the selected pairings and their total cost.
+5. Returns the solution vector and the total cost.
 
-Currently, the data in `solver.py` is manually defined test data.
-
-Later, the collection of `Pairing` objects generated in the previous stage will need to be automatically converted into:
+The Solver input is produced by `pairing_to_metrix.py`:
 
 ```text
 Pairing-Flight Matrix
@@ -480,22 +542,7 @@ Pairing-Flight Matrix
 Cost List
 ```
 
-and passed to the Solver.
-
-The future input:
-
-```text
-Legal Pairing Objects
-```
-
-will be converted into:
-
-```text
-Pairing-Flight Matrix
-Pairing Costs
-```
-
-and the output will be:
+The output is:
 
 ```text
 Optimal Pairing Set
@@ -503,7 +550,7 @@ Optimal Pairing Set
 
 ---
 
-# 8. Main Pipeline
+# 9. Main Pipeline
 
 The file:
 
@@ -548,14 +595,16 @@ main.py
    |
    +--> pairings.py
    |
+   +--> pairing_to_metrix.py
+   |
    +--> solver.py
 ```
 
-The existing `main_tmp.py` is currently used as a temporary test runner for connecting flight graph generation with duty generation.
+The existing `main_tmp.py` is currently used as a temporary test runner for connecting the pipeline stages, including matrix construction and the Solver.
 
 ---
 
-# 9. File Responsibilities
+# 10. File Responsibilities
 
 The suggested project structure is:
 
@@ -578,8 +627,11 @@ pairings.py
     Pairing constraints
     DFS for pairing generation
 
+pairing_to_metrix.py
+    Pairing-flight binary matrix
+    Pairing cost list
+
 solver.py
-    Pairing-flight matrix
     ILP model
     Selection of optimal pairings
 
@@ -589,7 +641,7 @@ main.py
 
 ---
 
-# 10. Roadmap
+# 11. Roadmap
 
 ## Stages Already Decided / Started
 
@@ -602,17 +654,17 @@ main.py
 5. Build the Flight Graph.
 6. Implement an initial Duty generation algorithm using DFS.
 7. Implement an initial ILP Solver using MOSEK.
+8. Convert Pairings into a Pairing-Flight matrix and a cost list (`pairing_to_metrix.py`).
+9. Connect Pairing generation to the existing Solver.
 
 ## Next Stages
 
-8. Complete and define all constraints for a legal Duty.
-9. Define all constraints for a legal Pairing.
-10. Build the `Duty Graph`.
-11. Implement the `Pairing` class.
-12. Generate Pairings using DFS.
-13. Define and calculate costs.
-14. Convert Pairings into a Pairing-Flight matrix and a cost list.
-15. Connect Pairing generation to the existing Solver.
+10. Complete and define all constraints for a legal Duty.
+11. Define all constraints for a legal Pairing.
+12. Build the `Duty Graph`.
+13. Implement the `Pairing` class.
+14. Generate Pairings using DFS.
+15. Define and calculate costs.
 16. Run the complete pipeline.
 17. Test on a small dataset.
 18. Run on a large / full dataset.
@@ -626,7 +678,7 @@ main.py
 
 ---
 
-# 11. Architectural Principle
+# 12. Architectural Principle
 
 Each stage in the pipeline should receive a clearly defined data structure and return a clearly defined data structure, without depending on the internal implementation of the other stages.
 
