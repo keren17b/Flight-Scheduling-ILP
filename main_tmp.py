@@ -14,7 +14,7 @@ OUTPUT_PREVIEW_LIMIT = 10
 
 
 def main() -> None:
-    _, _, graph = load_flight_network(FLIGHTS_FILE_PATH, HUBS_FILE_PATH)
+    airports, flights, graph = load_flight_network(FLIGHTS_FILE_PATH, HUBS_FILE_PATH)
     duties = generate_duties(graph)
     duty_graph = build_duty_graph(duties.values())
     pairings = generate_pairings(duty_graph)
