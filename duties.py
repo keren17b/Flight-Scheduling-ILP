@@ -18,8 +18,9 @@ from flights_graph import (
 
 
 # Duty-level limits. These are separate from the connection-time limits in flights_graph.py.
-MAX_DUTY_TIME = timedelta(hours=8)
+MAX_ELAPSED_DUTY_TIME = timedelta(hours=12)
 MAX_FLIGHTS_PER_DUTY = 5
+MAX_ACTUAL_FLIGHT_TIME = timedelta(hours=8)
 
 
 @dataclass(frozen=True)
@@ -61,8 +62,9 @@ class Duty:
 
 def generate_duties(
     graph: FlightGraph,
-    max_duty_time: timedelta = MAX_DUTY_TIME,
+    max_duty_time: timedelta = MAX_ELAPSED_DUTY_TIME,
     max_flights: int = MAX_FLIGHTS_PER_DUTY,
+    max_actual_flight_time: timedelta = MAX_ACTUAL_FLIGHT_TIME,
 ) -> Dict[str, Duty]:
     """
     Generate all feasible duties with depth-first search.
@@ -71,11 +73,15 @@ def generate_duties(
     reached during the traversal is saved immediately as a separate Duty. Total
     time is measured from the first departure until the last arrival, including
     connection time between flights. Sitting time is the sum of those waits.
+    Actual flight time is the sum of each flight's block time and is capped
+    separately from elapsed duty time.
     """
     if max_duty_time <= timedelta(0):
         raise ValueError("max_duty_time must be positive")
     if max_flights < 1:
         raise ValueError("max_flights must be at least 1")
+    if max_actual_flight_time <= timedelta(0):
+        raise ValueError("max_actual_flight_time must be positive")
 
     duties: Dict[str, Duty] = {}
 
@@ -116,6 +122,8 @@ def generate_duties(
 
             if next_total_time > max_duty_time:
                 continue
+            if next_flight_total > max_actual_flight_time:
+                continue
 
             path.append(next_flight)
             dfs(next_flight, path, next_flight_total, next_sitting_time)
@@ -125,7 +133,10 @@ def generate_duties(
         first_flight_time = (
             first_flight.arrival_datetime - first_flight.departure_datetime
         )
-        if timedelta(0) <= first_flight_time <= max_duty_time:
+        if (
+            timedelta(0) <= first_flight_time <= max_duty_time
+            and first_flight_time <= max_actual_flight_time
+        ):
             dfs(first_flight, [first_flight], first_flight_time, timedelta(0))
 
     return duties
