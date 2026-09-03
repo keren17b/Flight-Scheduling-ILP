@@ -165,6 +165,7 @@ Duty
 - duty_id
 - flights
 - total_time
+- flight_time
 - sitting_time
 - start_airport
 - end_airport
@@ -172,7 +173,11 @@ Duty
 - end_time
 ```
 
+`flight_time` is the sum of the scheduled duration of every flight in the duty.
+
 `sitting_time` is the total connection wait between flights inside the duty. A single-flight duty has `sitting_time = 0`.
+
+The stored components satisfy `total_time = flight_time + sitting_time`.
 
 ## Crew Base Rule
 
@@ -360,13 +365,16 @@ Pairing
 - pairing_id
 - duties
 - total_time
+- flight_time
+- sitting_time
 - rest
 - start_airport
 - end_airport
 - start_time
 - end_time
-- cost
 ```
+
+`flight_time` and `sitting_time` are the sums of those values across every duty in the pairing.
 
 `rest` is the total layover time between consecutive duties in the pairing:
 
@@ -375,6 +383,8 @@ rest = Σ (duty[i+1].start_time - duty[i].end_time)
 ```
 
 A pairing with a single duty has `rest = 0`.
+
+The stored components satisfy `total_time = flight_time + sitting_time + rest`.
 
 ---
 
@@ -392,7 +402,10 @@ That is:
 - `sitting_time` of a duty is the total connection wait between flights inside that duty.
 - `cost` is that sum converted to hours, not a clock time.
 
-The pairing cost is stored on the `Pairing` object and will be used by the Solver in the objective function.
+The pairing stores the time components, not a fixed cost. The default
+`current_pairing_cost(pairing)` function in `pairing_cost.py` implements this
+formula. A different function can use the same pairing data to define another
+cost model without regenerating pairings.
 
 ---
 
@@ -414,7 +427,9 @@ Binary Pairing-Flight Matrix
 Cost List
 ```
 
-The function `pairings_to_matrix(flights, pairings)` builds the two objects that `solver.py` expects.
+The function `pairings_to_matrix(flights, pairings, cost_function)` builds the
+two objects that `solver.py` expects. `cost_function` defaults to
+`current_pairing_cost`.
 
 ## Matrix Structure
 
@@ -441,7 +456,9 @@ for each pairing
 
 ## Cost List
 
-`costs[i]` is `pairing.cost` of the pairing in row `i`. The row order of the matrix and the order of the cost list match, so they can be passed together to the Solver:
+`costs[i]` is `cost_function(pairing)` for the pairing in row `i`. The row order
+of the matrix and the order of the cost list match, so they can be passed
+together to the Solver:
 
 ```python
 matrix, costs = pairings_to_matrix(flights, pairings)
@@ -627,9 +644,12 @@ pairings.py
     Pairing constraints
     DFS for pairing generation
 
+pairing_cost.py
+    Replaceable pairing cost functions
+
 pairing_to_metrix.py
     Pairing-flight binary matrix
-    Pairing cost list
+    Pairing cost list calculated by the selected cost function
 
 solver.py
     ILP model

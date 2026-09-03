@@ -14,7 +14,6 @@ from flights_graph import Airport
 # Pairing-level limits. Rest between duties is included in MAX_PAIRING_TIME.
 MAX_PAIRING_TIME = timedelta(days=5)
 MAX_DUTIES_PER_PAIRING = 5
-SECONDS_PER_HOUR = 3600
 
 
 @dataclass(frozen=True)
@@ -24,12 +23,23 @@ class Pairing:
     pairing_id: str
     duties: Tuple[Duty, ...]
     total_time: timedelta
+    flight_time: timedelta
+    sitting_time: timedelta
     rest: timedelta
-    cost: float
 
     def __post_init__(self) -> None:
         if not self.duties:
             raise ValueError("a pairing must contain at least one duty")
+        if self.flight_time < timedelta(0):
+            raise ValueError("flight_time cannot be negative")
+        if self.sitting_time < timedelta(0):
+            raise ValueError("sitting_time cannot be negative")
+        if self.rest < timedelta(0):
+            raise ValueError("rest cannot be negative")
+        if self.total_time != self.flight_time + self.sitting_time + self.rest:
+            raise ValueError(
+                "total_time must equal flight_time plus sitting_time plus rest"
+            )
 
     @property
     def start_airport(self) -> Airport:
@@ -56,10 +66,14 @@ def calculate_pairing_rest(duties: Tuple[Duty, ...]) -> timedelta:
     return rest
 
 
-def calculate_pairing_cost(duties: Tuple[Duty, ...], rest: timedelta) -> float:
-    """Return rest plus sitting time, in hours."""
-    sitting_time = sum((duty.sitting_time for duty in duties), timedelta(0))
-    return (rest + sitting_time).total_seconds() / SECONDS_PER_HOUR
+def calculate_pairing_flight_time(duties: Tuple[Duty, ...]) -> timedelta:
+    """Return the total time spent on flights across all duties."""
+    return sum((duty.flight_time for duty in duties), timedelta(0))
+
+
+def calculate_pairing_sitting_time(duties: Tuple[Duty, ...]) -> timedelta:
+    """Return the total connection time inside all duties."""
+    return sum((duty.sitting_time for duty in duties), timedelta(0))
 
 
 def generate_pairings(
@@ -96,13 +110,16 @@ def generate_pairings(
         ):
             pairing_id = f"P{len(pairings) + 1}"
             pairing_duties = tuple(path)
+            flight_time = calculate_pairing_flight_time(pairing_duties)
+            sitting_time = calculate_pairing_sitting_time(pairing_duties)
             rest = calculate_pairing_rest(pairing_duties)
             pairings[pairing_id] = Pairing(
                 pairing_id=pairing_id,
                 duties=pairing_duties,
-                total_time=total_time,
+                total_time=flight_time + sitting_time + rest,
+                flight_time=flight_time,
+                sitting_time=sitting_time,
                 rest=rest,
-                cost=calculate_pairing_cost(pairing_duties, rest),
             )
 
         if len(path) >= max_duties:

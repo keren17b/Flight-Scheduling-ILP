@@ -29,11 +29,18 @@ class Duty:
     duty_id: str
     flights: Tuple[Flight, ...]
     total_time: timedelta
+    flight_time: timedelta
     sitting_time: timedelta
 
     def __post_init__(self) -> None:
         if not self.flights:
             raise ValueError("a duty must contain at least one flight")
+        if self.flight_time < timedelta(0):
+            raise ValueError("flight_time cannot be negative")
+        if self.sitting_time < timedelta(0):
+            raise ValueError("sitting_time cannot be negative")
+        if self.total_time != self.flight_time + self.sitting_time:
+            raise ValueError("total_time must equal flight_time plus sitting_time")
 
     @property
     def start_airport(self) -> Airport:
@@ -75,14 +82,16 @@ def generate_duties(
     def dfs(
         current_flight: Flight,
         path: List[Flight],
-        total_time: timedelta,
+        flight_time: timedelta,
         sitting_time: timedelta,
     ) -> None:
+        total_time = flight_time + sitting_time
         duty_id = f"D{len(duties) + 1}"
         duties[duty_id] = Duty(
             duty_id=duty_id,
             flights=tuple(path),
             total_time=total_time,
+            flight_time=flight_time,
             sitting_time=sitting_time,
         )
 
@@ -101,14 +110,15 @@ def generate_duties(
             next_flight_time = (
                 next_flight.arrival_datetime - next_flight.departure_datetime
             )
-            next_total_time = total_time + connection_time + next_flight_time
+            next_flight_total = flight_time + next_flight_time
             next_sitting_time = sitting_time + connection_time
+            next_total_time = next_flight_total + next_sitting_time
 
             if next_total_time > max_duty_time:
                 continue
 
             path.append(next_flight)
-            dfs(next_flight, path, next_total_time, next_sitting_time)
+            dfs(next_flight, path, next_flight_total, next_sitting_time)
             path.pop()
 
     for first_flight in graph:
