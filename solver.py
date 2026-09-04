@@ -1,12 +1,16 @@
 from mosek.fusion import Model, Domain, Expr, ObjectiveSense
 import numpy as np
 
+from padding_flights import PADDING_TAG, REQUIRED_TAG
 
-def simple_model(mat, cost_lst):
+
+def simple_model(mat, cost_lst, flight_tags=None):
     mat = np.array(mat)
 
     num_pairings = mat.shape[0]
     num_flights = mat.shape[1]
+    if flight_tags is None:
+        flight_tags = [REQUIRED_TAG] * num_flights
 
     with Model("flight_model") as M:
 
@@ -20,13 +24,21 @@ def simple_model(mat, cost_lst):
             Expr.dot(cost_lst, x)
         )
 
-        # Constraint: each flight is covered exactly once
+        # Required flights: cover exactly once. Padding flights: cover at most once.
         for j in range(num_flights):
-            M.constraint(
-                f"flight_{j}_covered_once",
-                Expr.dot(mat[:, j].tolist(), x),
-                Domain.equalsTo(1.0)
-            )
+            coverage = Expr.dot(mat[:, j].tolist(), x)
+            if flight_tags[j] == PADDING_TAG:
+                M.constraint(
+                    f"flight_{j}_{PADDING_TAG}",
+                    coverage,
+                    Domain.lessThan(1.0)
+                )
+            else:
+                M.constraint(
+                    f"flight_{j}_covered_once",
+                    coverage,
+                    Domain.equalsTo(1.0)
+                )
 
         # Important: solve inside the with block
         M.solve()
