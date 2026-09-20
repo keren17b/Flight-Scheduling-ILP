@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime, timedelta
-from typing import Dict, List, Tuple
+from typing import Dict, Iterable, List, Tuple
 
 from duties import Duty
 from duty_graph import DutyGraph
@@ -14,6 +14,8 @@ from flights_graph import Airport
 # Pairing-level limits. Rest between duties is included in MAX_PAIRING_TIME.
 MAX_PAIRING_TIME = timedelta(days=5)
 MAX_DUTIES_PER_PAIRING = 5
+MAX_INITIAL_PAIRINGS = 5000
+MIN_INITIAL_COVERAGE = 1
 
 
 @dataclass(frozen=True)
@@ -76,6 +78,21 @@ def calculate_pairing_sitting_time(duties: Tuple[Duty, ...]) -> timedelta:
     return sum((duty.sitting_time for duty in duties), timedelta(0))
 
 
+def build_pairing_from_path(pairing_id: str, path: List[Duty]) -> Pairing:
+    pairing_duties = tuple(path)
+    flight_time = calculate_pairing_flight_time(pairing_duties)
+    sitting_time = calculate_pairing_sitting_time(pairing_duties)
+    rest = calculate_pairing_rest(pairing_duties)
+    return Pairing(
+        pairing_id=pairing_id,
+        duties=pairing_duties,
+        total_time=flight_time + sitting_time + rest,
+        flight_time=flight_time,
+        sitting_time=sitting_time,
+        rest=rest,
+    )
+
+
 def generate_pairings(
     graph: DutyGraph,
     max_pairing_time: timedelta = MAX_PAIRING_TIME,
@@ -109,18 +126,7 @@ def generate_pairings(
             == path[0].start_airport.port_name
         ):
             pairing_id = f"P{len(pairings) + 1}"
-            pairing_duties = tuple(path)
-            flight_time = calculate_pairing_flight_time(pairing_duties)
-            sitting_time = calculate_pairing_sitting_time(pairing_duties)
-            rest = calculate_pairing_rest(pairing_duties)
-            pairings[pairing_id] = Pairing(
-                pairing_id=pairing_id,
-                duties=pairing_duties,
-                total_time=flight_time + sitting_time + rest,
-                flight_time=flight_time,
-                sitting_time=sitting_time,
-                rest=rest,
-            )
+            pairings[pairing_id] = build_pairing_from_path(pairing_id, path)
 
         if len(path) >= max_duties:
             return
@@ -148,3 +154,110 @@ def generate_pairings(
             dfs(first_duty, [first_duty])
 
     return pairings
+
+
+def generate_initial_pairings(
+    graph: DutyGraph,
+    all_flight_ids: Iterable[str],
+    max_pairing_time: timedelta = MAX_PAIRING_TIME,
+    max_duties: int = MAX_DUTIES_PER_PAIRING,
+    min_cover_per_flight: int = MIN_INITIAL_COVERAGE,
+    max_pairings: int = MAX_INITIAL_PAIRINGS,
+) -> Tuple[Dict[str, Pairing], Dict[str, int]]:
+    """
+    Generate a small initial pairing pool with a limited DFS.
+
+    Pairings are kept only when they cover a flight that still needs
+    initial coverage. Search stops when every tracked flight reaches
+    min_cover_per_flight, when max_pairings is reached, or when DFS
+    has no remaining legal branches.
+    """
+    if max_pairing_time <= timedelta(0):
+        raise ValueError("max_pairing_time must be positive")
+    if max_duties < 1:
+        raise ValueError("max_duties must be at least 1")
+    if min_cover_per_flight < 1:
+        raise ValueError("min_cover_per_flight must be at least 1")
+    if max_pairings < 1:
+        raise ValueError("max_pairings must be at least 1")
+
+    pairings: Dict[str, Pairing] = {}
+    coverage_count = {flight_id: 0 for flight_id in all_flight_ids}
+
+    def pairing_flight_ids(path: List[Duty]) -> set[str]:
+        covered = set()
+        for duty in path:
+            for flight in duty.flights:
+                covered.add(flight.flight_id)
+        return covered
+
+    def enough_coverage() -> bool:
+        return all(
+            count >= min_cover_per_flight
+            for count in coverage_count.values()
+        )
+
+    def dfs(current_duty: Duty, path: List[Duty]) -> None:
+        if len(pairings) >= max_pairings:
+            return
+
+        if enough_coverage():
+            return
+
+        returned_to_base = (
+            current_duty.end_airport.is_crew_base
+            and current_duty.end_airport.port_name
+            == path[0].start_airport.port_name
+        )
+
+        if returned_to_base:
+            covered = pairing_flight_ids(path)
+            useful = any(
+                coverage_count[flight_id] < min_cover_per_flight
+                for flight_id in covered
+                if flight_id in coverage_count
+            )
+
+            if useful:
+                pairing_id = f"P{len(pairings) + 1}"
+                pairings[pairing_id] = build_pairing_from_path(pairing_id, path)
+                for flight_id in covered:
+                    if flight_id in coverage_count:
+                        coverage_count[flight_id] += 1
+
+        if len(path) >= max_duties:
+            return
+
+        for next_duty in graph.get(current_duty, []):
+            if next_duty in path:
+                continue
+
+            total_time = next_duty.end_time - path[0].start_time
+            if total_time > max_pairing_time:
+                continue
+
+            path.append(next_duty)
+            dfs(next_duty, path)
+            path.pop()
+
+            if enough_coverage():
+                return
+
+            if len(pairings) >= max_pairings:
+                return
+
+    for first_duty in graph:
+        if enough_coverage():
+            break
+
+        if len(pairings) >= max_pairings:
+            break
+
+        if not first_duty.start_airport.is_crew_base:
+            continue
+
+        first_duty_time = first_duty.end_time - first_duty.start_time
+        if timedelta(0) <= first_duty_time <= max_pairing_time:
+            dfs(first_duty, [first_duty])
+
+    return pairings, coverage_count
