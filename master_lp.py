@@ -66,9 +66,6 @@ def solve_master_lp(
     Required flights are covered exactly once, with an artificial variable
     on each required constraint. Padding flights are covered at most once.
     """
-    if not flights:
-        raise ValueError("flights cannot be empty")
-
     flight_ids = list(flights.keys())
     flight_tags = flight_constraint_tags(flights)
     pairing_ids, costs, covering = _coverage_index(
@@ -86,36 +83,23 @@ def solve_master_lp(
         flight_id: index for index, flight_id in enumerate(required_ids)
     }
 
-    num_pairings = len(pairing_ids)
-    num_required = len(required_ids)
-
     with Model("restricted_master_lp") as M:
-        x = None
-        if num_pairings > 0:
-            x = M.variable("x", num_pairings, Domain.inRange(0.0, 1.0))
+        x = M.variable("x", len(pairing_ids), Domain.inRange(0.0, 1.0))
+        a = M.variable("artificial", len(required_ids), Domain.inRange(0.0, 1.0))
 
-        a = None
-        if num_required > 0:
-            a = M.variable("artificial", num_required, Domain.inRange(0.0, 1.0))
-
-        if x is not None and a is not None:
-            objective = Expr.add(
+        M.objective(
+            "minimize_cost",
+            ObjectiveSense.Minimize,
+            Expr.add(
                 Expr.dot(costs, x),
                 Expr.mul(ARTIFICIAL_COST, Expr.sum(a)),
-            )
-        elif x is not None:
-            objective = Expr.dot(costs, x)
-        elif a is not None:
-            objective = Expr.mul(ARTIFICIAL_COST, Expr.sum(a))
-        else:
-            objective = Expr.constTerm(0.0)
-
-        M.objective("minimize_cost", ObjectiveSense.Minimize, objective)
+            ),
+        )
 
         flight_constraints = {}
         for flight_id, tag in zip(flight_ids, flight_tags):
             covering_indices = covering[flight_id]
-            if x is not None and covering_indices:
+            if covering_indices:
                 coverage = Expr.sum(x.pick(covering_indices))
             else:
                 coverage = Expr.constTerm(0.0)
@@ -128,9 +112,6 @@ def solve_master_lp(
                 )
                 continue
 
-            if a is None:
-                raise ValueError("required flights need artificial variables")
-
             flight_constraints[flight_id] = M.constraint(
                 f"flight_{flight_id}_covered_once",
                 Expr.add(coverage, a.index(artificial_index[flight_id])),
@@ -139,21 +120,17 @@ def solve_master_lp(
 
         M.solve()
 
-        pairing_values = {}
-        if x is not None:
-            x_level = x.level()
-            pairing_values = {
-                pairing_id: float(x_level[index])
-                for index, pairing_id in enumerate(pairing_ids)
-            }
+        x_level = x.level()
+        pairing_values = {
+            pairing_id: float(x_level[index])
+            for index, pairing_id in enumerate(pairing_ids)
+        }
 
-        artificial_values = {}
-        if a is not None:
-            a_level = a.level()
-            artificial_values = {
-                flight_id: float(a_level[index])
-                for flight_id, index in artificial_index.items()
-            }
+        a_level = a.level()
+        artificial_values = {
+            flight_id: float(a_level[index])
+            for flight_id, index in artificial_index.items()
+        }
 
         duals = {
             flight_id: float(constraint.dual()[0])

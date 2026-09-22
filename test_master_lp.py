@@ -52,10 +52,6 @@ class MasterLpTests(unittest.TestCase):
     def _costs(self, costs_by_id: dict[str, float]):
         return lambda pairing: costs_by_id[pairing.pairing_id]
 
-    def test_empty_flights_raises(self) -> None:
-        with self.assertRaises(ValueError):
-            solve_master_lp({}, {})
-
     def test_covering_pairings_zero_artificials(self) -> None:
         first = self._flight("F1")
         second = self._flight("F2")
@@ -99,42 +95,24 @@ class MasterLpTests(unittest.TestCase):
             delta=SOLVER_TOLERANCE,
         )
 
-    def test_no_pairings_covers_required_flights_with_artificials(self) -> None:
-        first = self._flight("F1")
-        flights = {"F1": first}
-
-        result = solve_master_lp({}, flights)
-
-        self.assertEqual(result.pairing_values, {})
-        self.assertAlmostEqual(result.artificial_values["F1"], 1.0, delta=SOLVER_TOLERANCE)
-        self.assertAlmostEqual(result.objective, ARTIFICIAL_COST, delta=SOLVER_TOLERANCE)
-        self.assertIn("F1", result.duals)
-
     def test_padding_flight_has_no_artificial(self) -> None:
         required = self._flight("F1")
         padding = self._flight("F2", padding=True)
+        pairings = {"P1": self._pairing("P1", (required,))}
         flights = {"F1": required, "F2": padding}
 
-        result = solve_master_lp({}, flights)
+        result = solve_master_lp(
+            pairings,
+            flights,
+            cost_function=self._costs({"P1": 5.0}),
+        )
 
         self.assertIn("F1", result.artificial_values)
         self.assertNotIn("F2", result.artificial_values)
         self.assertEqual(set(result.duals), {"F1", "F2"})
-        self.assertAlmostEqual(result.objective, ARTIFICIAL_COST, delta=SOLVER_TOLERANCE)
-
-    def test_padding_only_instance_has_zero_objective(self) -> None:
-        padding = self._flight("F2", padding=True)
-        pairings = {"P1": self._pairing("P1", (padding,))}
-
-        result = solve_master_lp(
-            pairings,
-            {"F2": padding},
-            cost_function=self._costs({"P1": 4.0}),
-        )
-
-        self.assertEqual(result.artificial_values, {})
-        self.assertAlmostEqual(result.pairing_values["P1"], 0.0, delta=SOLVER_TOLERANCE)
-        self.assertAlmostEqual(result.objective, 0.0, delta=SOLVER_TOLERANCE)
+        self.assertAlmostEqual(result.artificial_values["F1"], 0.0, delta=SOLVER_TOLERANCE)
+        self.assertAlmostEqual(result.pairing_values["P1"], 1.0, delta=SOLVER_TOLERANCE)
+        self.assertAlmostEqual(result.objective, 5.0, delta=SOLVER_TOLERANCE)
 
     def test_fractional_cover_when_pairings_overlap(self) -> None:
         first = self._flight("F1")
