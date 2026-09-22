@@ -567,6 +567,123 @@ Optimal Pairing Set
 
 ---
 
+# Column Generation
+
+Full pairing DFS can produce millions of pairings. Building the dense pairing-flight matrix and one binary variable per pairing then runs out of memory.
+
+Column generation does not generate every pairing first. It starts from a small pool, solves a smaller LP, and later adds only pairings that can improve that LP.
+
+`generate_pairings` is still in `pairings.py`. The column-generation path is additional.
+
+What is implemented so far:
+
+1. A limited initial pairing pool.
+2. A restricted master LP that returns flight duals.
+
+Pricing and the loop that adds new pairings are not implemented yet. `main_tmp.py` still runs the full pairing DFS and `simple_model`.
+
+## Initial pairing pool
+
+File: `pairings.py`
+
+Function: `generate_initial_pairings`
+
+Input:
+
+```text
+Duty Graph
+Flight IDs to track
+```
+
+Output:
+
+```text
+Small Dict[str, Pairing]
+coverage_count for those flight IDs
+```
+
+The search uses the same pairing rules as `generate_pairings`:
+
+- DFS starts only from a duty that departs a crew base.
+- A pairing is saved only when it returns to that same crew base.
+- A duty is not repeated in one pairing.
+- At most `MAX_DUTIES_PER_PAIRING` duties (5).
+- Total time at most `MAX_PAIRING_TIME` (5 days), including rest between duties.
+
+It does not store every legal path. A closed pairing is kept only when it covers at least one tracked flight that is still below `MIN_INITIAL_COVERAGE` (1). Each kept pairing increments `coverage_count` for the flights it covers.
+
+The search stops when one of these happens:
+
+1. Every tracked flight has reached `MIN_INITIAL_COVERAGE`.
+2. The pool reaches `MAX_INITIAL_PAIRINGS` (5000).
+3. DFS has no remaining legal branches.
+
+`build_pairing_from_path` builds the `Pairing` object. Both `generate_pairings` and `generate_initial_pairings` use it.
+
+## Restricted Master LP
+
+File: `master_lp.py`
+
+Function: `solve_master_lp`
+
+Input:
+
+```text
+Current pairings
+flights
+cost function (default: current_pairing_cost)
+```
+
+Output: `MasterLpResult`
+
+```text
+pairing_values      x[p] for each current pairing
+duals               one dual per flight constraint
+objective           LP objective value
+artificial_values   leftover coverage for each required flight
+```
+
+This LP is not the final binary model in `solver.py`.
+
+For each current pairing `p`:
+
+```text
+0 <= x[p] <= 1
+```
+
+`x[p]` can be fractional. It is only an intermediate value used to obtain duals.
+
+Coverage is built from the flight IDs inside each pairing. The dense pairing-flight matrix is not built.
+
+Required flights, from `padding_flights.py`, use exact cover plus an artificial variable:
+
+```text
+sum of x[p] over pairings that contain f  +  a[f]  =  1
+0 <= a[f] <= 1
+```
+
+`a[f]` is the uncovered fraction of flight `f`. Its cost is `ARTIFICIAL_COST` (1,000,000), so the LP prefers real pairings.
+
+Padding flights have no artificial variable:
+
+```text
+sum of x[p] over pairings that contain f  <=  1
+```
+
+Objective:
+
+```text
+minimize  sum(cost[p] * x[p])  +  ARTIFICIAL_COST * sum(a[f])
+```
+
+After `M.solve()`, `constraint.dual()` is stored as `duals[flight_id]`. Those duals are the input the later pricing search will use.
+
+The function expects a non-empty pairing set and at least one required flight.
+
+Tests for this LP are in `test_master_lp.py`.
+
+---
+
 # 9. Main Pipeline
 
 The file:
@@ -642,7 +759,8 @@ duty_graph.py
 pairings.py
     Pairing representation
     Pairing constraints
-    DFS for pairing generation
+    DFS for all legal pairings (generate_pairings)
+    Limited DFS for the initial column-generation pool (generate_initial_pairings)
 
 pairing_cost.py
     Replaceable pairing cost functions
@@ -650,6 +768,10 @@ pairing_cost.py
 pairing_to_metrix.py
     Pairing-flight binary matrix
     Pairing cost list calculated by the selected cost function
+
+master_lp.py
+    Restricted master LP for column generation
+    Continuous pairing variables, artificials, and flight duals
 
 solver.py
     ILP model
@@ -692,7 +814,7 @@ main.py
 
 ## Optional Extensions
 
-- Column Generation to reduce the need to generate a very large number of pairings in advance.
+- Column Generation. The initial pairing pool and the restricted master LP are in place. Pricing and the column-generation loop are not implemented yet.
 - Crew Scheduling – assigning specific crew members to pairings.
 - Performance optimizations and pruning during duty and pairing generation.
 
