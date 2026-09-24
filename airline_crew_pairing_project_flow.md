@@ -579,8 +579,10 @@ What is implemented so far:
 
 1. A limited initial pairing pool.
 2. A restricted master LP that returns flight duals.
+3. A pricing DFS that returns pairings with negative reduced cost.
+4. A column-generation loop that adds unique new pairings and stops at `MAX_ITERATIONS`.
 
-Pricing and the loop that adds new pairings are not implemented yet. `main_tmp.py` still runs the full pairing DFS and `simple_model`.
+The final binary ILP on the generated columns is not part of this loop yet. `main_tmp.py` still runs the full pairing DFS and `simple_model`.
 
 ## Initial pairing pool
 
@@ -600,6 +602,7 @@ Output:
 ```text
 Small Dict[str, Pairing]
 coverage_count for those flight IDs
+existing_pairing_signature
 ```
 
 The search uses the same pairing rules as `generate_pairings`:
@@ -610,7 +613,9 @@ The search uses the same pairing rules as `generate_pairings`:
 - At most `MAX_DUTIES_PER_PAIRING` duties (5).
 - Total time at most `MAX_PAIRING_TIME` (5 days), including rest between duties.
 
-It does not store every legal path. A closed pairing is kept only when it covers at least one tracked flight that is still below `MIN_INITIAL_COVERAGE` (1). Each kept pairing increments `coverage_count` for the flights it covers.
+It does not store every legal path. A closed pairing is kept only when it covers at least one tracked flight that is still below `MIN_INITIAL_COVERAGE` (1). Each kept pairing increments `coverage_count` for the flights it covers and adds `pairing_signature(path)` to `existing_pairing_signature`.
+
+`pairing_signature` is the ordered tuple of duty IDs in the pairing, for example `("D1", "D2")`. It is the duplicate key used later by pricing. `P1` and `P2` are only labels inside one function call.
 
 The search stops when one of these happens:
 
@@ -681,6 +686,72 @@ After `M.solve()`, `constraint.dual()` is stored as `duals[flight_id]`. Those du
 The function expects a non-empty pairing set and at least one required flight.
 
 Tests for this LP are in `test_master_lp.py`.
+
+## Pricing
+
+File: `pairing_pricing.py`
+
+Function: `generate_pricing_pairings`
+
+Input:
+
+```text
+Duty Graph
+duals from solve_master_lp
+existing_pairing_signature
+cost function (default: current_pairing_cost)
+```
+
+Output:
+
+```text
+Dict[str, Pairing] of pairings with negative reduced cost
+existing_pairing_signature
+```
+
+The search uses the same pairing legality as `generate_initial_pairings`. Airport continuity and rest are already on the duty-graph edges and are not checked again.
+
+For a closed pairing `p`:
+
+```text
+reduced_cost(p) = cost(p) - sum(dual[f] for f in flights of p)
+```
+
+A pairing is kept only when its reduced cost is negative and `pairing_signature(path)` is not already in `existing_pairing_signature`. Each kept pairing is added to that same set. The function returns that set; it does not create a new one.
+
+Search stops after `MAX_PRICING_PAIRINGS` (50) improving pairings.
+
+Tests are in `test_pairing_pricing.py`.
+
+## Column generation loop
+
+File: `column_generation.py`
+
+Function: `run_column_generation`
+
+The loop owns the shared `existing_pairing_signature` set. `generate_initial_pairings` creates that set from the initial pool. The same set is passed into every pricing call.
+
+```text
+initial pairings + existing_pairing_signature
+        ↓
+solve_master_lp
+        ↓
+generate_pricing_pairings(duals, existing_pairing_signature)
+        ↓
+if no new pairings: stop
+        ↓
+add the new pairings to the master columns
+        ↓
+solve_master_lp again
+        ↓
+repeat, at most MAX_ITERATIONS times
+```
+
+`MAX_ITERATIONS` is 100. The loop also stops when pricing returns no new pairings.
+
+This loop does not solve the final binary ILP. `simple_model` in `solver.py` is still the integer model.
+
+Tests are in `test_column_generation.py`.
 
 ---
 
@@ -761,6 +832,7 @@ pairings.py
     Pairing constraints
     DFS for all legal pairings (generate_pairings)
     Limited DFS for the initial column-generation pool (generate_initial_pairings)
+    pairing_signature
 
 pairing_cost.py
     Replaceable pairing cost functions
@@ -772,6 +844,16 @@ pairing_to_metrix.py
 master_lp.py
     Restricted master LP for column generation
     Continuous pairing variables, artificials, and flight duals
+
+pairing_pricing.py
+    Pricing DFS
+    Negative reduced-cost pairings
+    Updates existing_pairing_signature
+
+column_generation.py
+    Column-generation loop
+    Initial pool, master LP, pricing, unique columns
+    MAX_ITERATIONS stop
 
 solver.py
     ILP model
@@ -814,7 +896,7 @@ main.py
 
 ## Optional Extensions
 
-- Column Generation. The initial pairing pool and the restricted master LP are in place. Pricing and the column-generation loop are not implemented yet.
+- Column Generation. The initial pairing pool, restricted master LP, pricing DFS, and column-generation loop are in place. The final binary ILP on the generated columns is not part of that loop yet.
 - Crew Scheduling – assigning specific crew members to pairings.
 - Performance optimizations and pruning during duty and pairing generation.
 

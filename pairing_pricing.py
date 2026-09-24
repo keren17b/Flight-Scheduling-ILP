@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from datetime import timedelta
-from typing import Dict, List
+from typing import Dict, List, Set, Tuple
 
 from duties import Duty
 from duty_graph import DutyGraph
@@ -13,6 +13,7 @@ from pairings import (
     MAX_PAIRING_TIME,
     Pairing,
     build_pairing_from_path,
+    pairing_signature,
 )
 
 
@@ -34,21 +35,26 @@ def _reduced_cost(
 def generate_pricing_pairings(
     graph: DutyGraph,
     duals: Dict[str, float],
+    existing_pairing_signature: Set[Tuple[str, ...]],
     max_pairing_time: timedelta = MAX_PAIRING_TIME,
     max_duties: int = MAX_DUTIES_PER_PAIRING,
     max_pairings: int = MAX_PRICING_PAIRINGS,
     cost_function: PairingCostFunction = current_pairing_cost,
-) -> Dict[str, Pairing]:
+) -> Tuple[Dict[str, Pairing], Set[Tuple[str, ...]]]:
     """
     Search the duty graph for pairings with negative reduced cost.
 
     Legality matches generate_initial_pairings. A closed pairing is kept
-    only when cost(p) - sum(dual[f] for f in p) is negative. Search stops
-    after max_pairings improving pairings.
+    only when its reduced cost is negative and its duty-id signature is not
+    already in existing_pairing_signature. Each kept pairing is added to that set.
     """
     pairings: Dict[str, Pairing] = {}
 
-    def dfs(current_duty: Duty, path: List[Duty]) -> None:
+    def dfs(
+        current_duty: Duty,
+        path: List[Duty],
+        existing_pairing_signature: Set[Tuple[str, ...]],
+    ) -> None:
         if len(pairings) >= max_pairings:
             return
 
@@ -59,10 +65,13 @@ def generate_pricing_pairings(
         )
 
         if returned_to_base:
-            pairing_id = f"P{len(pairings) + 1}"
-            pairing = build_pairing_from_path(pairing_id, path)
-            if _reduced_cost(pairing, duals, cost_function) < 0:
-                pairings[pairing_id] = pairing
+            pairing_signature = tuple(duty.duty_id for duty in path)
+            if pairing_signature not in existing_pairing_signature:
+                pairing_id = f"P{len(pairings) + 1}"
+                pairing = build_pairing_from_path(pairing_id, path)
+                if _reduced_cost(pairing, duals, cost_function) < 0:
+                    pairings[pairing_id] = pairing
+                    existing_pairing_signature.add(pairing_signature)
 
         if len(path) >= max_duties:
             return
@@ -76,7 +85,7 @@ def generate_pricing_pairings(
                 continue
 
             path.append(next_duty)
-            dfs(next_duty, path)
+            dfs(next_duty, path, existing_pairing_signature)
             path.pop()
 
             if len(pairings) >= max_pairings:
@@ -91,6 +100,6 @@ def generate_pricing_pairings(
 
         first_duty_time = first_duty.end_time - first_duty.start_time
         if timedelta(0) <= first_duty_time <= max_pairing_time:
-            dfs(first_duty, [first_duty])
+            dfs(first_duty, [first_duty], existing_pairing_signature)
 
-    return pairings
+    return pairings, existing_pairing_signature

@@ -41,9 +41,10 @@ class PairingPricingTests(unittest.TestCase):
         rejected = self._closed_duty("D2", rejected_flight)
         graph = {improving: [], rejected: []}
 
-        pairings = generate_pricing_pairings(
+        pairings, _existing_pairing_signature = generate_pricing_pairings(
             graph,
             {"F1": 5.0, "F2": 0.0},
+            set(),
             cost_function=lambda pairing: 1.0,
         )
 
@@ -59,9 +60,10 @@ class PairingPricingTests(unittest.TestCase):
             duals[flight.flight_id] = 10.0
         graph = {duty: [] for duty in duties}
 
-        pairings = generate_pricing_pairings(
+        pairings, _existing_pairing_signature = generate_pricing_pairings(
             graph,
             duals,
+            set(),
             max_pairings=2,
             cost_function=lambda pairing: 1.0,
         )
@@ -76,9 +78,10 @@ class PairingPricingTests(unittest.TestCase):
         flight = self._flight("F1", self.base, self.outstation)
         duty = self._closed_duty("D1", flight)
 
-        pairings = generate_pricing_pairings(
+        pairings, _existing_pairing_signature = generate_pricing_pairings(
             {duty: []},
             {"F1": 100.0},
+            set(),
             cost_function=lambda pairing: 1.0,
         )
 
@@ -110,14 +113,36 @@ class PairingPricingTests(unittest.TestCase):
         )
         graph = {first: [second], second: []}
 
-        improving = generate_pricing_pairings(graph, {"F1": 10.0, "F2": 10.0})
-        rejected = generate_pricing_pairings(graph, {"F1": 1.0, "F2": 1.0})
+        improving, _existing_pairing_signature = generate_pricing_pairings(
+            graph, {"F1": 10.0, "F2": 10.0}, set()
+        )
+        rejected, _existing_pairing_signature = generate_pricing_pairings(
+            graph, {"F1": 1.0, "F2": 1.0}, set()
+        )
 
         self.assertEqual(
             [duty.duty_id for duty in next(iter(improving.values())).duties],
             ["D1", "D2"],
         )
         self.assertEqual(rejected, {})
+
+    def test_skips_pairings_already_in_existing_ids(self) -> None:
+        first = self._closed_duty("D1", self._flight("F1", self.base, self.base))
+        second = self._closed_duty("D2", self._flight("F2", self.base, self.base))
+        graph = {first: [], second: []}
+        duals = {"F1": 5.0, "F2": 5.0}
+        existing_pairing_signature = {("D1",)}
+
+        pairings, _existing_pairing_signature = generate_pricing_pairings(
+            graph,
+            duals,
+            cost_function=lambda pairing: 1.0,
+            existing_pairing_signature=existing_pairing_signature,
+        )
+
+        self.assertEqual(list(pairings), ["P1"])
+        self.assertEqual(pairings["P1"].duties, (second,))
+        self.assertEqual(existing_pairing_signature, {("D1",), ("D2",)})
 
 
 if __name__ == "__main__":

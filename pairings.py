@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime, timedelta
-from typing import Dict, Iterable, List, Tuple
+from typing import Dict, Iterable, List, Set, Tuple
 
 from duties import Duty
 from duty_graph import DutyGraph
@@ -76,6 +76,10 @@ def calculate_pairing_flight_time(duties: Tuple[Duty, ...]) -> timedelta:
 def calculate_pairing_sitting_time(duties: Tuple[Duty, ...]) -> timedelta:
     """Return the total connection time inside all duties."""
     return sum((duty.sitting_time for duty in duties), timedelta(0))
+
+
+def pairing_signature(duties: Tuple[Duty, ...] | List[Duty]) -> Tuple[str, ...]:
+    return tuple(duty.duty_id for duty in duties)
 
 
 def build_pairing_from_path(pairing_id: str, path: List[Duty]) -> Pairing:
@@ -162,7 +166,7 @@ def generate_initial_pairings(
     max_duties: int = MAX_DUTIES_PER_PAIRING,
     min_cover_per_flight: int = MIN_INITIAL_COVERAGE,
     max_pairings: int = MAX_INITIAL_PAIRINGS,
-) -> Tuple[Dict[str, Pairing], Dict[str, int]]:
+) -> Tuple[Dict[str, Pairing], Dict[str, int], Set[Tuple[str, ...]]]:
     """
     Generate a small initial pairing pool with a limited DFS.
 
@@ -181,6 +185,7 @@ def generate_initial_pairings(
         raise ValueError("max_pairings must be at least 1")
 
     pairings: Dict[str, Pairing] = {}
+    existing_pairing_signature: Set[Tuple[str, ...]] = set()
     coverage_count = {flight_id: 0 for flight_id in all_flight_ids}
 
     def pairing_flight_ids(path: List[Duty]) -> List[str]:
@@ -220,6 +225,7 @@ def generate_initial_pairings(
             if useful:
                 pairing_id = f"P{len(pairings) + 1}"
                 pairings[pairing_id] = build_pairing_from_path(pairing_id, path)
+                existing_pairing_signature.add(pairing_signature(path))
                 for flight_id in covered:
                     if flight_id in coverage_count:
                         coverage_count[flight_id] += 1
@@ -259,4 +265,4 @@ def generate_initial_pairings(
         if timedelta(0) <= first_duty_time <= max_pairing_time:
             dfs(first_duty, [first_duty])
 
-    return pairings, coverage_count
+    return pairings, coverage_count, existing_pairing_signature
