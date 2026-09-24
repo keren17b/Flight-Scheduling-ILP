@@ -25,15 +25,11 @@ class MasterLpResult:
 
 
 def _pairing_flight_ids(pairing: Pairing) -> List[str]:
-    flight_ids: List[str] = []
-    seen = set()
-    for duty in pairing.duties:
-        for flight in duty.flights:
-            if flight.flight_id in seen:
-                continue
-            seen.add(flight.flight_id)
-            flight_ids.append(flight.flight_id)
-    return flight_ids
+    return [
+        flight.flight_id
+        for duty in pairing.duties
+        for flight in duty.flights
+    ]
 
 
 def _coverage_index(

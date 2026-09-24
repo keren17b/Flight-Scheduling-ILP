@@ -92,7 +92,6 @@ def build_pairing_from_path(pairing_id: str, path: List[Duty]) -> Pairing:
         rest=rest,
     )
 
-
 def generate_pairings(
     graph: DutyGraph,
     max_pairing_time: timedelta = MAX_PAIRING_TIME,
@@ -184,12 +183,12 @@ def generate_initial_pairings(
     pairings: Dict[str, Pairing] = {}
     coverage_count = {flight_id: 0 for flight_id in all_flight_ids}
 
-    def pairing_flight_ids(path: List[Duty]) -> set[str]:
-        covered = set()
-        for duty in path:
-            for flight in duty.flights:
-                covered.add(flight.flight_id)
-        return covered
+    def pairing_flight_ids(path: List[Duty]) -> List[str]:
+        return [
+            flight.flight_id
+            for duty in path
+            for flight in duty.flights
+        ]
 
     def enough_coverage() -> bool:
         return all(

@@ -24,13 +24,9 @@ def _reduced_cost(
     duals: Dict[str, float],
     cost_function: PairingCostFunction,
 ) -> float:
-    covered = set()
     dual_sum = 0.0
     for duty in pairing.duties:
         for flight in duty.flights:
-            if flight.flight_id in covered:
-                continue
-            covered.add(flight.flight_id)
             dual_sum += duals[flight.flight_id]
     return cost_function(pairing) - dual_sum
 
