@@ -813,7 +813,7 @@ pairings, existing_signatures, master_result = run_column_generation(
 solution, total_cost = solve_ilp(pairings, flights)
 ```
 
-Tests for this ILP are in `test_master_ilp.py`.
+Tests for this ILP are in `test_master_ilp.py`. The temporary runner `main_column_generation.py` uses this call after `run_column_generation`.
 
 ---
 
@@ -873,7 +873,17 @@ main.py
              (column-generation path)
 ```
 
-The existing `main_tmp.py` is currently used as a temporary test runner for connecting the pipeline stages, including matrix construction and the Solver.
+Temporary runners:
+
+```text
+main_tmp.py
+    Full pairing DFS, pairing-flight matrix, solver.py
+
+main_column_generation.py
+    Column-generation loop, then master_ilp.py
+```
+
+`main_column_generation.py` loads flights, generates duties, builds the duty graph, calls `run_column_generation`, then `solve_ilp`. It does not call `generate_pairings`, `pairings_to_matrix`, or `simple_model`. If the restricted master LP still uses artificials on required flights, it prints a warning before the integer solve.
 
 ---
 
@@ -934,6 +944,12 @@ solver.py
 
 main.py
     Full pipeline
+
+main_tmp.py
+    Temporary runner for the full pairing-DFS path
+
+main_column_generation.py
+    Temporary runner for the column-generation path
 ```
 
 ---
@@ -969,7 +985,7 @@ main.py
 
 ## Optional Extensions
 
-- Column Generation. The initial pairing pool, restricted master LP, pricing DFS, column-generation loop, and final binary ILP on the generated columns (`master_ilp.py`) are in place.
+- Column Generation. The initial pairing pool, restricted master LP, pricing DFS, column-generation loop, and final binary ILP (`master_ilp.py`) are in place. `main_column_generation.py` is the temporary runner for that path.
 - Crew Scheduling – assigning specific crew members to pairings.
 - Performance optimizations and pruning during duty and pairing generation.
 
