@@ -581,8 +581,9 @@ What is implemented so far:
 2. A restricted master LP that returns flight duals.
 3. A pricing DFS that returns pairings with negative reduced cost.
 4. A column-generation loop that adds unique new pairings and stops at `MAX_ITERATIONS`.
+5. A final binary ILP on the generated columns (`master_ilp.py`).
 
-The final binary ILP on the generated columns is not part of this loop yet. `main_tmp.py` still runs the full pairing DFS and `simple_model`.
+The ILP is not inside the column-generation loop. After `run_column_generation` returns, `solve_ilp` selects an integer set of those columns. `solver.py` remains the matrix-based integer model used by the full pairing-DFS path.
 
 ## Initial pairing pool
 
@@ -648,7 +649,7 @@ objective           LP objective value
 artificial_values   leftover coverage for each required flight
 ```
 
-This LP is not the final binary model in `solver.py`.
+This LP is not the final binary model. The integer model on the same pairing dicts is `solve_ilp` in `master_ilp.py`. `solver.py` is the older matrix-based integer model.
 
 For each current pairing `p`:
 
@@ -749,9 +750,70 @@ repeat, at most MAX_ITERATIONS times
 
 `MAX_ITERATIONS` is 100. The loop also stops when pricing returns no new pairings.
 
-This loop does not solve the final binary ILP. `simple_model` in `solver.py` is still the integer model.
+This loop does not solve the final binary ILP. After it returns, `solve_ilp` is called on the generated columns.
 
 Tests are in `test_column_generation.py`.
+
+## Final binary ILP
+
+File: `master_ilp.py`
+
+Function: `solve_ilp`
+
+Input (same shape as `solve_master_lp`):
+
+```text
+pairings       Dict[str, Pairing]  (columns from column generation)
+flights        Dict[str, Flight]
+cost function  default: current_pairing_cost
+```
+
+Output (same idea as `simple_model` in `solver.py`):
+
+```text
+solution     Dict[str, float]  x[p] for each pairing (0 or 1)
+total_cost   sum of cost(p) over selected pairings
+```
+
+This is the set-partitioning ILP, not the restricted master LP.
+
+For each pairing `p`:
+
+```text
+x[p] in {0, 1}
+```
+
+Coverage is built from the flight IDs inside each pairing. The dense pairing-flight matrix is not built. There are no artificial variables.
+
+Required flights, from `padding_flights.py`:
+
+```text
+sum of x[p] over pairings that contain f  =  1
+```
+
+Padding flights:
+
+```text
+sum of x[p] over pairings that contain f  <=  1
+```
+
+Objective:
+
+```text
+minimize  sum(cost[p] * x[p])
+```
+
+Typical call after column generation:
+
+```python
+pairings, existing_signatures, master_result = run_column_generation(
+    duty_graph,
+    flights,
+)
+solution, total_cost = solve_ilp(pairings, flights)
+```
+
+Tests for this ILP are in `test_master_ilp.py`.
 
 ---
 
@@ -777,12 +839,16 @@ generate duties
 build duty graph
 
 generate pairings
+    or run column generation
 
 calculate / attach costs
 
-build pairing-flight matrix
+if full pairing DFS:
+    build pairing-flight matrix
+    run solver.py
 
-run solver
+if column generation:
+    run master_ilp.py on the generated columns
 
 return solution
 ```
@@ -800,9 +866,11 @@ main.py
    |
    +--> pairings.py
    |
-   +--> pairing_to_metrix.py
+   +--> pairing_to_metrix.py  +  solver.py
+   |         (full pairing DFS path)
    |
-   +--> solver.py
+   +--> column_generation.py  +  master_ilp.py
+             (column-generation path)
 ```
 
 The existing `main_tmp.py` is currently used as a temporary test runner for connecting the pipeline stages, including matrix construction and the Solver.
@@ -855,9 +923,14 @@ column_generation.py
     Initial pool, master LP, pricing, unique columns
     MAX_ITERATIONS stop
 
+master_ilp.py
+    Final binary ILP on generated columns
+    Same pairing/flight dicts as master_lp.py
+    Same coverage rules and cost as solver.py, without a matrix
+
 solver.py
-    ILP model
-    Selection of optimal pairings
+    Matrix-based ILP model
+    Selection of optimal pairings from pairing_to_metrix.py
 
 main.py
     Full pipeline
@@ -896,7 +969,7 @@ main.py
 
 ## Optional Extensions
 
-- Column Generation. The initial pairing pool, restricted master LP, pricing DFS, and column-generation loop are in place. The final binary ILP on the generated columns is not part of that loop yet.
+- Column Generation. The initial pairing pool, restricted master LP, pricing DFS, column-generation loop, and final binary ILP on the generated columns (`master_ilp.py`) are in place.
 - Crew Scheduling – assigning specific crew members to pairings.
 - Performance optimizations and pruning during duty and pairing generation.
 
@@ -915,11 +988,11 @@ Duties
  ↓
 Duty Graph
  ↓
-Pairings
+Pairings  (full DFS  or  column generation)
  ↓
-Pairing-Flight Matrix + Costs
- ↓
-Optimization Model
+Pairing-Flight Matrix + solver.py
+    or
+Generated columns + master_ilp.py
  ↓
 Solution
 ```
