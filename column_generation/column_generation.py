@@ -4,12 +4,12 @@ from __future__ import annotations
 
 from typing import Dict, Set, Tuple
 
-from duty_graph import DutyGraph
-from flights_graph import Flight
-from master_lp import MasterLpResult, solve_master_lp
-from pairing_cost import PairingCostFunction, current_pairing_cost
-from pairing_pricing import generate_pricing_pairings
-from pairings import MAX_INITIAL_PAIRINGS, Pairing, generate_initial_pairings
+from crew_pairing.duty_graph import DutyGraph
+from crew_pairing.flights_graph import Flight
+from column_generation.master_lp import MasterLpResult, solve_master_lp
+from crew_pairing.pairing_cost import PairingCostFunction, current_pairing_cost
+from column_generation.pairing_pricing import generate_pricing_pairings
+from crew_pairing.pairings import MAX_INITIAL_PAIRINGS, Pairing, generate_initial_pairings
 
 
 MAX_ITERATIONS = 100

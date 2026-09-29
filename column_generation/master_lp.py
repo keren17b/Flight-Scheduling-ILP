@@ -7,10 +7,10 @@ from typing import Dict, List, Tuple
 
 from mosek.fusion import Model, Domain, Expr, ObjectiveSense
 
-from flights_graph import Flight
-from padding_flights import PADDING_TAG, REQUIRED_TAG, flight_constraint_tags
-from pairing_cost import PairingCostFunction, current_pairing_cost
-from pairings import Pairing
+from crew_pairing.flights_graph import Flight
+from crew_pairing.padding_flights import PADDING_TAG, REQUIRED_TAG, flight_constraint_tags
+from crew_pairing.pairing_cost import PairingCostFunction, current_pairing_cost
+from crew_pairing.pairings import Pairing
 
 
 ARTIFICIAL_COST = 1_000_000.0

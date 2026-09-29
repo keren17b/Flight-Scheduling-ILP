@@ -1,7 +1,7 @@
 from mosek.fusion import Model, Domain, Expr, ObjectiveSense
 import numpy as np
 
-from padding_flights import PADDING_TAG, REQUIRED_TAG
+from crew_pairing.padding_flights import PADDING_TAG, REQUIRED_TAG
 
 
 def simple_model(mat, cost_lst, flight_tags=None):

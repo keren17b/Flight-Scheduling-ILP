@@ -3,11 +3,11 @@
 from datetime import datetime, timedelta
 import unittest
 
-from duties import Duty, generate_duties
-from flights_graph import Airport, Flight
-from pairing_cost import current_pairing_cost
-from pairing_to_metrix import pairings_to_matrix
-from pairings import generate_pairings
+from crew_pairing.duties import Duty, generate_duties
+from crew_pairing.flights_graph import Airport, Flight
+from crew_pairing.pairing_cost import current_pairing_cost
+from historical_code.pairing_to_metrix import pairings_to_matrix
+from crew_pairing.pairings import generate_pairings
 
 
 class TimeAndCostTests(unittest.TestCase):

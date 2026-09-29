@@ -5,9 +5,9 @@ from __future__ import annotations
 from datetime import datetime, timedelta
 import unittest
 
-from duties import Duty
-from flights_graph import Airport, Flight
-from pairing_pricing import generate_pricing_pairings
+from crew_pairing.duties import Duty
+from crew_pairing.flights_graph import Airport, Flight
+from column_generation.pairing_pricing import generate_pricing_pairings
 
 
 class PairingPricingTests(unittest.TestCase):

@@ -6,9 +6,9 @@ from typing import Dict, List, Tuple
 
 import numpy as np
 
-from flights_graph import Flight
-from pairing_cost import PairingCostFunction, current_pairing_cost
-from pairings import Pairing
+from crew_pairing.flights_graph import Flight
+from crew_pairing.pairing_cost import PairingCostFunction, current_pairing_cost
+from crew_pairing.pairings import Pairing
 
 
 def pairings_to_matrix(

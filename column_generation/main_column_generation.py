@@ -1,14 +1,15 @@
 """Temporary runner for the column-generation pairing path."""
 
-from column_generation import run_column_generation
-from duties import generate_duties
-from duty_graph import build_duty_graph
-from flights_graph import load_flight_network
-from master_ilp import solve_ilp
+from column_generation.column_generation import run_column_generation
+from crew_pairing.duties import generate_duties
+from crew_pairing.duty_graph import build_duty_graph
+from crew_pairing.flights_graph import load_flight_network
+from crew_pairing.data_paths import GENERATED_DIR, INPUT_DIR
+from column_generation.master_ilp import solve_ilp
 
 
-FLIGHTS_FILE_PATH = "week_1_with_padding.csv"
-HUBS_FILE_PATH = "listOfBases.csv"
+FLIGHTS_FILE_PATH = GENERATED_DIR / "week_1_with_padding.csv"
+HUBS_FILE_PATH = INPUT_DIR / "listOfBases.csv"
 SELECTION_THRESHOLD = 0.5
 ARTIFICIAL_TOLERANCE = 1e-6
 

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Callable
 
-from pairings import Pairing
+from crew_pairing.pairings import Pairing
 
 
 SECONDS_PER_HOUR = 3600

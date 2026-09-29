@@ -5,7 +5,7 @@ from __future__ import annotations
 from datetime import date
 from typing import Dict, List
 
-from flights_graph import Flight
+from crew_pairing.flights_graph import Flight
 
 
 PADDING_TAG = "padding"

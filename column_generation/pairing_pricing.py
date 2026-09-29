@@ -5,10 +5,10 @@ from __future__ import annotations
 from datetime import timedelta
 from typing import Dict, List, Set, Tuple
 
-from duties import Duty
-from duty_graph import DutyGraph
-from pairing_cost import PairingCostFunction, current_pairing_cost
-from pairings import (
+from crew_pairing.duties import Duty
+from crew_pairing.duty_graph import DutyGraph
+from crew_pairing.pairing_cost import PairingCostFunction, current_pairing_cost
+from crew_pairing.pairings import (
     MAX_DUTIES_PER_PAIRING,
     MAX_PAIRING_TIME,
     Pairing,

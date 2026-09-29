@@ -6,9 +6,9 @@ from dataclasses import dataclass
 from datetime import datetime, timedelta
 from typing import Dict, Iterable, List, Set, Tuple
 
-from duties import Duty
-from duty_graph import DutyGraph
-from flights_graph import Airport
+from crew_pairing.duties import Duty
+from crew_pairing.duty_graph import DutyGraph
+from crew_pairing.flights_graph import Airport
 
 
 # Pairing-level limits. Rest between duties is included in MAX_PAIRING_TIME.

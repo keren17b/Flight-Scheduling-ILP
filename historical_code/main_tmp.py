@@ -1,16 +1,17 @@
 """Temporary runner for flight, duty, and pairing generation."""
 
-from duties import generate_duties
-from duty_graph import build_duty_graph
-from flights_graph import load_flight_network
-from padding_flights import flight_constraint_tags
-from pairing_to_metrix import pairings_to_matrix
-from pairings import generate_pairings
-from solver import simple_model
+from crew_pairing.duties import generate_duties
+from crew_pairing.duty_graph import build_duty_graph
+from crew_pairing.flights_graph import load_flight_network
+from crew_pairing.data_paths import GENERATED_DIR, INPUT_DIR
+from crew_pairing.padding_flights import flight_constraint_tags
+from historical_code.pairing_to_metrix import pairings_to_matrix
+from crew_pairing.pairings import generate_pairings
+from historical_code.solver import simple_model
 
 
-FLIGHTS_FILE_PATH = "week_1_with_padding.csv"
-HUBS_FILE_PATH = "listOfBases.csv"
+FLIGHTS_FILE_PATH = GENERATED_DIR / "week_1_with_padding.csv"
+HUBS_FILE_PATH = INPUT_DIR / "listOfBases.csv"
 SELECTION_THRESHOLD = 0.5
 
 

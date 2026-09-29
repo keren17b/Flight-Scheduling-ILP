@@ -5,10 +5,10 @@ from __future__ import annotations
 from datetime import datetime, timedelta
 import unittest
 
-from duties import Duty
-from flights_graph import Airport, Flight
-from master_lp import ARTIFICIAL_COST, solve_master_lp
-from pairings import Pairing
+from crew_pairing.duties import Duty
+from crew_pairing.flights_graph import Airport, Flight
+from column_generation.master_lp import ARTIFICIAL_COST, solve_master_lp
+from crew_pairing.pairings import Pairing
 
 
 SOLVER_TOLERANCE = 1e-5

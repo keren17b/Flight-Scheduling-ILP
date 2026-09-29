@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Dict, List, Tuple
 
-from flights_graph import (
+from crew_pairing.flights_graph import (
     DEFAULT_MAX_CONNECTION,
     DEFAULT_MIN_CONNECTION,
     Airport,

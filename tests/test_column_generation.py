@@ -5,10 +5,10 @@ from __future__ import annotations
 from datetime import datetime, timedelta
 import unittest
 
-from duties import Duty
-from flights_graph import Airport, Flight
-from column_generation import run_column_generation
-from pairing_pricing import pairing_signature
+from crew_pairing.duties import Duty
+from crew_pairing.flights_graph import Airport, Flight
+from column_generation.column_generation import run_column_generation
+from column_generation.pairing_pricing import pairing_signature
 
 
 class ColumnGenerationTests(unittest.TestCase):

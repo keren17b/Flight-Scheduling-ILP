@@ -6,11 +6,11 @@ from typing import Dict, Tuple
 
 from mosek.fusion import Model, Domain, Expr, ObjectiveSense
 
-from flights_graph import Flight
-from master_lp import _coverage_index
-from padding_flights import PADDING_TAG, flight_constraint_tags
-from pairing_cost import PairingCostFunction, current_pairing_cost
-from pairings import Pairing
+from crew_pairing.flights_graph import Flight
+from column_generation.master_lp import _coverage_index
+from crew_pairing.padding_flights import PADDING_TAG, flight_constraint_tags
+from crew_pairing.pairing_cost import PairingCostFunction, current_pairing_cost
+from crew_pairing.pairings import Pairing
 
 
 def solve_ilp(
