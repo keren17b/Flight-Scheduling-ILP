@@ -1,0 +1,15 @@
+"""Defaults for initial columns, pricing, and the optimization run."""
+
+from crew_pairing.data_paths import GENERATED_DIR, INPUT_DIR
+
+
+MAX_INITIAL_PAIRINGS = 5000
+MIN_INITIAL_COVERAGE = 1
+MAX_PRICING_PAIRINGS = 50
+MAX_ITERATIONS = 100
+ARTIFICIAL_COST = 1_000_000.0
+
+FLIGHTS_FILE_PATH = GENERATED_DIR / "week_1_with_padding.csv"
+HUBS_FILE_PATH = INPUT_DIR / "listOfBases.csv"
+SELECTION_THRESHOLD = 0.5
+ARTIFICIAL_TOLERANCE = 1e-6

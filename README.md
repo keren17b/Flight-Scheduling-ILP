@@ -10,6 +10,8 @@ Solving the flight scheduling problem using Integer Linear Programming (ILP), ba
 - `data/inputs/`: flight and crew-base CSV files; `data/generated/` contains the padded week. The original archive can be kept locally in `data/source/` and is ignored by Git.
 - `docs/`: design notes; `reports/column_generation/`: saved summaries.
 
+Edit `crew_pairing/config.py` for crew legality limits and padding dates. Edit `column_generation/config.py` for initial pool, pricing, solver, and runner defaults. Function arguments can still override many limits for an individual call. CSV column names remain with the CSV parser.
+
 Run commands from this directory using module names so package imports resolve:
 
 ```powershell

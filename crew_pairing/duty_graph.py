@@ -5,14 +5,12 @@ from __future__ import annotations
 from datetime import timedelta
 from typing import Dict, Iterable, List, Mapping
 
+from crew_pairing.config import (
+    MAX_LAYOVER_BETWEEN_DUTIES,
+    MIN_REST_BETWEEN_DUTIES,
+)
 from crew_pairing.duties import Duty
 
-
-# Legality / safety: minimum rest required between consecutive duties.
-MIN_REST_BETWEEN_DUTIES = timedelta(hours=10)
-
-# Modeling / pruning: maximum layover allowed when linking two duties.
-MAX_LAYOVER_BETWEEN_DUTIES = timedelta(hours=48)
 
 DutyGraph = Dict[Duty, List[Duty]]
 

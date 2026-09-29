@@ -8,9 +8,7 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Dict, Iterable, List, Mapping, Optional
 
-
-DEFAULT_MIN_CONNECTION = timedelta(minutes=30)
-DEFAULT_MAX_CONNECTION = timedelta(hours=8)
+from crew_pairing.config import DEFAULT_MAX_CONNECTION, DEFAULT_MIN_CONNECTION
 
 FLIGHT_ID_FIELD = "leg_nb"
 ORIGIN_FIELD = "airport_dep"

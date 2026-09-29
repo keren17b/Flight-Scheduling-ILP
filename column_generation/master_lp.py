@@ -12,8 +12,7 @@ from crew_pairing.padding_flights import PADDING_TAG, REQUIRED_TAG, flight_const
 from crew_pairing.pairing_cost import PairingCostFunction, current_pairing_cost
 from crew_pairing.pairings import Pairing
 
-
-ARTIFICIAL_COST = 1_000_000.0
+from column_generation.config import ARTIFICIAL_COST
 
 
 @dataclass(frozen=True)

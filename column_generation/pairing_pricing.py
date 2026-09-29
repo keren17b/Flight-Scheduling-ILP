@@ -16,8 +16,7 @@ from crew_pairing.pairings import (
     pairing_signature,
 )
 
-
-MAX_PRICING_PAIRINGS = 50
+from column_generation.config import MAX_PRICING_PAIRINGS
 
 
 def _reduced_cost(

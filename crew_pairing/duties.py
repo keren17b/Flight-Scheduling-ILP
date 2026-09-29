@@ -4,23 +4,18 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime, timedelta
-from pathlib import Path
 from typing import Dict, List, Tuple
 
+from crew_pairing.config import (
+    MAX_ACTUAL_FLIGHT_TIME,
+    MAX_ELAPSED_DUTY_TIME,
+    MAX_FLIGHTS_PER_DUTY,
+)
 from crew_pairing.flights_graph import (
-    DEFAULT_MAX_CONNECTION,
-    DEFAULT_MIN_CONNECTION,
     Airport,
     Flight,
     FlightGraph,
-    load_flight_network,
 )
-
-
-# Duty-level limits. These are separate from the connection-time limits in flights_graph.py.
-MAX_ELAPSED_DUTY_TIME = timedelta(hours=12)
-MAX_FLIGHTS_PER_DUTY = 5
-MAX_ACTUAL_FLIGHT_TIME = timedelta(hours=8)
 
 
 @dataclass(frozen=True)

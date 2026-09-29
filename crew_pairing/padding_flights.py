@@ -2,17 +2,14 @@
 
 from __future__ import annotations
 
-from datetime import date
 from typing import Dict, List
 
+from crew_pairing.config import PADDING_END_DATE, PADDING_START_DATE
 from crew_pairing.flights_graph import Flight
 
 
 PADDING_TAG = "padding"
 REQUIRED_TAG = "required"
-
-PADDING_START_DATE = date(2000, 1, 8)
-PADDING_END_DATE = date(2000, 1, 10)
 
 
 def is_padding_flight(flight: Flight) -> bool:

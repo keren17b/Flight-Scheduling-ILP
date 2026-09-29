@@ -4,15 +4,14 @@ from __future__ import annotations
 
 from typing import Dict, Set, Tuple
 
+from column_generation.config import MAX_INITIAL_PAIRINGS, MAX_ITERATIONS
+from column_generation.initial_pool import generate_initial_pairings
 from crew_pairing.duty_graph import DutyGraph
 from crew_pairing.flights_graph import Flight
 from column_generation.master_lp import MasterLpResult, solve_master_lp
 from crew_pairing.pairing_cost import PairingCostFunction, current_pairing_cost
 from column_generation.pairing_pricing import generate_pricing_pairings
-from crew_pairing.pairings import MAX_INITIAL_PAIRINGS, Pairing, generate_initial_pairings
-
-
-MAX_ITERATIONS = 100
+from crew_pairing.pairings import Pairing
 
 
 def run_column_generation(

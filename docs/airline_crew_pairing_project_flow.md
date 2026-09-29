@@ -587,7 +587,7 @@ The ILP is not inside the column-generation loop. After `run_column_generation` 
 
 ## Initial pairing pool
 
-File: `pairings.py`
+File: `column_generation/initial_pool.py`
 
 Function: `generate_initial_pairings`
 
@@ -909,8 +909,10 @@ pairings.py
     Pairing representation
     Pairing constraints
     DFS for all legal pairings (generate_pairings)
-    Limited DFS for the initial column-generation pool (generate_initial_pairings)
     pairing_signature
+
+column_generation/initial_pool.py
+    Limited DFS for the initial column-generation pool (generate_initial_pairings)
 
 pairing_cost.py
     Replaceable pairing cost functions
