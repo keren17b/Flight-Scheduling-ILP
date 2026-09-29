@@ -20,4 +20,16 @@ python -m column_generation.main_column_generation
 python -m tests.diagnostics.diagnose_pairing_coverage
 ```
 
+The runner prints `[ILP PROGRESS +...s]` messages as it works, including timed
+updates during long graph and pairing searches. Set `ILP_PROGRESS=0` to silence
+all of these messages without changing the normal result output:
+
+```powershell
+$env:ILP_PROGRESS = '0'
+python -m column_generation.main_column_generation
+```
+
+The progress code is contained in `run_progress.py`; search for `run_progress`
+to find its imports if you later want to remove it entirely.
+
 The optimization runner and its LP/ILP tests require MOSEK. The diagnostic command uses `data/inputs/week_1.csv` by default; you can pass another CSV path as its argument.

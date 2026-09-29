@@ -11,6 +11,7 @@ from column_generation.master_lp import _coverage_index
 from crew_pairing.padding_flights import PADDING_TAG, flight_constraint_tags
 from crew_pairing.pairing_cost import PairingCostFunction, current_pairing_cost
 from crew_pairing.pairings import Pairing
+from run_progress import progress
 
 
 def solve_ilp(
@@ -26,6 +27,7 @@ def solve_ilp(
     the dense pairing-flight matrix is not built.
     """
     flight_ids = list(flights.keys())
+    progress(f"Building final ILP coverage for {len(pairings):,} pairings and {len(flights):,} flights")
     flight_tags = flight_constraint_tags(flights)
     pairing_ids, costs, covering = _coverage_index(
         pairings,
@@ -62,7 +64,9 @@ def solve_ilp(
                     Domain.equalsTo(1.0),
                 )
 
+        progress("MOSEK: solving final ILP")
         M.solve()
+        progress("MOSEK: final ILP solve finished")
         solution_level = x.level()
 
         total_cost = 0.0

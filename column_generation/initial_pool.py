@@ -10,6 +10,7 @@ from crew_pairing.config import MAX_DUTIES_PER_PAIRING, MAX_PAIRING_TIME
 from crew_pairing.duties import Duty
 from crew_pairing.duty_graph import DutyGraph
 from crew_pairing.pairings import Pairing, build_pairing_from_path, pairing_signature
+from run_progress import ProgressTicker
 
 
 def generate_initial_pairings(
@@ -40,6 +41,8 @@ def generate_initial_pairings(
     pairings: Dict[str, Pairing] = {}
     existing_pairing_signature: Set[Tuple[str, ...]] = set()
     coverage_count = {flight_id: 0 for flight_id in all_flight_ids}
+    ticker = ProgressTicker("Initial pairing search")
+    searched_paths = 0
 
     def pairing_flight_ids(path: List[Duty]) -> List[str]:
         return [
@@ -55,6 +58,10 @@ def generate_initial_pairings(
         )
 
     def dfs(current_duty: Duty, path: List[Duty]) -> None:
+        nonlocal searched_paths
+        searched_paths += 1
+        if searched_paths % 10_000 == 0:
+            ticker.update(searched_paths, f"{len(pairings):,} pairings found")
         if len(pairings) >= max_pairings:
             return
 

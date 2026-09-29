@@ -12,12 +12,18 @@ from column_generation.config import (
     SELECTION_THRESHOLD,
 )
 from column_generation.master_ilp import solve_ilp
+from run_progress import progress
 
 
 def main() -> None:
+    progress(f"Loading flights from {FLIGHTS_FILE_PATH} and building flight graph")
     airports, flights, graph = load_flight_network(FLIGHTS_FILE_PATH, HUBS_FILE_PATH)
+    progress(f"Flight graph ready: {len(flights):,} flights, {len(airports):,} airports")
+    progress("Generating duties")
     duties = generate_duties(graph)
+    progress(f"Generated {len(duties):,} duties; building duty graph")
     duty_graph = build_duty_graph(duties.values())
+    progress(f"Duty graph ready: {len(duty_graph):,} duties")
     pairings, _existing_signatures, master_result = run_column_generation(
         duty_graph,
         flights,
@@ -37,7 +43,9 @@ def main() -> None:
     print(f"Generated columns: {len(pairings)}")
     print(f"Restricted master LP objective: {master_result.objective}")
 
+    progress(f"Starting final ILP with {len(pairings):,} pairings")
     solution, total_cost = solve_ilp(pairings, flights)
+    progress("Final ILP finished")
     selected_count = sum(
         1 for value in solution.values() if value > SELECTION_THRESHOLD
     )

@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Dict, Iterable, List, Mapping, Optional
 
 from crew_pairing.config import DEFAULT_MAX_CONNECTION, DEFAULT_MIN_CONNECTION
+from run_progress import ProgressTicker
 
 FLIGHT_ID_FIELD = "leg_nb"
 ORIGIN_FIELD = "airport_dep"
@@ -156,13 +157,15 @@ def build_flight_graph(
     """
     flight_list = list(flights)
     graph: FlightGraph = {flight: [] for flight in flight_list}
+    ticker = ProgressTicker("Flight graph")
 
-    for first in flight_list:
+    for index, first in enumerate(flight_list, start=1):
         for second in flight_list:
             if first is second:
                 continue
             if can_connect(first, second, min_connection, max_connection):
                 graph[first].append(second)
+        ticker.update(index, f"of {len(flight_list):,} flights")
 
     return graph
 

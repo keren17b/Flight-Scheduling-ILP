@@ -16,6 +16,7 @@ from crew_pairing.flights_graph import (
     Flight,
     FlightGraph,
 )
+from run_progress import ProgressTicker
 
 
 @dataclass(frozen=True)
@@ -79,6 +80,8 @@ def generate_duties(
         raise ValueError("max_actual_flight_time must be positive")
 
     duties: Dict[str, Duty] = {}
+    ticker = ProgressTicker("Duty search")
+    searched_paths = 0
 
     def dfs(
         current_flight: Flight,
@@ -86,6 +89,10 @@ def generate_duties(
         flight_time: timedelta,
         sitting_time: timedelta,
     ) -> None:
+        nonlocal searched_paths
+        searched_paths += 1
+        if searched_paths % 10_000 == 0:
+            ticker.update(searched_paths, f"{len(duties):,} duties found")
         total_time = flight_time + sitting_time
         duty_id = f"D{len(duties) + 1}"
         duties[duty_id] = Duty(

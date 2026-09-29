@@ -13,6 +13,7 @@ from crew_pairing.pairing_cost import PairingCostFunction, current_pairing_cost
 from crew_pairing.pairings import Pairing
 
 from column_generation.config import ARTIFICIAL_COST
+from run_progress import ProgressTicker, progress
 
 
 @dataclass(frozen=True)
@@ -40,12 +41,14 @@ def _coverage_index(
     known_flights = set(flight_ids)
     covering = {flight_id: [] for flight_id in flight_ids}
     costs: List[float] = []
+    ticker = ProgressTicker("Coverage index")
 
     for pairing_index, pairing in enumerate(pairings.values()):
         costs.append(cost_function(pairing))
         for flight_id in _pairing_flight_ids(pairing):
             if flight_id in known_flights:
                 covering[flight_id].append(pairing_index)
+        ticker.update(pairing_index + 1, f"of {len(pairings):,} pairings")
 
     return pairing_ids, costs, covering
 
@@ -62,6 +65,7 @@ def solve_master_lp(
     on each required constraint. Padding flights are covered at most once.
     """
     flight_ids = list(flights.keys())
+    progress(f"Building master LP coverage for {len(pairings):,} pairings and {len(flights):,} flights")
     flight_tags = flight_constraint_tags(flights)
     pairing_ids, costs, covering = _coverage_index(
         pairings,
@@ -113,7 +117,9 @@ def solve_master_lp(
                 Domain.equalsTo(1.0),
             )
 
+        progress("MOSEK: solving master LP")
         M.solve()
+        progress("MOSEK: master LP solve finished")
 
         x_level = x.level()
         pairing_values = {

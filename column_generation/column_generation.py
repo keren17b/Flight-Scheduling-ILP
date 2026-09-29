@@ -12,6 +12,7 @@ from column_generation.master_lp import MasterLpResult, solve_master_lp
 from crew_pairing.pairing_cost import PairingCostFunction, current_pairing_cost
 from column_generation.pairing_pricing import generate_pricing_pairings
 from crew_pairing.pairings import Pairing
+from run_progress import progress
 
 
 def run_column_generation(
@@ -27,14 +28,18 @@ def run_column_generation(
     existing_pairing_signature is created once from the initial pairings and passed
     into every pricing call. Pricing adds each new signature to that same set.
     """
+    progress(f"Searching initial pairings (limit {max_initial_pairings:,})")
     columns, _coverage_count, existing_pairing_signature = generate_initial_pairings(
         graph,
         flights.keys(),
         max_pairings=max_initial_pairings,
     )
 
+    progress(f"Initial pool ready: {len(columns):,} pairings; solving first master LP")
     master_result = solve_master_lp(columns, flights, cost_function)
-    for _iteration in range(max_iterations):
+    progress(f"First master LP solved: objective {master_result.objective:,.2f}")
+    for iteration in range(1, max_iterations + 1):
+        progress(f"Iteration {iteration}/{max_iterations}: pricing {len(columns):,} existing columns")
         new_pairings, existing_pairing_signature = generate_pricing_pairings(
             graph,
             master_result.duals,
@@ -42,11 +47,16 @@ def run_column_generation(
             cost_function=cost_function,
         )
         if not new_pairings:
+            progress(f"Iteration {iteration}: no improving pairings; column generation finished")
             return columns, existing_pairing_signature, master_result
 
+        progress(f"Iteration {iteration}: found {len(new_pairings):,} new pairings")
         for pairing in new_pairings.values():
             columns[f"P{len(columns) + 1}"] = pairing
 
+        progress(f"Iteration {iteration}: solving master LP with {len(columns):,} columns")
         master_result = solve_master_lp(columns, flights, cost_function)
+        progress(f"Iteration {iteration}: master LP objective {master_result.objective:,.2f}")
 
+    progress(f"Reached iteration limit ({max_iterations})")
     return columns, existing_pairing_signature, master_result

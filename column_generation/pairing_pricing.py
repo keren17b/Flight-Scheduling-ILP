@@ -17,6 +17,7 @@ from crew_pairing.pairings import (
 )
 
 from column_generation.config import MAX_PRICING_PAIRINGS
+from run_progress import ProgressTicker
 
 
 def _reduced_cost(
@@ -48,12 +49,18 @@ def generate_pricing_pairings(
     already in existing_pairing_signature. Each kept pairing is added to that set.
     """
     pairings: Dict[str, Pairing] = {}
+    ticker = ProgressTicker("Pricing search")
+    searched_paths = 0
 
     def dfs(
         current_duty: Duty,
         path: List[Duty],
         existing_pairing_signature: Set[Tuple[str, ...]],
     ) -> None:
+        nonlocal searched_paths
+        searched_paths += 1
+        if searched_paths % 10_000 == 0:
+            ticker.update(searched_paths, f"{len(pairings):,} new pairings found")
         if len(pairings) >= max_pairings:
             return
 
