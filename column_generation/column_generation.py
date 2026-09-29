@@ -31,7 +31,7 @@ def run_column_generation(
     progress(f"Searching initial pairings (limit {max_initial_pairings:,})")
     columns, _coverage_count, existing_pairing_signature = generate_initial_pairings(
         graph,
-        flights.keys(),
+        flights,
         max_pairings=max_initial_pairings,
     )
 
