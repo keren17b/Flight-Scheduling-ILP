@@ -39,6 +39,13 @@ def main() -> None:
             "Warning: restricted master LP still uses artificials for "
             f"{len(leftover_artificials)} required flights."
         )
+        for flight_id in leftover_artificials:
+            print(
+                f"  {flight_id}: "
+                f"artificial={master_result.artificial_values[flight_id]:.6f}, "
+                f"dual={master_result.duals[flight_id]:.6f}"
+            )
+        return
 
     print(f"Generated columns: {len(pairings)}")
     print(f"Restricted master LP objective: {master_result.objective}")
