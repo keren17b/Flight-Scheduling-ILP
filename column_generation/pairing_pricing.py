@@ -20,7 +20,6 @@ from column_generation.config import (
     MAX_NEGATIVE_PAIRINGS_PER_START,
     MAX_PRICING_DFS_STATES_PER_START,
     MAX_PRICING_PAIRINGS,
-    PRICING_RANDOM_SEED,
     TOP_K_SUCCESSORS,
 )
 from run_progress import ProgressTicker
@@ -68,13 +67,13 @@ def generate_pricing_pairings(
     graph: DutyGraph,
     duals: Dict[str, float],
     existing_pairing_signature: Set[Tuple[str, ...]],
+    rng: random.Random,
     max_pairing_time: timedelta = MAX_PAIRING_TIME,
     max_duties: int = MAX_DUTIES_PER_PAIRING,
     max_pairings: int = MAX_PRICING_PAIRINGS,
     max_dfs_states_per_start: int = MAX_PRICING_DFS_STATES_PER_START,
     max_negative_pairings_per_start: int = MAX_NEGATIVE_PAIRINGS_PER_START,
     top_k_successors: int = TOP_K_SUCCESSORS,
-    random_seed: int = PRICING_RANDOM_SEED,
     cost_function: PairingCostFunction = current_pairing_cost,
 ) -> Tuple[Dict[str, Pairing], Set[Tuple[str, ...]]]:
     """
@@ -93,6 +92,9 @@ def generate_pricing_pairings(
     There is intentionally no post-pricing filter here. Every new, unique
     pairing with negative reduced cost is kept immediately, until the global
     max_pairings limit is reached.
+
+    The caller owns the RNG and reuses it across pricing calls, so each
+    search continues the same random sequence without reseeding.
     """
     if max_pairing_time <= timedelta(0):
         raise ValueError("max_pairing_time must be positive")
@@ -110,11 +112,6 @@ def generate_pricing_pairings(
     pairings: Dict[str, Pairing] = {}
     ticker = ProgressTicker("Pricing search")
     searched_paths = 0
-
-    # The signature count changes between CG iterations, so this keeps the
-    # search reproducible while still changing the randomized traversal order
-    # from one pricing call to the next.
-    rng = random.Random(random_seed + len(existing_pairing_signature))
 
     def global_pairing_limit_reached() -> bool:
         return len(pairings) >= max_pairings

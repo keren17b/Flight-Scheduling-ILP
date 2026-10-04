@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import random
 from typing import Dict, Set, Tuple
 
 from column_generation.config import (
@@ -37,6 +38,9 @@ def run_column_generation(
     Set[Tuple[str, ...]],
     MasterLpResult,
 ]:
+    # Reuse one random sequence throughout this column-generation run.
+    rng = random.Random(PRICING_RANDOM_SEED)
+
     # ---------------------------------------------------------
     # 1. Generate initial pairing pool
     # ---------------------------------------------------------
@@ -105,17 +109,10 @@ def run_column_generation(
         # Pricing retries
         # -----------------------------------------------------
         for attempt in range(1, max_pricing_attempts + 1):
-            pricing_seed = (
-                PRICING_RANDOM_SEED
-                + iteration * 100
-                + attempt
-            )
-
             progress(
                 f"Iteration {iteration}: "
                 f"pricing attempt "
-                f"{attempt}/{max_pricing_attempts} "
-                f"(seed={pricing_seed})"
+                f"{attempt}/{max_pricing_attempts}"
             )
 
             new_pairings, existing_pairing_signature = (
@@ -123,7 +120,7 @@ def run_column_generation(
                     graph,
                     master_result.duals,
                     existing_pairing_signature,
-                    random_seed=pricing_seed,
+                    rng=rng,
                     cost_function=cost_function,
                 )
             )

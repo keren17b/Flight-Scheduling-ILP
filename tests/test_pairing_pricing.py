@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from datetime import datetime, timedelta
+import random
 import unittest
 
 from crew_pairing.duties import Duty
@@ -12,6 +13,7 @@ from column_generation.pairing_pricing import generate_pricing_pairings
 
 class PairingPricingTests(unittest.TestCase):
     def setUp(self) -> None:
+        self.rng = random.Random(42)
         self.base = Airport("BASE", 1)
         self.outstation = Airport("OUTSTATION", 0)
         self.departure = datetime(2026, 9, 1, 8)
@@ -45,6 +47,7 @@ class PairingPricingTests(unittest.TestCase):
             graph,
             {"F1": 5.0, "F2": 0.0},
             set(),
+            rng=self.rng,
             cost_function=lambda pairing: 1.0,
         )
 
@@ -64,14 +67,15 @@ class PairingPricingTests(unittest.TestCase):
             graph,
             duals,
             set(),
+            rng=self.rng,
             max_pairings=2,
             cost_function=lambda pairing: 1.0,
         )
 
         self.assertEqual(len(pairings), 2)
         self.assertEqual(
-            [pairing.duties[0].duty_id for pairing in pairings.values()],
-            ["D0", "D1"],
+            {pairing.duties[0].duty_id for pairing in pairings.values()},
+            {"D0", "D1"},
         )
 
     def test_requires_return_to_same_base(self) -> None:
@@ -82,6 +86,7 @@ class PairingPricingTests(unittest.TestCase):
             {duty: []},
             {"F1": 100.0},
             set(),
+            rng=self.rng,
             cost_function=lambda pairing: 1.0,
         )
 
@@ -114,10 +119,10 @@ class PairingPricingTests(unittest.TestCase):
         graph = {first: [second], second: []}
 
         improving, _existing_pairing_signature = generate_pricing_pairings(
-            graph, {"F1": 10.0, "F2": 10.0}, set()
+            graph, {"F1": 10.0, "F2": 10.0}, set(), rng=self.rng
         )
         rejected, _existing_pairing_signature = generate_pricing_pairings(
-            graph, {"F1": 1.0, "F2": 1.0}, set()
+            graph, {"F1": 1.0, "F2": 1.0}, set(), rng=self.rng
         )
 
         self.assertEqual(
@@ -138,6 +143,7 @@ class PairingPricingTests(unittest.TestCase):
             duals,
             cost_function=lambda pairing: 1.0,
             existing_pairing_signature=existing_pairing_signature,
+            rng=self.rng,
         )
 
         self.assertEqual(list(pairings), ["P1"])
