@@ -74,7 +74,7 @@ def generate_pricing_pairings(
     max_negative_pairings_per_start: int = MAX_NEGATIVE_PAIRINGS_PER_START,
     top_k_successors: int = TOP_K_SUCCESSORS,
     cost_function: PairingCostFunction = current_pairing_cost,
-) -> Tuple[Dict[str, Pairing], Set[Tuple[str, ...]]]:
+) -> Dict[str, Pairing]:
     """
     Search the duty graph for new pairings with negative reduced cost.
 
@@ -91,6 +91,9 @@ def generate_pricing_pairings(
     There is intentionally no post-pricing filter here. Every new, unique
     pairing with negative reduced cost is kept immediately, until the global
     max_pairings limit is reached.
+
+    Accepted signatures are added to the supplied set in place; only the new
+    pairings are returned.
 
     The caller owns the RNG and reuses it across pricing calls, so each
     search continues the same random sequence without reseeding.
@@ -224,4 +227,4 @@ def generate_pricing_pairings(
             [0],  # unique negative-RC pairings saved from this starting duty
         )
 
-    return pairings, existing_pairing_signature
+    return pairings

@@ -7,6 +7,7 @@ from typing import Dict, Tuple
 from mosek.fusion import Model, Domain, Expr, ObjectiveSense
 
 from crew_pairing.flights_graph import Flight
+from column_generation.config import SELECTION_THRESHOLD
 from column_generation.master_lp import _coverage_index
 from crew_pairing.padding_flights import PADDING_TAG, flight_constraint_tags
 from crew_pairing.pairing_cost import PairingCostFunction, current_pairing_cost
@@ -74,7 +75,7 @@ def solve_ilp(
         for index, pairing_id in enumerate(pairing_ids):
             value = float(solution_level[index])
             solution[pairing_id] = value
-            if value > 0.5:
+            if value > SELECTION_THRESHOLD:
                 total_cost += costs[index]
 
         return solution, total_cost

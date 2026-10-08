@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import random
-from typing import Dict, Set, Tuple
+from typing import Dict, Tuple
 
 from column_generation.config import (
     ARTIFICIAL_TOLERANCE,
@@ -33,11 +33,7 @@ def run_column_generation(
     cost_function: PairingCostFunction = current_pairing_cost,
     max_initial_pairings: int = MAX_INITIAL_PAIRINGS,
     max_iterations: int = MAX_ITERATIONS,
-) -> Tuple[
-    Dict[str, Pairing],
-    Set[Tuple[str, ...]],
-    MasterLpResult,
-]:
+) -> Tuple[Dict[str, Pairing], MasterLpResult]:
     # Reuse one random sequence throughout this column-generation run.
     rng = random.Random(PRICING_RANDOM_SEED)
 
@@ -49,7 +45,7 @@ def run_column_generation(
         f"(limit {max_initial_pairings:,})"
     )
 
-    columns, _coverage_count, existing_pairing_signature = (
+    columns, existing_pairing_signature = (
         generate_initial_pairings(
             graph,
             flights,
@@ -115,14 +111,12 @@ def run_column_generation(
                 f"{attempt}/{max_pricing_attempts}"
             )
 
-            new_pairings, existing_pairing_signature = (
-                generate_pricing_pairings(
-                    graph,
-                    master_result.duals,
-                    existing_pairing_signature,
-                    rng=rng,
-                    cost_function=cost_function,
-                )
+            new_pairings = generate_pricing_pairings(
+                graph,
+                master_result.duals,
+                existing_pairing_signature,
+                rng=rng,
+                cost_function=cost_function,
             )
 
             # Pricing succeeded.
@@ -155,11 +149,7 @@ def run_column_generation(
                     "no artificial variables remain"
                 )
 
-            return (
-                columns,
-                existing_pairing_signature,
-                master_result,
-            )
+            return columns, master_result
 
         # -----------------------------------------------------
         # 4. Add new columns
@@ -201,8 +191,4 @@ def run_column_generation(
         f"({max_iterations})"
     )
 
-    return (
-        columns,
-        existing_pairing_signature,
-        master_result,
-    )
+    return columns, master_result

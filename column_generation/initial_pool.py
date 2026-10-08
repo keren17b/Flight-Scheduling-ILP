@@ -31,7 +31,7 @@ def generate_initial_pairings(
     max_dfs_states: int = MAX_INITIAL_DFS_STATES,
     max_dfs_states_per_start: int = MAX_INITIAL_DFS_STATES_PER_START,
     max_pairings_per_start: int = MAX_INITIAL_PAIRINGS_PER_START,
-) -> Tuple[Dict[str, Pairing], Dict[str, int], Set[Tuple[str, ...]]]:
+) -> Tuple[Dict[str, Pairing], Set[Tuple[str, ...]]]:
     """
     Generate a small, diverse initial pairing pool with bounded DFS.
 
@@ -170,4 +170,4 @@ def generate_initial_pairings(
         if timedelta(0) <= first_duty_time <= max_pairing_time:
             dfs(first_duty, [first_duty], [0], [0])
 
-    return pairings, coverage_count, existing_pairing_signature
+    return pairings, existing_pairing_signature

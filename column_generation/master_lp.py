@@ -18,7 +18,6 @@ from run_progress import ProgressTicker, progress
 
 @dataclass(frozen=True)
 class MasterLpResult:
-    pairing_values: Dict[str, float]
     duals: Dict[str, float]
     objective: float
     artificial_values: Dict[str, float]
@@ -120,12 +119,6 @@ def solve_master_lp(
         M.solve()
         progress("MOSEK: master LP solve finished")
 
-        x_level = x.level()
-        pairing_values = {
-            pairing_id: float(x_level[index])
-            for index, pairing_id in enumerate(pairing_ids)
-        }
-
         a_level = a.level()
         artificial_values = {
             flight_id: float(a_level[index])
@@ -138,7 +131,6 @@ def solve_master_lp(
         }
 
         return MasterLpResult(
-            pairing_values=pairing_values,
             duals=duals,
             objective=float(M.primalObjValue()),
             artificial_values=artificial_values,

@@ -24,7 +24,7 @@ def main() -> None:
     progress(f"Generated {len(duties):,} duties; building duty graph")
     duty_graph = build_duty_graph(duties.values())
     progress(f"Duty graph ready: {len(duty_graph):,} duties")
-    pairings, _existing_signatures, master_result = run_column_generation(
+    pairings, master_result = run_column_generation(
         duty_graph,
         flights,
     )
