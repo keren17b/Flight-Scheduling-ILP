@@ -1,14 +1,13 @@
-"""Generate feasible crew pairings from a duty connection graph."""
+"""Pairing model and helpers shared by initial-pool generation and pricing."""
 
 from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime, timedelta
-from typing import Dict, List, Tuple
+from typing import List, Tuple
 
 from crew_pairing.config import MAX_DUTIES_PER_PAIRING, MAX_PAIRING_TIME
 from crew_pairing.duties import Duty
-from crew_pairing.duty_graph import DutyGraph
 from crew_pairing.flights_graph import Airport
 
 
@@ -89,65 +88,3 @@ def build_pairing_from_path(pairing_id: str, path: List[Duty]) -> Pairing:
         sitting_time=sitting_time,
         rest=rest,
     )
-
-def generate_pairings(
-    graph: DutyGraph,
-    max_pairing_time: timedelta = MAX_PAIRING_TIME,
-    max_duties: int = MAX_DUTIES_PER_PAIRING,
-) -> Dict[str, Pairing]:
-    """
-    Generate all feasible pairings with depth-first search.
-
-    DFS starts only from duties that depart from a crew base. A path is saved
-    whenever it reaches a crew base, and DFS then continues so both a shorter
-    pairing ending at an intermediate hub and a longer pairing can be kept.
-    Total time is measured from the first duty's departure until the last
-    duty's arrival, so it includes all rest between duties.
-
-    A pairing is closed: it is saved only when it returns to the same crew
-    base from which it departed.
-    """
-    if max_pairing_time <= timedelta(0):
-        raise ValueError("max_pairing_time must be positive")
-    if max_duties < 1:
-        raise ValueError("max_duties must be at least 1")
-
-    pairings: Dict[str, Pairing] = {}
-
-    def dfs(current_duty: Duty, path: List[Duty]) -> None:
-        total_time = current_duty.end_time - path[0].start_time
-
-        if (
-            current_duty.end_airport.is_crew_base
-            and current_duty.end_airport.port_name
-            == path[0].start_airport.port_name
-        ):
-            pairing_id = f"P{len(pairings) + 1}"
-            pairings[pairing_id] = build_pairing_from_path(pairing_id, path)
-
-        if len(path) >= max_duties:
-            return
-
-        for next_duty in graph.get(current_duty, []):
-            # Duty graphs are chronological, but keep DFS safe for manually
-            # constructed graphs as well.
-            if next_duty in path:
-                continue
-
-            next_total_time = next_duty.end_time - path[0].start_time
-            if next_total_time > max_pairing_time:
-                continue
-
-            path.append(next_duty)
-            dfs(next_duty, path)
-            path.pop()
-
-    for first_duty in graph:
-        if not first_duty.start_airport.is_crew_base:
-            continue
-
-        first_duty_time = first_duty.end_time - first_duty.start_time
-        if timedelta(0) <= first_duty_time <= max_pairing_time:
-            dfs(first_duty, [first_duty])
-
-    return pairings

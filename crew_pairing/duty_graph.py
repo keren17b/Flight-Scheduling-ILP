@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from datetime import timedelta
-from typing import Dict, Iterable, List, Mapping
+from typing import Dict, Iterable, List
 
 from crew_pairing.config import (
     MAX_LAYOVER_BETWEEN_DUTIES,

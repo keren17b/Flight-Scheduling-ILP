@@ -6,7 +6,7 @@ import csv
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Dict, Iterable, List, Mapping, Optional
+from typing import Dict, Iterable, List, Mapping
 
 from crew_pairing.config import DEFAULT_MAX_CONNECTION, DEFAULT_MIN_CONNECTION
 from run_progress import ProgressTicker

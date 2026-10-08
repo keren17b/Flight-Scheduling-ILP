@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Dict, List, Tuple
+from typing import Dict, Iterator, List, Tuple
 
 from mosek.fusion import Model, Domain, Expr, ObjectiveSense
 
@@ -24,12 +24,12 @@ class MasterLpResult:
     artificial_values: Dict[str, float]
 
 
-def _pairing_flight_ids(pairing: Pairing) -> List[str]:
-    return [
+def _pairing_flight_ids(pairing: Pairing) -> Iterator[str]:
+    return (
         flight.flight_id
         for duty in pairing.duties
         for flight in duty.flights
-    ]
+    )
 
 
 def _coverage_index(
@@ -38,7 +38,6 @@ def _coverage_index(
     cost_function: PairingCostFunction,
 ) -> Tuple[List[str], List[float], Dict[str, List[int]]]:
     pairing_ids = list(pairings.keys())
-    known_flights = set(flight_ids)
     covering = {flight_id: [] for flight_id in flight_ids}
     costs: List[float] = []
     ticker = ProgressTicker("Coverage index")
@@ -46,7 +45,7 @@ def _coverage_index(
     for pairing_index, pairing in enumerate(pairings.values()):
         costs.append(cost_function(pairing))
         for flight_id in _pairing_flight_ids(pairing):
-            if flight_id in known_flights:
+            if flight_id in covering:
                 covering[flight_id].append(pairing_index)
         ticker.update(pairing_index + 1, f"of {len(pairings):,} pairings")
 
