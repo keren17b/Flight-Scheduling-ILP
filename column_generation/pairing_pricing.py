@@ -118,6 +118,8 @@ def generate_pricing_pairings(
         raise ValueError("top_k_successors must be at least 1")
 
     pairings: Dict[str, Pairing] = {}
+    # Duals stay fixed within a pricing call; never reuse rankings across calls.
+    successor_rankings: Dict[int, List[Duty]] = {}
     ticker = ProgressTicker("Pricing search")
     searched_paths = 0
 
@@ -174,8 +176,18 @@ def generate_pricing_pairings(
         if global_budget_exhausted():
             return
 
+        duty_key = id(current_duty)
+        if duty_key not in successor_rankings:
+            successor_rankings[duty_key] = sorted(
+                graph.get(current_duty, []),
+                key=lambda next_duty: (
+                    _successor_score(current_duty, next_duty, duals),
+                    next_duty.duty_id,
+                ),
+            )
+
         feasible_successors: List[Duty] = []
-        for next_duty in graph.get(current_duty, []):
+        for next_duty in successor_rankings[duty_key]:
             if next_duty in path:
                 continue
 
@@ -185,15 +197,8 @@ def generate_pricing_pairings(
 
             feasible_successors.append(next_duty)
 
-        # Lower score is more promising. Rank first, keep only Top-K, then
-        # shuffle that promising subset so a bounded DFS does not always enter
-        # the same branch first.
-        feasible_successors.sort(
-            key=lambda next_duty: (
-                _successor_score(current_duty, next_duty, duals),
-                next_duty.duty_id,
-            )
-        )
+        # Filtering preserves the cached ranking; apply Top-K only after the
+        # path-dependent checks, then shuffle a fresh slice as before.
         top_successors = feasible_successors[:top_k_successors]
         rng.shuffle(top_successors)
 
