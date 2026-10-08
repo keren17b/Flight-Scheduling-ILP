@@ -1,1 +1,0 @@
-"""Coverage and pairing diagnostics."""

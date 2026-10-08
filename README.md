@@ -1,43 +1,73 @@
-# Flight-Scheduling-ILP
-Solving the flight scheduling problem using Integer Linear Programming (ILP), based on real-world flight data, to generate optimal flight routes and schedules.
+# Airline Crew Pairing Optimization
 
-## Project layout
+The solver loads scheduled flights, builds a flight connection graph, generates
+legal duties, and builds a duty connection graph. It then generates an initial
+pairing pool, adds columns through heuristic pricing and a restricted master LP,
+and solves a final binary ILP over the generated pairings using MOSEK Fusion.
+The objective minimizes sitting time within duties plus rest between duties,
+measured in hours.
 
-- `crew_pairing/`: flight graph, duties, pairings, costs, and shared data paths.
-- `column_generation/`: pricing, restricted master LP, final ILP, and the current runner.
-- `historical_code/`: the earlier matrix-based solver and its runner.
-- `tests/`: unit tests; `tests/diagnostics/` contains coverage and tracing tools.
-- `data/inputs/`: flight and crew-base CSV files; `data/generated/` contains the padded weeks. The original archive can be kept locally in `data/source/` and is ignored by Git.
-- `docs/`: design notes; `reports/column_generation/`: saved summaries.
+## Installation
 
-Edit `crew_pairing/config.py` for crew legality limits and padding dates. Edit `column_generation/config.py` for initial pool, pricing, solver, and runner defaults. Function arguments can still override many limits for an individual call. CSV column names remain with the CSV parser.
-
-The active input is `data/generated/week_3_with_start_end_padding.csv`: January
-15-21, 2000 is required, January 12-14 is start padding, and January 22-24 is end
-padding. `PADDING_DATE_RANGES` defines inclusive intervals by departure date.
-Padding flights can support pairings but are covered at most once; required
-flights must be covered exactly once. When changing datasets, update both the
-input path and the padding intervals. For the original week-one padded CSV,
-use the single interval January 8-10, 2000.
-
-Run commands from this directory using module names so package imports resolve:
+Use Python 3.12 (the verified version) and install the dependencies from the
+repository root:
 
 ```powershell
-python -m unittest discover -s tests -p 'test_*.py'
-python -m column_generation.main_column_generation
-python -m tests.diagnostics.diagnose_pairing_coverage
+python -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
 ```
 
-The runner prints `[ILP PROGRESS +...s]` messages as it works, including timed
-updates during long graph and pairing searches. Set `ILP_PROGRESS=0` to silence
-all of these messages without changing the normal result output:
+A valid MOSEK license is required for LP and ILP solves. Configure it in the
+standard MOSEK license location or set `MOSEKLM_LICENSE_FILE` to its path.
+
+## Required inputs and configuration
+
+Both required CSV files are version controlled:
+
+- `data/generated/week_3_with_start_end_padding.csv`: 428 flights departing
+  January 12-24, 2000. The 227 flights departing January 15-21 are required;
+  the remaining 201 flights are optional start/end padding.
+- `data/inputs/listOfBases.csv`: airport codes and crew-base status.
+
+Required flights must be covered exactly once. Padding flights may support
+pairings and are covered at most once. Classification uses departure dates.
+
+`crew_pairing/config.py` contains crew legality limits and padding intervals.
+`column_generation/config.py` contains input paths, initial-pool and pricing
+budgets, the random seed, and solver/runner settings. When selecting another
+dataset, update its path and padding intervals together.
+
+The flight CSV fields are `leg_nb`, `airport_dep`, `date_dep`, `hour_dep`,
+`airport_arr`, `date_arr`, and `hour_arr`. Dates and times use `YYYY-MM-DD` and
+`HH:MM`. The bases CSV fields used by the solver are `airport` and `status`
+(`1` for a crew base, `0` otherwise).
+
+## Run the solver
+
+Run from the repository root so package imports resolve:
+
+```powershell
+.\.venv\Scripts\python.exe -m column_generation.main_column_generation
+```
+
+Progress messages are enabled by default. To silence them:
 
 ```powershell
 $env:ILP_PROGRESS = '0'
-python -m column_generation.main_column_generation
+.\.venv\Scripts\python.exe -m column_generation.main_column_generation
 ```
 
-The progress code is contained in `run_progress.py`; search for `run_progress`
-to find its imports if you later want to remove it entirely.
+## Results
 
-The optimization runner and its LP/ILP tests require MOSEK. The diagnostic command uses `data/inputs/week_1.csv` by default; you can pass another CSV path as its argument.
+Results are printed to the terminal: generated column count, restricted master
+LP objective, final solution dimensions, total cost, and selected pairing count.
+The runner does not write result files. To save its terminal output, redirect it:
+
+```powershell
+.\.venv\Scripts\python.exe -m column_generation.main_column_generation > solver-output.log
+```
+
+If required flights still have positive artificial coverage in the restricted
+master LP, the runner prints those flights and stops before the final ILP.
+Pricing is a bounded heuristic; the final ILP optimizes over the generated
+columns and does not establish global optimality over all possible pairings.
