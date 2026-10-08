@@ -29,8 +29,9 @@ Both required CSV files are version controlled:
   the remaining 201 flights are optional start/end padding.
 - `data/inputs/listOfBases.csv`: airport codes and crew-base status.
 
-`crew_pairing/config.py` contains crew legality limits and padding intervals.
-`column_generation/config.py` contains input paths, initial-pool and pricing
+`crew_pairing/config.py` contains input paths, crew legality limits, and padding
+intervals.
+`column_generation/config.py` contains initial-pool and pricing
 budgets, the random seed, and solver/runner settings.
 
 The flight CSV fields are `leg_nb`, `airport_dep`, `date_dep`, `hour_dep`,

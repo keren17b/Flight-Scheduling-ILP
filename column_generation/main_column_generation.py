@@ -3,12 +3,11 @@
 from crew_pairing.duties import generate_duties
 from crew_pairing.duty_graph import build_duty_graph
 from crew_pairing.flights_graph import load_flight_network
+from crew_pairing.config import FLIGHTS_FILE_PATH, HUBS_FILE_PATH
 
 from column_generation.column_generation import run_column_generation
 from column_generation.config import (
     ARTIFICIAL_TOLERANCE,
-    FLIGHTS_FILE_PATH,
-    HUBS_FILE_PATH,
     SELECTION_THRESHOLD,
 )
 from column_generation.master_ilp import solve_ilp
@@ -51,7 +50,10 @@ def main() -> None:
     print(f"Restricted master LP objective: {master_result.objective}")
 
     progress(f"Starting final ILP with {len(pairings):,} pairings")
-    solution, total_cost = solve_ilp(pairings, flights)
+    ilp_result = solve_ilp(pairings, flights)
+    if ilp_result is None:
+        return
+    solution, total_cost = ilp_result
     progress("Final ILP finished")
     selected_count = sum(
         1 for value in solution.values() if value > SELECTION_THRESHOLD

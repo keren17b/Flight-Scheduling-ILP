@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import random
+from dataclasses import replace
 from typing import Dict, Tuple
 
 from column_generation.config import (
@@ -160,7 +161,8 @@ def run_column_generation(
         )
 
         for pairing in new_pairings.values():
-            columns[f"P{len(columns) + 1}"] = pairing
+            pairing_id = f"P{len(columns) + 1}"
+            columns[pairing_id] = replace(pairing, pairing_id=pairing_id)
 
         # -----------------------------------------------------
         # 5. Re-solve restricted master LP

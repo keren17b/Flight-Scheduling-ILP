@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Dict, Tuple
 
-from mosek.fusion import Model, Domain, Expr, ObjectiveSense
+from mosek.fusion import Model, Domain, Expr, ObjectiveSense, ProblemStatus, SolutionStatus, AccSolutionStatus
 
 from crew_pairing.flights_graph import Flight
 from column_generation.config import SELECTION_THRESHOLD
@@ -19,13 +19,14 @@ def solve_ilp(
     pairings: Dict[str, Pairing],
     flights: Dict[str, Flight],
     cost_function: PairingCostFunction = current_pairing_cost,
-) -> Tuple[Dict[str, float], float]:
+) -> Tuple[Dict[str, float], float] | None:
     """
     Select a minimum-cost set of pairings with binary variables.
 
     Required flights are covered exactly once. Padding flights are covered
     at most once. Coverage is built from flight IDs inside each pairing;
     the dense pairing-flight matrix is not built.
+    Return None if the currently generated pairing pool is integer-infeasible.
     """
     flight_ids = list(flights.keys())
     progress(f"Building final ILP coverage for {len(pairings):,} pairings and {len(flights):,} flights")
@@ -68,6 +69,19 @@ def solve_ilp(
         progress("MOSEK: solving final ILP")
         M.solve()
         progress("MOSEK: final ILP solve finished")
+        problem_status = M.getProblemStatus()
+        solution_status = M.getPrimalSolutionStatus()
+        if problem_status == ProblemStatus.PrimalInfeasible:
+            print(
+                "No binary feasible solution exists within the currently "
+                "generated pairing pool."
+            )
+            return None
+        if solution_status not in (SolutionStatus.Optimal, SolutionStatus.Feasible):
+            raise RuntimeError(f"No valid ILP solution: {solution_status}")
+
+        M.acceptedSolutionStatus(AccSolutionStatus.Feasible)
+
         solution_level = x.level()
 
         total_cost = 0.0

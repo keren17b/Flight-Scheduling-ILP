@@ -25,6 +25,7 @@ from column_generation.config import (
     MAX_PRICING_DFS_STATES_PER_START,
     MAX_PRICING_PAIRINGS,
     TOP_K_SUCCESSORS,
+    REDUCED_COST_EPSILON,
 )
 from run_progress import ProgressTicker
 
@@ -162,7 +163,7 @@ def generate_pricing_pairings(
             if signature not in existing_pairing_signature:
                 pairing_id = f"P{len(pairings) + 1}"
                 pairing = build_pairing_from_path(pairing_id, path)
-                if _reduced_cost(pairing, duals, cost_function) < 0:
+                if _reduced_cost(pairing, duals, cost_function) < -REDUCED_COST_EPSILON:
                     pairings[pairing_id] = pairing
                     existing_pairing_signature.add(signature)
                     local_negative_saved[0] += 1
