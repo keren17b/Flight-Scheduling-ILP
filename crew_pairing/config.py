@@ -22,6 +22,7 @@ MAX_DUTIES_PER_PAIRING = 5
 
 # Inclusive departure-date intervals for the active dataset.
 # January 15-21 is required; the surrounding days are optional padding.
+# Keep these ranges aligned with FLIGHTS_FILE_PATH in column_generation/config.py.
 PADDING_DATE_RANGES = (
     (date(2000, 1, 12), date(2000, 1, 14)),
     (date(2000, 1, 22), date(2000, 1, 24)),

@@ -35,9 +35,12 @@ def generate_initial_pairings(
     """
     Generate a small, diverse initial pairing pool with bounded DFS.
 
-    Only required (non-padding) flights count toward coverage. Each required
-    flight may appear in up to min_cover_per_flight saved pairings. Search
-    walks starting duties one at a time so a single branch cannot consume
+    Only required (non-padding) flights count toward coverage.
+    min_cover_per_flight is a coverage target, not a strict upper bound. A
+    pairing may improve one flight's coverage while including other flights
+    that have already exceeded their targets.
+
+    Search walks starting duties one at a time so a single branch cannot consume
     the whole budget. Incomplete required-flight coverage is not a failure:
     pricing can add missing columns later.
     """

@@ -6,7 +6,6 @@ from dataclasses import dataclass
 from datetime import datetime, timedelta
 from typing import List, Tuple
 
-from crew_pairing.config import MAX_DUTIES_PER_PAIRING, MAX_PAIRING_TIME
 from crew_pairing.duties import Duty
 from crew_pairing.flights_graph import Airport
 

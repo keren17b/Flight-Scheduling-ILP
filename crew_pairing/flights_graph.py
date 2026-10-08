@@ -89,6 +89,9 @@ def load_flights(
     """
     Load flights and airports from CSV files.
 
+    Flight IDs must be unique strings and flight durations strictly positive.
+    Duplicate IDs or nonpositive durations raise ValueError.
+
     Returns:
         airports: unique airports keyed by port_name
         flights: flights keyed by flight_id
@@ -106,6 +109,10 @@ def load_flights(
             row = _clean_row(raw_row)
 
             flight_id = row[FLIGHT_ID_FIELD]
+            if flight_id in flights:
+                raise ValueError(
+                    f"Duplicate flight ID {flight_id!r} in {flights_csv_path}"
+                )
             origin = _get_or_create_airport(airports, row[ORIGIN_FIELD], hub_status)
             destination = _get_or_create_airport(airports, row[DESTINATION_FIELD], hub_status)
             departure_datetime = _parse_datetime(
@@ -116,6 +123,11 @@ def load_flights(
                 row[ARRIVAL_DATE_FIELD],
                 row[ARRIVAL_TIME_FIELD],
             )
+            if arrival_datetime <= departure_datetime:
+                raise ValueError(
+                    f"Flight {flight_id!r} must have a strictly positive duration: "
+                    f"arrival {arrival_datetime} must be after departure {departure_datetime}"
+                )
 
             flights[flight_id] = Flight(
                 flight_id=flight_id,

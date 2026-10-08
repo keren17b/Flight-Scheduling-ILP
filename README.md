@@ -29,18 +29,26 @@ Both required CSV files are version controlled:
   the remaining 201 flights are optional start/end padding.
 - `data/inputs/listOfBases.csv`: airport codes and crew-base status.
 
-Required flights must be covered exactly once. Padding flights may support
-pairings and are covered at most once. Classification uses departure dates.
-
 `crew_pairing/config.py` contains crew legality limits and padding intervals.
 `column_generation/config.py` contains input paths, initial-pool and pricing
-budgets, the random seed, and solver/runner settings. When selecting another
-dataset, update its path and padding intervals together.
+budgets, the random seed, and solver/runner settings.
 
 The flight CSV fields are `leg_nb`, `airport_dep`, `date_dep`, `hour_dep`,
 `airport_arr`, `date_arr`, and `hour_arr`. Dates and times use `YYYY-MM-DD` and
 `HH:MM`. The bases CSV fields used by the solver are `airport` and `status`
 (`1` for a crew base, `0` otherwise).
+
+## Input Data Assumptions
+
+- Flight IDs are unique strings. Arrival must be strictly after departure;
+  the loader rejects duplicate IDs and nonpositive durations.
+- Airport codes are consistent across inputs. Base status is `1` for a crew
+  base and `0` otherwise; airports not listed as crew bases are non-bases.
+- All flight timestamps use a consistent time basis.
+- Padding classification uses departure dates. The configured padding date
+  ranges must match the active dataset.
+- Padding flights are optional and covered at most once. Required flights
+  must be covered exactly once.
 
 ## Run the solver
 

@@ -6,12 +6,15 @@ import random
 from datetime import timedelta
 from typing import Dict, List, Set, Tuple
 
+from crew_pairing.config import MAX_DUTIES_PER_PAIRING, MAX_PAIRING_TIME
 from crew_pairing.duties import Duty
 from crew_pairing.duty_graph import DutyGraph
-from crew_pairing.pairing_cost import PairingCostFunction, current_pairing_cost
+from crew_pairing.pairing_cost import (
+    PairingCostFunction,
+    current_pairing_cost,
+    duty_incremental_cost,
+)
 from crew_pairing.pairings import (
-    MAX_DUTIES_PER_PAIRING,
-    MAX_PAIRING_TIME,
     Pairing,
     build_pairing_from_path,
     pairing_signature,
@@ -23,9 +26,6 @@ from column_generation.config import (
     TOP_K_SUCCESSORS,
 )
 from run_progress import ProgressTicker
-
-
-SECONDS_PER_HOUR = 3600.0
 
 
 def _reduced_cost(
@@ -54,13 +54,12 @@ def _successor_score(
 
     Final acceptance of a closed pairing always uses _reduced_cost(), so the
     pricing decision remains based on the real pairing cost function.
+    Ranking stays tied to the current cost model even if a different
+    cost_function is supplied for complete pairings.
     """
-    rest_hours = (
-        next_duty.start_time - current_duty.end_time
-    ).total_seconds() / SECONDS_PER_HOUR
-    sitting_hours = next_duty.sitting_time.total_seconds() / SECONDS_PER_HOUR
+    extension_cost = duty_incremental_cost(current_duty, next_duty)
     dual_sum = sum(duals[flight.flight_id] for flight in next_duty.flights)
-    return rest_hours + sitting_hours - dual_sum
+    return extension_cost - dual_sum
 
 
 def generate_pricing_pairings(
