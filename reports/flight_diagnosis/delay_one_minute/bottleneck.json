@@ -1,0 +1,39 @@
+{
+  "required_returns": [
+    "LEG_01_28",
+    "LEG_02_27",
+    "LEG_02_28",
+    "LEG_03_27"
+  ],
+  "usable_preceding_arrivals": {
+    "LEG_01_28": [
+      "LEG_01_30"
+    ],
+    "LEG_02_27": [
+      "LEG_01_30",
+      "LEG_02_25"
+    ],
+    "LEG_02_28": [
+      "LEG_01_30",
+      "LEG_02_25",
+      "LEG_02_30"
+    ],
+    "LEG_03_27": [
+      "LEG_01_30",
+      "LEG_02_25",
+      "LEG_02_30"
+    ]
+  },
+  "distinct_usable_arrivals": [
+    "LEG_01_30",
+    "LEG_02_25",
+    "LEG_02_30"
+  ],
+  "minimum_artificial_sum_for_these_returns": 1,
+  "rejected_same_day_arrival_for_LEG_03_27": {
+    "flight": "LEG_03_25",
+    "arrival": "2000-01-03 03:46:00",
+    "return_departure": "2000-01-03 13:45:00",
+    "rest_minutes": 599.0
+  }
+}

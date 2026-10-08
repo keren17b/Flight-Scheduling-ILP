@@ -1,0 +1,26 @@
+{
+  "current_minimum_rest_hours": 10.0,
+  "maximum_layover_hours": 48.0,
+  "maximum_pairing_hours": 120.0,
+  "days_of_end_padding_to_include_next_return": 5,
+  "proof": {
+    "LEG_14_26": {
+      "containing_duties_full_month": 18,
+      "legal_successor_duties_avoiding_shared_return": 0,
+      "next_later_return": "LEG_19_25",
+      "next_later_return_departure": "2000-01-19 17:00:00",
+      "wait_hours": 133.23333333333332,
+      "pairing_elapsed_hours_if_returned": 138.8
+    },
+    "LEG_14_31": {
+      "containing_duties_full_month": 9,
+      "legal_successor_duties_avoiding_shared_return": 0,
+      "next_later_return": "LEG_19_25",
+      "next_later_return_departure": "2000-01-19 17:00:00",
+      "wait_hours": 121.23333333333333,
+      "pairing_elapsed_hours_if_returned": 126.88333333333334
+    }
+  },
+  "conclusion": "No amount of end padding drawn from the supplied full-month schedule resolves the shared-return conflict under the current constraints.",
+  "production_csv_or_settings_changed": false
+}

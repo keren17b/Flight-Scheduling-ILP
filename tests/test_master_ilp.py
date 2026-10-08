@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from dataclasses import replace
 from datetime import datetime, timedelta
 import unittest
 
@@ -18,8 +19,8 @@ class MasterIlpTests(unittest.TestCase):
     def setUp(self) -> None:
         self.base = Airport("BASE", 1)
         self.outstation = Airport("OUTSTATION", 0)
-        self.required_departure = datetime(2026, 9, 1, 8)
-        self.padding_departure = datetime(2000, 1, 8, 8)
+        self.required_departure = datetime(2000, 1, 15, 8)
+        self.padding_departure = datetime(2000, 1, 12, 8)
 
     def _flight(self, flight_id: str, padding: bool = False) -> Flight:
         departure = self.padding_departure if padding else self.required_departure
@@ -102,6 +103,22 @@ class MasterIlpTests(unittest.TestCase):
             cost_function=self._costs({"P1": 5.0}),
         )
 
+        self.assertAlmostEqual(solution["P1"], 1.0, delta=SOLVER_TOLERANCE)
+        self.assertAlmostEqual(total_cost, 5.0, delta=SOLVER_TOLERANCE)
+
+    def test_both_padding_intervals_can_remain_uncovered(self) -> None:
+        required = self._flight("REQUIRED")
+        before = self._flight("BEFORE", padding=True)
+        after = replace(
+            before, flight_id="AFTER",
+            departure_datetime=before.departure_datetime.replace(day=24),
+            arrival_datetime=before.arrival_datetime.replace(day=24),
+        )
+        solution, total_cost = solve_ilp(
+            {"P1": self._pairing("P1", (required,))},
+            {flight.flight_id: flight for flight in (before, required, after)},
+            cost_function=self._costs({"P1": 5.0}),
+        )
         self.assertAlmostEqual(solution["P1"], 1.0, delta=SOLVER_TOLERANCE)
         self.assertAlmostEqual(total_cost, 5.0, delta=SOLVER_TOLERANCE)
 

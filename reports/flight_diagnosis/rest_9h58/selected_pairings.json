@@ -1,0 +1,2414 @@
+[
+  {
+    "flight_ids": [
+      "LEG_01_0",
+      "LEG_01_1",
+      "LEG_01_26",
+      "LEG_01_16"
+    ],
+    "base": "BASE1",
+    "total_hours": 8.9,
+    "cost": 4.266666666666667,
+    "duties": [
+      {
+        "duty_id": "D10",
+        "flights": [
+          "LEG_01_0",
+          "LEG_01_1",
+          "LEG_01_26",
+          "LEG_01_16"
+        ],
+        "start": "2000-01-01T12:00:00",
+        "end": "2000-01-01T20:54:00",
+        "flight_hours": 4.633333333333334,
+        "elapsed_hours": 8.9
+      }
+    ],
+    "rests_minutes": []
+  },
+  {
+    "flight_ids": [
+      "LEG_01_6",
+      "LEG_01_8"
+    ],
+    "base": "BASE2",
+    "total_hours": 6.033333333333333,
+    "cost": 0.7666666666666667,
+    "duties": [
+      {
+        "duty_id": "D73",
+        "flights": [
+          "LEG_01_6",
+          "LEG_01_8"
+        ],
+        "start": "2000-01-01T14:21:00",
+        "end": "2000-01-01T20:23:00",
+        "flight_hours": 5.266666666666667,
+        "elapsed_hours": 6.033333333333333
+      }
+    ],
+    "rests_minutes": []
+  },
+  {
+    "flight_ids": [
+      "LEG_01_14",
+      "LEG_02_35"
+    ],
+    "base": "BASE2",
+    "total_hours": 4.65,
+    "cost": 0.9,
+    "duties": [
+      {
+        "duty_id": "D97",
+        "flights": [
+          "LEG_01_14",
+          "LEG_02_35"
+        ],
+        "start": "2000-01-01T21:16:00",
+        "end": "2000-01-02T01:55:00",
+        "flight_hours": 3.75,
+        "elapsed_hours": 4.65
+      }
+    ],
+    "rests_minutes": []
+  },
+  {
+    "flight_ids": [
+      "LEG_01_17",
+      "LEG_02_13"
+    ],
+    "base": "BASE1",
+    "total_hours": 18.8,
+    "cost": 13.55,
+    "duties": [
+      {
+        "duty_id": "D110",
+        "flights": [
+          "LEG_01_17"
+        ],
+        "start": "2000-01-01T22:01:00",
+        "end": "2000-01-02T00:47:00",
+        "flight_hours": 2.7666666666666666,
+        "elapsed_hours": 2.7666666666666666
+      },
+      {
+        "duty_id": "D296",
+        "flights": [
+          "LEG_02_13"
+        ],
+        "start": "2000-01-02T14:20:00",
+        "end": "2000-01-02T16:49:00",
+        "flight_hours": 2.4833333333333334,
+        "elapsed_hours": 2.4833333333333334
+      }
+    ],
+    "rests_minutes": [
+      813.0
+    ]
+  },
+  {
+    "flight_ids": [
+      "LEG_01_30",
+      "LEG_01_28"
+    ],
+    "base": "BASE2",
+    "total_hours": 6.883333333333334,
+    "cost": 1.2333333333333334,
+    "duties": [
+      {
+        "duty_id": "D153",
+        "flights": [
+          "LEG_01_30",
+          "LEG_01_28"
+        ],
+        "start": "2000-01-01T12:59:00",
+        "end": "2000-01-01T19:52:00",
+        "flight_hours": 5.65,
+        "elapsed_hours": 6.883333333333334
+      }
+    ],
+    "rests_minutes": []
+  },
+  {
+    "flight_ids": [
+      "LEG_02_1",
+      "LEG_02_34"
+    ],
+    "base": "BASE2",
+    "total_hours": 2.45,
+    "cost": 0.75,
+    "duties": [
+      {
+        "duty_id": "D196",
+        "flights": [
+          "LEG_02_1",
+          "LEG_02_34"
+        ],
+        "start": "2000-01-02T19:24:00",
+        "end": "2000-01-02T21:51:00",
+        "flight_hours": 1.7,
+        "elapsed_hours": 2.45
+      }
+    ],
+    "rests_minutes": []
+  },
+  {
+    "flight_ids": [
+      "LEG_02_3",
+      "LEG_02_2"
+    ],
+    "base": "BASE2",
+    "total_hours": 4.616666666666666,
+    "cost": 0.9666666666666667,
+    "duties": [
+      {
+        "duty_id": "D227",
+        "flights": [
+          "LEG_02_3",
+          "LEG_02_2"
+        ],
+        "start": "2000-01-02T10:41:00",
+        "end": "2000-01-02T15:18:00",
+        "flight_hours": 3.65,
+        "elapsed_hours": 4.616666666666666
+      }
+    ],
+    "rests_minutes": []
+  },
+  {
+    "flight_ids": [
+      "LEG_02_30",
+      "LEG_02_28"
+    ],
+    "base": "BASE2",
+    "total_hours": 6.883333333333334,
+    "cost": 1.2333333333333334,
+    "duties": [
+      {
+        "duty_id": "D393",
+        "flights": [
+          "LEG_02_30",
+          "LEG_02_28"
+        ],
+        "start": "2000-01-02T12:59:00",
+        "end": "2000-01-02T19:52:00",
+        "flight_hours": 5.65,
+        "elapsed_hours": 6.883333333333334
+      }
+    ],
+    "rests_minutes": []
+  },
+  {
+    "flight_ids": [
+      "LEG_03_30",
+      "LEG_03_28"
+    ],
+    "base": "BASE2",
+    "total_hours": 6.883333333333334,
+    "cost": 1.2333333333333334,
+    "duties": [
+      {
+        "duty_id": "D651",
+        "flights": [
+          "LEG_03_30",
+          "LEG_03_28"
+        ],
+        "start": "2000-01-03T12:59:00",
+        "end": "2000-01-03T19:52:00",
+        "flight_hours": 5.65,
+        "elapsed_hours": 6.883333333333334
+      }
+    ],
+    "rests_minutes": []
+  },
+  {
+    "flight_ids": [
+      "LEG_03_21",
+      "LEG_03_4"
+    ],
+    "base": "BASE2",
+    "total_hours": 3.8833333333333333,
+    "cost": 1.4166666666666667,
+    "duties": [
+      {
+        "duty_id": "D587",
+        "flights": [
+          "LEG_03_21",
+          "LEG_03_4"
+        ],
+        "start": "2000-01-03T17:56:00",
+        "end": "2000-01-03T21:49:00",
+        "flight_hours": 2.466666666666667,
+        "elapsed_hours": 3.8833333333333333
+      }
+    ],
+    "rests_minutes": []
+  },
+  {
+    "flight_ids": [
+      "LEG_07_14",
+      "LEG_08_35"
+    ],
+    "base": "BASE2",
+    "total_hours": 4.65,
+    "cost": 0.9,
+    "duties": [
+      {
+        "duty_id": "D1408",
+        "flights": [
+          "LEG_07_14",
+          "LEG_08_35"
+        ],
+        "start": "2000-01-07T21:16:00",
+        "end": "2000-01-08T01:55:00",
+        "flight_hours": 3.75,
+        "elapsed_hours": 4.65
+      }
+    ],
+    "rests_minutes": []
+  },
+  {
+    "flight_ids": [
+      "LEG_02_29",
+      "LEG_02_24"
+    ],
+    "base": "BASE2",
+    "total_hours": 3.05,
+    "cost": 0.9,
+    "duties": [
+      {
+        "duty_id": "D390",
+        "flights": [
+          "LEG_02_29",
+          "LEG_02_24"
+        ],
+        "start": "2000-01-02T21:06:00",
+        "end": "2000-01-03T00:09:00",
+        "flight_hours": 2.15,
+        "elapsed_hours": 3.05
+      }
+    ],
+    "rests_minutes": []
+  },
+  {
+    "flight_ids": [
+      "LEG_01_23",
+      "LEG_02_22",
+      "LEG_02_26",
+      "LEG_02_16",
+      "LEG_02_17",
+      "LEG_03_13",
+      "LEG_03_12",
+      "LEG_03_20"
+    ],
+    "base": "BASE3",
+    "total_hours": 50.63333333333333,
+    "cost": 33.516666666666666,
+    "duties": [
+      {
+        "duty_id": "D129",
+        "flights": [
+          "LEG_01_23"
+        ],
+        "start": "2000-01-01T22:20:00",
+        "end": "2000-01-02T00:21:00",
+        "flight_hours": 2.0166666666666666,
+        "elapsed_hours": 2.0166666666666666
+      },
+      {
+        "duty_id": "D346",
+        "flights": [
+          "LEG_02_22",
+          "LEG_02_26",
+          "LEG_02_16",
+          "LEG_02_17"
+        ],
+        "start": "2000-01-02T14:00:00",
+        "end": "2000-01-03T00:47:00",
+        "flight_hours": 7.633333333333334,
+        "elapsed_hours": 10.783333333333333
+      },
+      {
+        "duty_id": "D556",
+        "flights": [
+          "LEG_03_13",
+          "LEG_03_12",
+          "LEG_03_20"
+        ],
+        "start": "2000-01-03T14:20:00",
+        "end": "2000-01-04T00:58:00",
+        "flight_hours": 7.466666666666667,
+        "elapsed_hours": 10.633333333333333
+      }
+    ],
+    "rests_minutes": [
+      819.0,
+      813.0
+    ]
+  },
+  {
+    "flight_ids": [
+      "LEG_01_21",
+      "LEG_01_4"
+    ],
+    "base": "BASE2",
+    "total_hours": 3.8833333333333333,
+    "cost": 1.4166666666666667,
+    "duties": [
+      {
+        "duty_id": "D125",
+        "flights": [
+          "LEG_01_21",
+          "LEG_01_4"
+        ],
+        "start": "2000-01-01T17:56:00",
+        "end": "2000-01-01T21:49:00",
+        "flight_hours": 2.466666666666667,
+        "elapsed_hours": 3.8833333333333333
+      }
+    ],
+    "rests_minutes": []
+  },
+  {
+    "flight_ids": [
+      "LEG_03_3",
+      "LEG_03_2"
+    ],
+    "base": "BASE2",
+    "total_hours": 4.616666666666666,
+    "cost": 0.9666666666666667,
+    "duties": [
+      {
+        "duty_id": "D485",
+        "flights": [
+          "LEG_03_3",
+          "LEG_03_2"
+        ],
+        "start": "2000-01-03T10:41:00",
+        "end": "2000-01-03T15:18:00",
+        "flight_hours": 3.65,
+        "elapsed_hours": 4.616666666666666
+      }
+    ],
+    "rests_minutes": []
+  },
+  {
+    "flight_ids": [
+      "LEG_07_17",
+      "LEG_08_13"
+    ],
+    "base": "BASE1",
+    "total_hours": 18.8,
+    "cost": 13.55,
+    "duties": [
+      {
+        "duty_id": "D1421",
+        "flights": [
+          "LEG_07_17"
+        ],
+        "start": "2000-01-07T22:01:00",
+        "end": "2000-01-08T00:47:00",
+        "flight_hours": 2.7666666666666666,
+        "elapsed_hours": 2.7666666666666666
+      },
+      {
+        "duty_id": "D1660",
+        "flights": [
+          "LEG_08_13"
+        ],
+        "start": "2000-01-08T14:20:00",
+        "end": "2000-01-08T16:49:00",
+        "flight_hours": 2.4833333333333334,
+        "elapsed_hours": 2.4833333333333334
+      }
+    ],
+    "rests_minutes": [
+      813.0
+    ]
+  },
+  {
+    "flight_ids": [
+      "LEG_06_1",
+      "LEG_06_12",
+      "LEG_06_23",
+      "LEG_06_13"
+    ],
+    "base": "BASE1",
+    "total_hours": 8.6,
+    "cost": 3.066666666666667,
+    "duties": [
+      {
+        "duty_id": "D1103",
+        "flights": [
+          "LEG_06_1",
+          "LEG_06_12",
+          "LEG_06_23",
+          "LEG_06_13"
+        ],
+        "start": "2000-01-06T12:18:00",
+        "end": "2000-01-06T20:54:00",
+        "flight_hours": 5.533333333333333,
+        "elapsed_hours": 8.6
+      }
+    ],
+    "rests_minutes": []
+  },
+  {
+    "flight_ids": [
+      "LEG_03_9",
+      "LEG_04_32"
+    ],
+    "base": "BASE2",
+    "total_hours": 14.866666666666667,
+    "cost": 11.1,
+    "duties": [
+      {
+        "duty_id": "D543",
+        "flights": [
+          "LEG_03_9"
+        ],
+        "start": "2000-01-03T21:19:00",
+        "end": "2000-01-03T23:04:00",
+        "flight_hours": 1.75,
+        "elapsed_hours": 1.75
+      },
+      {
+        "duty_id": "D931",
+        "flights": [
+          "LEG_04_32"
+        ],
+        "start": "2000-01-04T10:10:00",
+        "end": "2000-01-04T12:11:00",
+        "flight_hours": 2.0166666666666666,
+        "elapsed_hours": 2.0166666666666666
+      }
+    ],
+    "rests_minutes": [
+      666.0
+    ]
+  },
+  {
+    "flight_ids": [
+      "LEG_06_26",
+      "LEG_06_21"
+    ],
+    "base": "BASE2",
+    "total_hours": 3.05,
+    "cost": 0.9,
+    "duties": [
+      {
+        "duty_id": "D1252",
+        "flights": [
+          "LEG_06_26",
+          "LEG_06_21"
+        ],
+        "start": "2000-01-06T21:06:00",
+        "end": "2000-01-07T00:09:00",
+        "flight_hours": 2.15,
+        "elapsed_hours": 3.05
+      }
+    ],
+    "rests_minutes": []
+  },
+  {
+    "flight_ids": [
+      "LEG_07_30",
+      "LEG_07_28"
+    ],
+    "base": "BASE2",
+    "total_hours": 6.883333333333334,
+    "cost": 1.2333333333333334,
+    "duties": [
+      {
+        "duty_id": "D1500",
+        "flights": [
+          "LEG_07_30",
+          "LEG_07_28"
+        ],
+        "start": "2000-01-07T12:59:00",
+        "end": "2000-01-07T19:52:00",
+        "flight_hours": 5.65,
+        "elapsed_hours": 6.883333333333334
+      }
+    ],
+    "rests_minutes": []
+  },
+  {
+    "flight_ids": [
+      "LEG_01_31",
+      "LEG_01_2"
+    ],
+    "base": "BASE2",
+    "total_hours": 2.2333333333333334,
+    "cost": 0.7666666666666667,
+    "duties": [
+      {
+        "duty_id": "D160",
+        "flights": [
+          "LEG_01_31",
+          "LEG_01_2"
+        ],
+        "start": "2000-01-01T16:13:00",
+        "end": "2000-01-01T18:27:00",
+        "flight_hours": 1.4666666666666666,
+        "elapsed_hours": 2.2333333333333334
+      }
+    ],
+    "rests_minutes": []
+  },
+  {
+    "flight_ids": [
+      "LEG_07_31",
+      "LEG_07_2"
+    ],
+    "base": "BASE2",
+    "total_hours": 2.2333333333333334,
+    "cost": 0.7666666666666667,
+    "duties": [
+      {
+        "duty_id": "D1507",
+        "flights": [
+          "LEG_07_31",
+          "LEG_07_2"
+        ],
+        "start": "2000-01-07T16:13:00",
+        "end": "2000-01-07T18:27:00",
+        "flight_hours": 1.4666666666666666,
+        "elapsed_hours": 2.2333333333333334
+      }
+    ],
+    "rests_minutes": []
+  },
+  {
+    "flight_ids": [
+      "LEG_07_21",
+      "LEG_07_4"
+    ],
+    "base": "BASE2",
+    "total_hours": 3.8833333333333333,
+    "cost": 1.4166666666666667,
+    "duties": [
+      {
+        "duty_id": "D1436",
+        "flights": [
+          "LEG_07_21",
+          "LEG_07_4"
+        ],
+        "start": "2000-01-07T17:56:00",
+        "end": "2000-01-07T21:49:00",
+        "flight_hours": 2.466666666666667,
+        "elapsed_hours": 3.8833333333333333
+      }
+    ],
+    "rests_minutes": []
+  },
+  {
+    "flight_ids": [
+      "LEG_03_6",
+      "LEG_03_8"
+    ],
+    "base": "BASE2",
+    "total_hours": 6.033333333333333,
+    "cost": 0.7666666666666667,
+    "duties": [
+      {
+        "duty_id": "D504",
+        "flights": [
+          "LEG_03_6",
+          "LEG_03_8"
+        ],
+        "start": "2000-01-03T14:21:00",
+        "end": "2000-01-03T20:23:00",
+        "flight_hours": 5.266666666666667,
+        "elapsed_hours": 6.033333333333333
+      }
+    ],
+    "rests_minutes": []
+  },
+  {
+    "flight_ids": [
+      "LEG_05_4",
+      "LEG_05_6"
+    ],
+    "base": "BASE2",
+    "total_hours": 6.033333333333333,
+    "cost": 0.7666666666666667,
+    "duties": [
+      {
+        "duty_id": "D987",
+        "flights": [
+          "LEG_05_4",
+          "LEG_05_6"
+        ],
+        "start": "2000-01-05T14:21:00",
+        "end": "2000-01-05T20:23:00",
+        "flight_hours": 5.266666666666667,
+        "elapsed_hours": 6.033333333333333
+      }
+    ],
+    "rests_minutes": []
+  },
+  {
+    "flight_ids": [
+      "LEG_04_14",
+      "LEG_05_30"
+    ],
+    "base": "BASE2",
+    "total_hours": 4.65,
+    "cost": 0.9,
+    "duties": [
+      {
+        "duty_id": "D817",
+        "flights": [
+          "LEG_04_14",
+          "LEG_05_30"
+        ],
+        "start": "2000-01-04T21:16:00",
+        "end": "2000-01-05T01:55:00",
+        "flight_hours": 3.75,
+        "elapsed_hours": 4.65
+      }
+    ],
+    "rests_minutes": []
+  },
+  {
+    "flight_ids": [
+      "LEG_06_27",
+      "LEG_06_25"
+    ],
+    "base": "BASE2",
+    "total_hours": 6.883333333333334,
+    "cost": 1.2333333333333334,
+    "duties": [
+      {
+        "duty_id": "D1255",
+        "flights": [
+          "LEG_06_27",
+          "LEG_06_25"
+        ],
+        "start": "2000-01-06T12:59:00",
+        "end": "2000-01-06T19:52:00",
+        "flight_hours": 5.65,
+        "elapsed_hours": 6.883333333333334
+      }
+    ],
+    "rests_minutes": []
+  },
+  {
+    "flight_ids": [
+      "LEG_01_29",
+      "LEG_01_25"
+    ],
+    "base": "BASE2",
+    "total_hours": 3.05,
+    "cost": 0.9,
+    "duties": [
+      {
+        "duty_id": "D150",
+        "flights": [
+          "LEG_01_29",
+          "LEG_01_25"
+        ],
+        "start": "2000-01-01T21:06:00",
+        "end": "2000-01-02T00:09:00",
+        "flight_hours": 2.15,
+        "elapsed_hours": 3.05
+      }
+    ],
+    "rests_minutes": []
+  },
+  {
+    "flight_ids": [
+      "LEG_06_22",
+      "LEG_06_24"
+    ],
+    "base": "BASE2",
+    "total_hours": 15.5,
+    "cost": 9.983333333333333,
+    "duties": [
+      {
+        "duty_id": "D1217",
+        "flights": [
+          "LEG_06_22"
+        ],
+        "start": "2000-01-06T01:04:00",
+        "end": "2000-01-06T03:46:00",
+        "flight_hours": 2.7,
+        "elapsed_hours": 2.7
+      },
+      {
+        "duty_id": "D1225",
+        "flights": [
+          "LEG_06_24"
+        ],
+        "start": "2000-01-06T13:45:00",
+        "end": "2000-01-06T16:34:00",
+        "flight_hours": 2.816666666666667,
+        "elapsed_hours": 2.816666666666667
+      }
+    ],
+    "rests_minutes": [
+      599.0
+    ]
+  },
+  {
+    "flight_ids": [
+      "LEG_07_3",
+      "LEG_07_34"
+    ],
+    "base": "BASE2",
+    "total_hours": 2.45,
+    "cost": 0.75,
+    "duties": [
+      {
+        "duty_id": "D1343",
+        "flights": [
+          "LEG_07_3",
+          "LEG_07_34"
+        ],
+        "start": "2000-01-07T19:24:00",
+        "end": "2000-01-07T21:51:00",
+        "flight_hours": 1.7,
+        "elapsed_hours": 2.45
+      }
+    ],
+    "rests_minutes": []
+  },
+  {
+    "flight_ids": [
+      "LEG_02_31",
+      "LEG_02_0"
+    ],
+    "base": "BASE2",
+    "total_hours": 2.2333333333333334,
+    "cost": 0.7666666666666667,
+    "duties": [
+      {
+        "duty_id": "D400",
+        "flights": [
+          "LEG_02_31",
+          "LEG_02_0"
+        ],
+        "start": "2000-01-02T16:13:00",
+        "end": "2000-01-02T18:27:00",
+        "flight_hours": 1.4666666666666666,
+        "elapsed_hours": 2.2333333333333334
+      }
+    ],
+    "rests_minutes": []
+  },
+  {
+    "flight_ids": [
+      "LEG_04_21",
+      "LEG_04_4"
+    ],
+    "base": "BASE2",
+    "total_hours": 3.8833333333333333,
+    "cost": 1.4166666666666667,
+    "duties": [
+      {
+        "duty_id": "D845",
+        "flights": [
+          "LEG_04_21",
+          "LEG_04_4"
+        ],
+        "start": "2000-01-04T17:56:00",
+        "end": "2000-01-04T21:49:00",
+        "flight_hours": 2.466666666666667,
+        "elapsed_hours": 3.8833333333333333
+      }
+    ],
+    "rests_minutes": []
+  },
+  {
+    "flight_ids": [
+      "LEG_05_26",
+      "LEG_05_25"
+    ],
+    "base": "BASE2",
+    "total_hours": 6.883333333333334,
+    "cost": 1.2333333333333334,
+    "duties": [
+      {
+        "duty_id": "D1072",
+        "flights": [
+          "LEG_05_26",
+          "LEG_05_25"
+        ],
+        "start": "2000-01-05T12:59:00",
+        "end": "2000-01-05T19:52:00",
+        "flight_hours": 5.65,
+        "elapsed_hours": 6.883333333333334
+      }
+    ],
+    "rests_minutes": []
+  },
+  {
+    "flight_ids": [
+      "LEG_02_6",
+      "LEG_02_8"
+    ],
+    "base": "BASE2",
+    "total_hours": 6.033333333333333,
+    "cost": 0.7666666666666667,
+    "duties": [
+      {
+        "duty_id": "D246",
+        "flights": [
+          "LEG_02_6",
+          "LEG_02_8"
+        ],
+        "start": "2000-01-02T14:21:00",
+        "end": "2000-01-02T20:23:00",
+        "flight_hours": 5.266666666666667,
+        "elapsed_hours": 6.033333333333333
+      }
+    ],
+    "rests_minutes": []
+  },
+  {
+    "flight_ids": [
+      "LEG_02_12",
+      "LEG_02_20",
+      "LEG_03_23",
+      "LEG_04_22",
+      "LEG_04_5",
+      "LEG_05_5",
+      "LEG_05_27",
+      "LEG_05_0",
+      "LEG_05_29",
+      "LEG_06_7"
+    ],
+    "base": "BASE1",
+    "total_hours": 92.0,
+    "cost": 73.63333333333334,
+    "duties": [
+      {
+        "duty_id": "D295",
+        "flights": [
+          "LEG_02_12",
+          "LEG_02_20"
+        ],
+        "start": "2000-01-02T18:30:00",
+        "end": "2000-01-03T00:58:00",
+        "flight_hours": 4.983333333333333,
+        "elapsed_hours": 6.466666666666667
+      },
+      {
+        "duty_id": "D609",
+        "flights": [
+          "LEG_03_23"
+        ],
+        "start": "2000-01-03T22:20:00",
+        "end": "2000-01-04T00:21:00",
+        "flight_hours": 2.0166666666666666,
+        "elapsed_hours": 2.0166666666666666
+      },
+      {
+        "duty_id": "D853",
+        "flights": [
+          "LEG_04_22",
+          "LEG_04_5"
+        ],
+        "start": "2000-01-04T14:00:00",
+        "end": "2000-01-05T00:22:00",
+        "flight_hours": 3.8666666666666667,
+        "elapsed_hours": 10.366666666666667
+      },
+      {
+        "duty_id": "D1001",
+        "flights": [
+          "LEG_05_5",
+          "LEG_05_27",
+          "LEG_05_0",
+          "LEG_05_29"
+        ],
+        "start": "2000-01-05T12:20:00",
+        "end": "2000-01-05T22:27:00",
+        "flight_hours": 5.666666666666667,
+        "elapsed_hours": 10.116666666666667
+      },
+      {
+        "duty_id": "D1132",
+        "flights": [
+          "LEG_06_7"
+        ],
+        "start": "2000-01-06T12:40:00",
+        "end": "2000-01-06T14:30:00",
+        "flight_hours": 1.8333333333333333,
+        "elapsed_hours": 1.8333333333333333
+      }
+    ],
+    "rests_minutes": [
+      1282.0,
+      819.0,
+      718.0,
+      853.0
+    ]
+  },
+  {
+    "flight_ids": [
+      "LEG_01_12",
+      "LEG_01_20",
+      "LEG_02_23",
+      "LEG_03_22",
+      "LEG_03_14",
+      "LEG_04_35",
+      "LEG_04_31",
+      "LEG_04_0",
+      "LEG_04_1",
+      "LEG_04_34",
+      "LEG_04_33",
+      "LEG_05_7"
+    ],
+    "base": "BASE1",
+    "total_hours": 92.0,
+    "cost": 70.45,
+    "duties": [
+      {
+        "duty_id": "D95",
+        "flights": [
+          "LEG_01_12",
+          "LEG_01_20"
+        ],
+        "start": "2000-01-01T18:30:00",
+        "end": "2000-01-02T00:58:00",
+        "flight_hours": 4.983333333333333,
+        "elapsed_hours": 6.466666666666667
+      },
+      {
+        "duty_id": "D351",
+        "flights": [
+          "LEG_02_23"
+        ],
+        "start": "2000-01-02T22:20:00",
+        "end": "2000-01-03T00:21:00",
+        "flight_hours": 2.0166666666666666,
+        "elapsed_hours": 2.0166666666666666
+      },
+      {
+        "duty_id": "D598",
+        "flights": [
+          "LEG_03_22",
+          "LEG_03_14",
+          "LEG_04_35"
+        ],
+        "start": "2000-01-03T14:00:00",
+        "end": "2000-01-04T01:55:00",
+        "flight_hours": 6.433333333333334,
+        "elapsed_hours": 11.916666666666666
+      },
+      {
+        "duty_id": "D920",
+        "flights": [
+          "LEG_04_31",
+          "LEG_04_0",
+          "LEG_04_1",
+          "LEG_04_34",
+          "LEG_04_33"
+        ],
+        "start": "2000-01-04T16:13:00",
+        "end": "2000-01-05T02:33:00",
+        "flight_hours": 6.283333333333333,
+        "elapsed_hours": 10.333333333333334
+      },
+      {
+        "duty_id": "D1007",
+        "flights": [
+          "LEG_05_7"
+        ],
+        "start": "2000-01-05T12:40:00",
+        "end": "2000-01-05T14:30:00",
+        "flight_hours": 1.8333333333333333,
+        "elapsed_hours": 1.8333333333333333
+      }
+    ],
+    "rests_minutes": [
+      1282.0,
+      819.0,
+      858.0,
+      607.0
+    ]
+  },
+  {
+    "flight_ids": [
+      "LEG_02_14",
+      "LEG_03_35"
+    ],
+    "base": "BASE2",
+    "total_hours": 4.65,
+    "cost": 0.9,
+    "duties": [
+      {
+        "duty_id": "D301",
+        "flights": [
+          "LEG_02_14",
+          "LEG_03_35"
+        ],
+        "start": "2000-01-02T21:16:00",
+        "end": "2000-01-03T01:55:00",
+        "flight_hours": 3.75,
+        "elapsed_hours": 4.65
+      }
+    ],
+    "rests_minutes": []
+  },
+  {
+    "flight_ids": [
+      "LEG_05_2",
+      "LEG_05_1"
+    ],
+    "base": "BASE2",
+    "total_hours": 4.616666666666666,
+    "cost": 0.9666666666666667,
+    "duties": [
+      {
+        "duty_id": "D974",
+        "flights": [
+          "LEG_05_2",
+          "LEG_05_1"
+        ],
+        "start": "2000-01-05T10:41:00",
+        "end": "2000-01-05T15:18:00",
+        "flight_hours": 3.65,
+        "elapsed_hours": 4.616666666666666
+      }
+    ],
+    "rests_minutes": []
+  },
+  {
+    "flight_ids": [
+      "LEG_04_3",
+      "LEG_04_2"
+    ],
+    "base": "BASE2",
+    "total_hours": 4.616666666666666,
+    "cost": 0.9666666666666667,
+    "duties": [
+      {
+        "duty_id": "D743",
+        "flights": [
+          "LEG_04_3",
+          "LEG_04_2"
+        ],
+        "start": "2000-01-04T10:41:00",
+        "end": "2000-01-04T15:18:00",
+        "flight_hours": 3.65,
+        "elapsed_hours": 4.616666666666666
+      }
+    ],
+    "rests_minutes": []
+  },
+  {
+    "flight_ids": [
+      "LEG_02_21",
+      "LEG_02_4"
+    ],
+    "base": "BASE2",
+    "total_hours": 3.8833333333333333,
+    "cost": 1.4166666666666667,
+    "duties": [
+      {
+        "duty_id": "D329",
+        "flights": [
+          "LEG_02_21",
+          "LEG_02_4"
+        ],
+        "start": "2000-01-02T17:56:00",
+        "end": "2000-01-02T21:49:00",
+        "flight_hours": 2.466666666666667,
+        "elapsed_hours": 3.8833333333333333
+      }
+    ],
+    "rests_minutes": []
+  },
+  {
+    "flight_ids": [
+      "LEG_04_30",
+      "LEG_04_28"
+    ],
+    "base": "BASE2",
+    "total_hours": 6.883333333333334,
+    "cost": 1.2333333333333334,
+    "duties": [
+      {
+        "duty_id": "D909",
+        "flights": [
+          "LEG_04_30",
+          "LEG_04_28"
+        ],
+        "start": "2000-01-04T12:59:00",
+        "end": "2000-01-04T19:52:00",
+        "flight_hours": 5.65,
+        "elapsed_hours": 6.883333333333334
+      }
+    ],
+    "rests_minutes": []
+  },
+  {
+    "flight_ids": [
+      "LEG_07_29",
+      "LEG_07_24"
+    ],
+    "base": "BASE2",
+    "total_hours": 3.05,
+    "cost": 0.9,
+    "duties": [
+      {
+        "duty_id": "D1497",
+        "flights": [
+          "LEG_07_29",
+          "LEG_07_24"
+        ],
+        "start": "2000-01-07T21:06:00",
+        "end": "2000-01-08T00:09:00",
+        "flight_hours": 2.15,
+        "elapsed_hours": 3.05
+      }
+    ],
+    "rests_minutes": []
+  },
+  {
+    "flight_ids": [
+      "LEG_03_1",
+      "LEG_03_34"
+    ],
+    "base": "BASE2",
+    "total_hours": 2.45,
+    "cost": 0.75,
+    "duties": [
+      {
+        "duty_id": "D454",
+        "flights": [
+          "LEG_03_1",
+          "LEG_03_34"
+        ],
+        "start": "2000-01-03T19:24:00",
+        "end": "2000-01-03T21:51:00",
+        "flight_hours": 1.7,
+        "elapsed_hours": 2.45
+      }
+    ],
+    "rests_minutes": []
+  },
+  {
+    "flight_ids": [
+      "LEG_03_31",
+      "LEG_03_0"
+    ],
+    "base": "BASE2",
+    "total_hours": 2.2333333333333334,
+    "cost": 0.7666666666666667,
+    "duties": [
+      {
+        "duty_id": "D658",
+        "flights": [
+          "LEG_03_31",
+          "LEG_03_0"
+        ],
+        "start": "2000-01-03T16:13:00",
+        "end": "2000-01-03T18:27:00",
+        "flight_hours": 1.4666666666666666,
+        "elapsed_hours": 2.2333333333333334
+      }
+    ],
+    "rests_minutes": []
+  },
+  {
+    "flight_ids": [
+      "LEG_07_6",
+      "LEG_07_8"
+    ],
+    "base": "BASE2",
+    "total_hours": 6.033333333333333,
+    "cost": 0.7666666666666667,
+    "duties": [
+      {
+        "duty_id": "D1353",
+        "flights": [
+          "LEG_07_6",
+          "LEG_07_8"
+        ],
+        "start": "2000-01-07T14:21:00",
+        "end": "2000-01-07T20:23:00",
+        "flight_hours": 5.266666666666667,
+        "elapsed_hours": 6.033333333333333
+      }
+    ],
+    "rests_minutes": []
+  },
+  {
+    "flight_ids": [
+      "LEG_03_29",
+      "LEG_03_24"
+    ],
+    "base": "BASE2",
+    "total_hours": 3.05,
+    "cost": 0.9,
+    "duties": [
+      {
+        "duty_id": "D648",
+        "flights": [
+          "LEG_03_29",
+          "LEG_03_24"
+        ],
+        "start": "2000-01-03T21:06:00",
+        "end": "2000-01-04T00:09:00",
+        "flight_hours": 2.15,
+        "elapsed_hours": 3.05
+      }
+    ],
+    "rests_minutes": []
+  },
+  {
+    "flight_ids": [
+      "LEG_04_6",
+      "LEG_04_8"
+    ],
+    "base": "BASE2",
+    "total_hours": 6.033333333333333,
+    "cost": 0.7666666666666667,
+    "duties": [
+      {
+        "duty_id": "D762",
+        "flights": [
+          "LEG_04_6",
+          "LEG_04_8"
+        ],
+        "start": "2000-01-04T14:21:00",
+        "end": "2000-01-04T20:23:00",
+        "flight_hours": 5.266666666666667,
+        "elapsed_hours": 6.033333333333333
+      }
+    ],
+    "rests_minutes": []
+  },
+  {
+    "flight_ids": [
+      "LEG_07_9",
+      "LEG_08_32"
+    ],
+    "base": "BASE2",
+    "total_hours": 14.866666666666667,
+    "cost": 11.1,
+    "duties": [
+      {
+        "duty_id": "D1392",
+        "flights": [
+          "LEG_07_9"
+        ],
+        "start": "2000-01-07T21:19:00",
+        "end": "2000-01-07T23:04:00",
+        "flight_hours": 1.75,
+        "elapsed_hours": 1.75
+      },
+      {
+        "duty_id": "D1779",
+        "flights": [
+          "LEG_08_32"
+        ],
+        "start": "2000-01-08T10:10:00",
+        "end": "2000-01-08T12:11:00",
+        "flight_hours": 2.0166666666666666,
+        "elapsed_hours": 2.0166666666666666
+      }
+    ],
+    "rests_minutes": [
+      666.0
+    ]
+  },
+  {
+    "flight_ids": [
+      "LEG_04_29",
+      "LEG_04_24"
+    ],
+    "base": "BASE2",
+    "total_hours": 3.05,
+    "cost": 0.9,
+    "duties": [
+      {
+        "duty_id": "D906",
+        "flights": [
+          "LEG_04_29",
+          "LEG_04_24"
+        ],
+        "start": "2000-01-04T21:06:00",
+        "end": "2000-01-05T00:09:00",
+        "flight_hours": 2.15,
+        "elapsed_hours": 3.05
+      }
+    ],
+    "rests_minutes": []
+  },
+  {
+    "flight_ids": [
+      "LEG_07_5",
+      "LEG_08_7"
+    ],
+    "base": "BASE2",
+    "total_hours": 14.25,
+    "cost": 11.966666666666667,
+    "duties": [
+      {
+        "duty_id": "D1351",
+        "flights": [
+          "LEG_07_5"
+        ],
+        "start": "2000-01-07T23:11:00",
+        "end": "2000-01-08T00:22:00",
+        "flight_hours": 1.1833333333333333,
+        "elapsed_hours": 1.1833333333333333
+      },
+      {
+        "duty_id": "D1616",
+        "flights": [
+          "LEG_08_7"
+        ],
+        "start": "2000-01-08T12:20:00",
+        "end": "2000-01-08T13:26:00",
+        "flight_hours": 1.1,
+        "elapsed_hours": 1.1
+      }
+    ],
+    "rests_minutes": [
+      718.0
+    ]
+  },
+  {
+    "flight_ids": [
+      "LEG_02_25",
+      "LEG_02_27"
+    ],
+    "base": "BASE2",
+    "total_hours": 15.5,
+    "cost": 9.983333333333333,
+    "duties": [
+      {
+        "duty_id": "D354",
+        "flights": [
+          "LEG_02_25"
+        ],
+        "start": "2000-01-02T01:04:00",
+        "end": "2000-01-02T03:46:00",
+        "flight_hours": 2.7,
+        "elapsed_hours": 2.7
+      },
+      {
+        "duty_id": "D362",
+        "flights": [
+          "LEG_02_27"
+        ],
+        "start": "2000-01-02T13:45:00",
+        "end": "2000-01-02T16:34:00",
+        "flight_hours": 2.816666666666667,
+        "elapsed_hours": 2.816666666666667
+      }
+    ],
+    "rests_minutes": [
+      599.0
+    ]
+  },
+  {
+    "flight_ids": [
+      "LEG_01_18",
+      "LEG_01_15",
+      "LEG_01_5",
+      "LEG_02_7",
+      "LEG_03_25",
+      "LEG_03_27",
+      "LEG_03_26",
+      "LEG_03_16",
+      "LEG_03_17",
+      "LEG_04_13",
+      "LEG_04_12",
+      "LEG_04_20"
+    ],
+    "base": "BASE3",
+    "total_hours": 82.88333333333334,
+    "cost": 58.18333333333333,
+    "duties": [
+      {
+        "duty_id": "D113",
+        "flights": [
+          "LEG_01_18",
+          "LEG_01_15",
+          "LEG_01_5"
+        ],
+        "start": "2000-01-01T14:05:00",
+        "end": "2000-01-02T00:22:00",
+        "flight_hours": 5.666666666666667,
+        "elapsed_hours": 10.283333333333333
+      },
+      {
+        "duty_id": "D252",
+        "flights": [
+          "LEG_02_7"
+        ],
+        "start": "2000-01-02T12:20:00",
+        "end": "2000-01-02T13:26:00",
+        "flight_hours": 1.1,
+        "elapsed_hours": 1.1
+      },
+      {
+        "duty_id": "D612",
+        "flights": [
+          "LEG_03_25"
+        ],
+        "start": "2000-01-03T01:04:00",
+        "end": "2000-01-03T03:46:00",
+        "flight_hours": 2.7,
+        "elapsed_hours": 2.7
+      },
+      {
+        "duty_id": "D632",
+        "flights": [
+          "LEG_03_27",
+          "LEG_03_26",
+          "LEG_03_16",
+          "LEG_03_17"
+        ],
+        "start": "2000-01-03T13:45:00",
+        "end": "2000-01-04T00:47:00",
+        "flight_hours": 7.766666666666667,
+        "elapsed_hours": 11.033333333333333
+      },
+      {
+        "duty_id": "D814",
+        "flights": [
+          "LEG_04_13",
+          "LEG_04_12",
+          "LEG_04_20"
+        ],
+        "start": "2000-01-04T14:20:00",
+        "end": "2000-01-05T00:58:00",
+        "flight_hours": 7.466666666666667,
+        "elapsed_hours": 10.633333333333333
+      }
+    ],
+    "rests_minutes": [
+      718.0,
+      698.0,
+      599.0,
+      813.0
+    ]
+  },
+  {
+    "flight_ids": [
+      "LEG_02_5",
+      "LEG_03_7"
+    ],
+    "base": "BASE2",
+    "total_hours": 14.25,
+    "cost": 11.966666666666667,
+    "duties": [
+      {
+        "duty_id": "D244",
+        "flights": [
+          "LEG_02_5"
+        ],
+        "start": "2000-01-02T23:11:00",
+        "end": "2000-01-03T00:22:00",
+        "flight_hours": 1.1833333333333333,
+        "elapsed_hours": 1.1833333333333333
+      },
+      {
+        "duty_id": "D510",
+        "flights": [
+          "LEG_03_7"
+        ],
+        "start": "2000-01-03T12:20:00",
+        "end": "2000-01-03T13:26:00",
+        "flight_hours": 1.1,
+        "elapsed_hours": 1.1
+      }
+    ],
+    "rests_minutes": [
+      718.0
+    ]
+  },
+  {
+    "flight_ids": [
+      "LEG_02_33",
+      "LEG_03_10",
+      "LEG_03_11",
+      "LEG_03_19",
+      "LEG_04_18",
+      "LEG_04_15"
+    ],
+    "base": "BASE2",
+    "total_hours": 44.3,
+    "cost": 29.766666666666666,
+    "duties": [
+      {
+        "duty_id": "D432",
+        "flights": [
+          "LEG_02_33"
+        ],
+        "start": "2000-01-02T23:26:00",
+        "end": "2000-01-03T02:33:00",
+        "flight_hours": 3.1166666666666667,
+        "elapsed_hours": 3.1166666666666667
+      },
+      {
+        "duty_id": "D546",
+        "flights": [
+          "LEG_03_10",
+          "LEG_03_11",
+          "LEG_03_19"
+        ],
+        "start": "2000-01-03T12:40:00",
+        "end": "2000-01-03T21:18:00",
+        "flight_hours": 6.933333333333334,
+        "elapsed_hours": 8.633333333333333
+      },
+      {
+        "duty_id": "D832",
+        "flights": [
+          "LEG_04_18",
+          "LEG_04_15"
+        ],
+        "start": "2000-01-04T14:05:00",
+        "end": "2000-01-04T19:44:00",
+        "flight_hours": 4.483333333333333,
+        "elapsed_hours": 5.65
+      }
+    ],
+    "rests_minutes": [
+      607.0,
+      1007.0
+    ]
+  },
+  {
+    "flight_ids": [
+      "LEG_01_3",
+      "LEG_01_33"
+    ],
+    "base": "BASE2",
+    "total_hours": 2.45,
+    "cost": 0.75,
+    "duties": [
+      {
+        "duty_id": "D63",
+        "flights": [
+          "LEG_01_3",
+          "LEG_01_33"
+        ],
+        "start": "2000-01-01T19:24:00",
+        "end": "2000-01-01T21:51:00",
+        "flight_hours": 1.7,
+        "elapsed_hours": 2.45
+      }
+    ],
+    "rests_minutes": []
+  },
+  {
+    "flight_ids": [
+      "LEG_05_22",
+      "LEG_05_24"
+    ],
+    "base": "BASE2",
+    "total_hours": 15.5,
+    "cost": 9.983333333333333,
+    "duties": [
+      {
+        "duty_id": "D1054",
+        "flights": [
+          "LEG_05_22"
+        ],
+        "start": "2000-01-05T01:04:00",
+        "end": "2000-01-05T03:46:00",
+        "flight_hours": 2.7,
+        "elapsed_hours": 2.7
+      },
+      {
+        "duty_id": "D1058",
+        "flights": [
+          "LEG_05_24"
+        ],
+        "start": "2000-01-05T13:45:00",
+        "end": "2000-01-05T16:34:00",
+        "flight_hours": 2.816666666666667,
+        "elapsed_hours": 2.816666666666667
+      }
+    ],
+    "rests_minutes": [
+      599.0
+    ]
+  },
+  {
+    "flight_ids": [
+      "LEG_04_25",
+      "LEG_04_27"
+    ],
+    "base": "BASE2",
+    "total_hours": 15.5,
+    "cost": 9.983333333333333,
+    "duties": [
+      {
+        "duty_id": "D870",
+        "flights": [
+          "LEG_04_25"
+        ],
+        "start": "2000-01-04T01:04:00",
+        "end": "2000-01-04T03:46:00",
+        "flight_hours": 2.7,
+        "elapsed_hours": 2.7
+      },
+      {
+        "duty_id": "D878",
+        "flights": [
+          "LEG_04_27"
+        ],
+        "start": "2000-01-04T13:45:00",
+        "end": "2000-01-04T16:34:00",
+        "flight_hours": 2.816666666666667,
+        "elapsed_hours": 2.816666666666667
+      }
+    ],
+    "rests_minutes": [
+      599.0
+    ]
+  },
+  {
+    "flight_ids": [
+      "LEG_04_9",
+      "LEG_05_28"
+    ],
+    "base": "BASE2",
+    "total_hours": 14.866666666666667,
+    "cost": 11.1,
+    "duties": [
+      {
+        "duty_id": "D801",
+        "flights": [
+          "LEG_04_9"
+        ],
+        "start": "2000-01-04T21:19:00",
+        "end": "2000-01-04T23:04:00",
+        "flight_hours": 1.75,
+        "elapsed_hours": 1.75
+      },
+      {
+        "duty_id": "D1080",
+        "flights": [
+          "LEG_05_28"
+        ],
+        "start": "2000-01-05T10:10:00",
+        "end": "2000-01-05T12:11:00",
+        "flight_hours": 2.0166666666666666,
+        "elapsed_hours": 2.0166666666666666
+      }
+    ],
+    "rests_minutes": [
+      666.0
+    ]
+  },
+  {
+    "flight_ids": [
+      "LEG_03_5",
+      "LEG_04_7"
+    ],
+    "base": "BASE2",
+    "total_hours": 14.25,
+    "cost": 11.966666666666667,
+    "duties": [
+      {
+        "duty_id": "D502",
+        "flights": [
+          "LEG_03_5"
+        ],
+        "start": "2000-01-03T23:11:00",
+        "end": "2000-01-04T00:22:00",
+        "flight_hours": 1.1833333333333333,
+        "elapsed_hours": 1.1833333333333333
+      },
+      {
+        "duty_id": "D768",
+        "flights": [
+          "LEG_04_7"
+        ],
+        "start": "2000-01-04T12:20:00",
+        "end": "2000-01-04T13:26:00",
+        "flight_hours": 1.1,
+        "elapsed_hours": 1.1
+      }
+    ],
+    "rests_minutes": [
+      718.0
+    ]
+  },
+  {
+    "flight_ids": [
+      "LEG_04_11",
+      "LEG_04_19",
+      "LEG_04_23",
+      "LEG_05_19",
+      "LEG_05_18",
+      "LEG_05_3",
+      "LEG_06_28",
+      "LEG_06_2",
+      "LEG_06_3",
+      "LEG_06_31",
+      "LEG_06_30",
+      "LEG_07_10"
+    ],
+    "base": "BASE1",
+    "total_hours": 71.1,
+    "cost": 50.71666666666667,
+    "duties": [
+      {
+        "duty_id": "D808",
+        "flights": [
+          "LEG_04_11",
+          "LEG_04_19",
+          "LEG_04_23"
+        ],
+        "start": "2000-01-04T15:24:00",
+        "end": "2000-01-05T00:21:00",
+        "flight_hours": 7.116666666666666,
+        "elapsed_hours": 8.95
+      },
+      {
+        "duty_id": "D1044",
+        "flights": [
+          "LEG_05_19",
+          "LEG_05_18",
+          "LEG_05_3"
+        ],
+        "start": "2000-01-05T14:00:00",
+        "end": "2000-01-05T21:49:00",
+        "flight_hours": 5.15,
+        "elapsed_hours": 7.816666666666666
+      },
+      {
+        "duty_id": "D1265",
+        "flights": [
+          "LEG_06_28",
+          "LEG_06_2",
+          "LEG_06_3",
+          "LEG_06_31",
+          "LEG_06_30"
+        ],
+        "start": "2000-01-06T16:13:00",
+        "end": "2000-01-07T02:33:00",
+        "flight_hours": 6.283333333333333,
+        "elapsed_hours": 10.333333333333334
+      },
+      {
+        "duty_id": "D1393",
+        "flights": [
+          "LEG_07_10"
+        ],
+        "start": "2000-01-07T12:40:00",
+        "end": "2000-01-07T14:30:00",
+        "flight_hours": 1.8333333333333333,
+        "elapsed_hours": 1.8333333333333333
+      }
+    ],
+    "rests_minutes": [
+      819.0,
+      1104.0,
+      607.0
+    ]
+  },
+  {
+    "flight_ids": [
+      "LEG_05_15",
+      "LEG_05_11",
+      "LEG_05_21",
+      "LEG_05_12",
+      "LEG_06_14",
+      "LEG_07_13",
+      "LEG_07_12",
+      "LEG_07_20"
+    ],
+    "base": "BASE3",
+    "total_hours": 58.88333333333333,
+    "cost": 41.3,
+    "duties": [
+      {
+        "duty_id": "D1032",
+        "flights": [
+          "LEG_05_15",
+          "LEG_05_11",
+          "LEG_05_21",
+          "LEG_05_12"
+        ],
+        "start": "2000-01-05T14:05:00",
+        "end": "2000-01-06T00:41:00",
+        "flight_hours": 7.35,
+        "elapsed_hours": 10.6
+      },
+      {
+        "duty_id": "D1178",
+        "flights": [
+          "LEG_06_14"
+        ],
+        "start": "2000-01-06T22:01:00",
+        "end": "2000-01-07T00:47:00",
+        "flight_hours": 2.7666666666666666,
+        "elapsed_hours": 2.7666666666666666
+      },
+      {
+        "duty_id": "D1405",
+        "flights": [
+          "LEG_07_13",
+          "LEG_07_12",
+          "LEG_07_20"
+        ],
+        "start": "2000-01-07T14:20:00",
+        "end": "2000-01-08T00:58:00",
+        "flight_hours": 7.466666666666667,
+        "elapsed_hours": 10.633333333333333
+      }
+    ],
+    "rests_minutes": [
+      1280.0,
+      813.0
+    ]
+  },
+  {
+    "flight_ids": [
+      "LEG_01_11",
+      "LEG_01_19",
+      "LEG_02_18",
+      "LEG_02_15",
+      "LEG_02_9",
+      "LEG_03_32",
+      "LEG_03_33",
+      "LEG_04_10"
+    ],
+    "base": "BASE1",
+    "total_hours": 71.1,
+    "cost": 52.8,
+    "duties": [
+      {
+        "duty_id": "D91",
+        "flights": [
+          "LEG_01_11",
+          "LEG_01_19"
+        ],
+        "start": "2000-01-01T15:24:00",
+        "end": "2000-01-01T21:18:00",
+        "flight_hours": 5.1,
+        "elapsed_hours": 5.9
+      },
+      {
+        "duty_id": "D318",
+        "flights": [
+          "LEG_02_18",
+          "LEG_02_15",
+          "LEG_02_9"
+        ],
+        "start": "2000-01-02T14:05:00",
+        "end": "2000-01-02T23:04:00",
+        "flight_hours": 6.233333333333333,
+        "elapsed_hours": 8.983333333333333
+      },
+      {
+        "duty_id": "D673",
+        "flights": [
+          "LEG_03_32"
+        ],
+        "start": "2000-01-03T10:10:00",
+        "end": "2000-01-03T12:11:00",
+        "flight_hours": 2.0166666666666666,
+        "elapsed_hours": 2.0166666666666666
+      },
+      {
+        "duty_id": "D690",
+        "flights": [
+          "LEG_03_33"
+        ],
+        "start": "2000-01-03T23:26:00",
+        "end": "2000-01-04T02:33:00",
+        "flight_hours": 3.1166666666666667,
+        "elapsed_hours": 3.1166666666666667
+      },
+      {
+        "duty_id": "D802",
+        "flights": [
+          "LEG_04_10"
+        ],
+        "start": "2000-01-04T12:40:00",
+        "end": "2000-01-04T14:30:00",
+        "flight_hours": 1.8333333333333333,
+        "elapsed_hours": 1.8333333333333333
+      }
+    ],
+    "rests_minutes": [
+      1007.0,
+      666.0,
+      675.0,
+      607.0
+    ]
+  },
+  {
+    "flight_ids": [
+      "LEG_06_29",
+      "LEG_06_0",
+      "LEG_07_0",
+      "LEG_07_1"
+    ],
+    "base": "BASE2",
+    "total_hours": 21.433333333333334,
+    "cost": 13.85,
+    "duties": [
+      {
+        "duty_id": "D1275",
+        "flights": [
+          "LEG_06_29",
+          "LEG_06_0"
+        ],
+        "start": "2000-01-06T17:53:00",
+        "end": "2000-01-07T00:21:00",
+        "flight_hours": 5.133333333333334,
+        "elapsed_hours": 6.466666666666667
+      },
+      {
+        "duty_id": "D1282",
+        "flights": [
+          "LEG_07_0",
+          "LEG_07_1"
+        ],
+        "start": "2000-01-07T12:00:00",
+        "end": "2000-01-07T15:19:00",
+        "flight_hours": 2.45,
+        "elapsed_hours": 3.316666666666667
+      }
+    ],
+    "rests_minutes": [
+      699.0
+    ]
+  },
+  {
+    "flight_ids": [
+      "LEG_07_25",
+      "LEG_07_27"
+    ],
+    "base": "BASE2",
+    "total_hours": 15.5,
+    "cost": 9.983333333333333,
+    "duties": [
+      {
+        "duty_id": "D1461",
+        "flights": [
+          "LEG_07_25"
+        ],
+        "start": "2000-01-07T01:04:00",
+        "end": "2000-01-07T03:46:00",
+        "flight_hours": 2.7,
+        "elapsed_hours": 2.7
+      },
+      {
+        "duty_id": "D1469",
+        "flights": [
+          "LEG_07_27"
+        ],
+        "start": "2000-01-07T13:45:00",
+        "end": "2000-01-07T16:34:00",
+        "flight_hours": 2.816666666666667,
+        "elapsed_hours": 2.816666666666667
+      }
+    ],
+    "rests_minutes": [
+      599.0
+    ]
+  },
+  {
+    "flight_ids": [
+      "LEG_06_8",
+      "LEG_06_16",
+      "LEG_06_20",
+      "LEG_07_22",
+      "LEG_07_26",
+      "LEG_07_16"
+    ],
+    "base": "BASE1",
+    "total_hours": 29.5,
+    "cost": 17.516666666666666,
+    "duties": [
+      {
+        "duty_id": "D1138",
+        "flights": [
+          "LEG_06_8",
+          "LEG_06_16",
+          "LEG_06_20"
+        ],
+        "start": "2000-01-06T15:24:00",
+        "end": "2000-01-07T00:21:00",
+        "flight_hours": 7.116666666666666,
+        "elapsed_hours": 8.95
+      },
+      {
+        "duty_id": "D1452",
+        "flights": [
+          "LEG_07_22",
+          "LEG_07_26",
+          "LEG_07_16"
+        ],
+        "start": "2000-01-07T14:00:00",
+        "end": "2000-01-07T20:54:00",
+        "flight_hours": 4.866666666666666,
+        "elapsed_hours": 6.9
+      }
+    ],
+    "rests_minutes": [
+      819.0
+    ]
+  },
+  {
+    "flight_ids": [
+      "LEG_05_23",
+      "LEG_05_13",
+      "LEG_05_14",
+      "LEG_06_10",
+      "LEG_06_9",
+      "LEG_06_17",
+      "LEG_07_18",
+      "LEG_07_15"
+    ],
+    "base": "BASE2",
+    "total_hours": 49.95,
+    "cost": 33.05,
+    "duties": [
+      {
+        "duty_id": "D1057",
+        "flights": [
+          "LEG_05_23",
+          "LEG_05_13",
+          "LEG_05_14"
+        ],
+        "start": "2000-01-05T17:47:00",
+        "end": "2000-01-06T00:47:00",
+        "flight_hours": 4.95,
+        "elapsed_hours": 7.0
+      },
+      {
+        "duty_id": "D1144",
+        "flights": [
+          "LEG_06_10",
+          "LEG_06_9",
+          "LEG_06_17"
+        ],
+        "start": "2000-01-06T14:20:00",
+        "end": "2000-01-07T00:58:00",
+        "flight_hours": 7.466666666666667,
+        "elapsed_hours": 10.633333333333333
+      },
+      {
+        "duty_id": "D1423",
+        "flights": [
+          "LEG_07_18",
+          "LEG_07_15"
+        ],
+        "start": "2000-01-07T14:05:00",
+        "end": "2000-01-07T19:44:00",
+        "flight_hours": 4.483333333333333,
+        "elapsed_hours": 5.65
+      }
+    ],
+    "rests_minutes": [
+      813.0,
+      787.0
+    ]
+  },
+  {
+    "flight_ids": [
+      "LEG_01_32",
+      "LEG_02_10",
+      "LEG_02_11",
+      "LEG_02_19",
+      "LEG_03_18",
+      "LEG_03_15"
+    ],
+    "base": "BASE2",
+    "total_hours": 44.3,
+    "cost": 29.766666666666666,
+    "duties": [
+      {
+        "duty_id": "D175",
+        "flights": [
+          "LEG_01_32"
+        ],
+        "start": "2000-01-01T23:26:00",
+        "end": "2000-01-02T02:33:00",
+        "flight_hours": 3.1166666666666667,
+        "elapsed_hours": 3.1166666666666667
+      },
+      {
+        "duty_id": "D288",
+        "flights": [
+          "LEG_02_10",
+          "LEG_02_11",
+          "LEG_02_19"
+        ],
+        "start": "2000-01-02T12:40:00",
+        "end": "2000-01-02T21:18:00",
+        "flight_hours": 6.933333333333334,
+        "elapsed_hours": 8.633333333333333
+      },
+      {
+        "duty_id": "D574",
+        "flights": [
+          "LEG_03_18",
+          "LEG_03_15"
+        ],
+        "start": "2000-01-03T14:05:00",
+        "end": "2000-01-03T19:44:00",
+        "flight_hours": 4.483333333333333,
+        "elapsed_hours": 5.65
+      }
+    ],
+    "rests_minutes": [
+      607.0,
+      1007.0
+    ]
+  },
+  {
+    "flight_ids": [
+      "LEG_07_11",
+      "LEG_07_19",
+      "LEG_07_23",
+      "LEG_08_22",
+      "LEG_08_26",
+      "LEG_08_16"
+    ],
+    "base": "BASE1",
+    "total_hours": 29.5,
+    "cost": 17.516666666666666,
+    "duties": [
+      {
+        "duty_id": "D1399",
+        "flights": [
+          "LEG_07_11",
+          "LEG_07_19",
+          "LEG_07_23"
+        ],
+        "start": "2000-01-07T15:24:00",
+        "end": "2000-01-08T00:21:00",
+        "flight_hours": 7.116666666666666,
+        "elapsed_hours": 8.95
+      },
+      {
+        "duty_id": "D1709",
+        "flights": [
+          "LEG_08_22",
+          "LEG_08_26",
+          "LEG_08_16"
+        ],
+        "start": "2000-01-08T14:00:00",
+        "end": "2000-01-08T20:54:00",
+        "flight_hours": 4.866666666666666,
+        "elapsed_hours": 6.9
+      }
+    ],
+    "rests_minutes": [
+      819.0
+    ]
+  },
+  {
+    "flight_ids": [
+      "LEG_05_8",
+      "LEG_05_16",
+      "LEG_05_20",
+      "LEG_06_19",
+      "LEG_06_18",
+      "LEG_06_4",
+      "LEG_06_5",
+      "LEG_07_7",
+      "LEG_07_33",
+      "LEG_08_10"
+    ],
+    "base": "BASE1",
+    "total_hours": 71.1,
+    "cost": 51.6,
+    "duties": [
+      {
+        "duty_id": "D1013",
+        "flights": [
+          "LEG_05_8",
+          "LEG_05_16",
+          "LEG_05_20"
+        ],
+        "start": "2000-01-05T15:24:00",
+        "end": "2000-01-06T00:21:00",
+        "flight_hours": 7.116666666666666,
+        "elapsed_hours": 8.95
+      },
+      {
+        "duty_id": "D1204",
+        "flights": [
+          "LEG_06_19",
+          "LEG_06_18",
+          "LEG_06_4",
+          "LEG_06_5"
+        ],
+        "start": "2000-01-06T14:00:00",
+        "end": "2000-01-07T00:22:00",
+        "flight_hours": 6.333333333333333,
+        "elapsed_hours": 10.366666666666667
+      },
+      {
+        "duty_id": "D1359",
+        "flights": [
+          "LEG_07_7"
+        ],
+        "start": "2000-01-07T12:20:00",
+        "end": "2000-01-07T13:26:00",
+        "flight_hours": 1.1,
+        "elapsed_hours": 1.1
+      },
+      {
+        "duty_id": "D1539",
+        "flights": [
+          "LEG_07_33"
+        ],
+        "start": "2000-01-07T23:26:00",
+        "end": "2000-01-08T02:33:00",
+        "flight_hours": 3.1166666666666667,
+        "elapsed_hours": 3.1166666666666667
+      },
+      {
+        "duty_id": "D1650",
+        "flights": [
+          "LEG_08_10"
+        ],
+        "start": "2000-01-08T12:40:00",
+        "end": "2000-01-08T14:30:00",
+        "flight_hours": 1.8333333333333333,
+        "elapsed_hours": 1.8333333333333333
+      }
+    ],
+    "rests_minutes": [
+      819.0,
+      718.0,
+      600.0,
+      607.0
+    ]
+  },
+  {
+    "flight_ids": [
+      "LEG_06_6",
+      "LEG_07_32"
+    ],
+    "base": "BASE2",
+    "total_hours": 14.866666666666667,
+    "cost": 11.1,
+    "duties": [
+      {
+        "duty_id": "D1131",
+        "flights": [
+          "LEG_06_6"
+        ],
+        "start": "2000-01-06T21:19:00",
+        "end": "2000-01-06T23:04:00",
+        "flight_hours": 1.75,
+        "elapsed_hours": 1.75
+      },
+      {
+        "duty_id": "D1522",
+        "flights": [
+          "LEG_07_32"
+        ],
+        "start": "2000-01-07T10:10:00",
+        "end": "2000-01-07T12:11:00",
+        "flight_hours": 2.0166666666666666,
+        "elapsed_hours": 2.0166666666666666
+      }
+    ],
+    "rests_minutes": [
+      666.0
+    ]
+  },
+  {
+    "flight_ids": [
+      "LEG_01_9",
+      "LEG_02_32"
+    ],
+    "base": "BASE2",
+    "total_hours": 14.866666666666667,
+    "cost": 11.1,
+    "duties": [
+      {
+        "duty_id": "D89",
+        "flights": [
+          "LEG_01_9"
+        ],
+        "start": "2000-01-01T21:19:00",
+        "end": "2000-01-01T23:04:00",
+        "flight_hours": 1.75,
+        "elapsed_hours": 1.75
+      },
+      {
+        "duty_id": "D415",
+        "flights": [
+          "LEG_02_32"
+        ],
+        "start": "2000-01-02T10:10:00",
+        "end": "2000-01-02T12:11:00",
+        "flight_hours": 2.0166666666666666,
+        "elapsed_hours": 2.0166666666666666
+      }
+    ],
+    "rests_minutes": [
+      666.0
+    ]
+  },
+  {
+    "flight_ids": [
+      "LEG_04_26",
+      "LEG_04_16",
+      "LEG_04_17",
+      "LEG_05_10",
+      "LEG_05_9",
+      "LEG_05_17",
+      "LEG_06_15",
+      "LEG_06_11"
+    ],
+    "base": "BASE2",
+    "total_hours": 49.95,
+    "cost": 33.05,
+    "duties": [
+      {
+        "duty_id": "D873",
+        "flights": [
+          "LEG_04_26",
+          "LEG_04_16",
+          "LEG_04_17"
+        ],
+        "start": "2000-01-04T17:47:00",
+        "end": "2000-01-05T00:47:00",
+        "flight_hours": 4.95,
+        "elapsed_hours": 7.0
+      },
+      {
+        "duty_id": "D1019",
+        "flights": [
+          "LEG_05_10",
+          "LEG_05_9",
+          "LEG_05_17"
+        ],
+        "start": "2000-01-05T14:20:00",
+        "end": "2000-01-06T00:58:00",
+        "flight_hours": 7.466666666666667,
+        "elapsed_hours": 10.633333333333333
+      },
+      {
+        "duty_id": "D1180",
+        "flights": [
+          "LEG_06_15",
+          "LEG_06_11"
+        ],
+        "start": "2000-01-06T14:05:00",
+        "end": "2000-01-06T19:44:00",
+        "flight_hours": 4.483333333333333,
+        "elapsed_hours": 5.65
+      }
+    ],
+    "rests_minutes": [
+      813.0,
+      787.0
+    ]
+  }
+]

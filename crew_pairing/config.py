@@ -20,6 +20,9 @@ MAX_LAYOVER_BETWEEN_DUTIES = timedelta(hours=48)
 MAX_PAIRING_TIME = timedelta(days=5)
 MAX_DUTIES_PER_PAIRING = 5
 
-# Padding dates for the supplied week-one dataset.
-PADDING_START_DATE = date(2000, 1, 8)
-PADDING_END_DATE = date(2000, 1, 10)
+# Inclusive departure-date intervals for the active dataset.
+# January 15-21 is required; the surrounding days are optional padding.
+PADDING_DATE_RANGES = (
+    (date(2000, 1, 12), date(2000, 1, 14)),
+    (date(2000, 1, 22), date(2000, 1, 24)),
+)

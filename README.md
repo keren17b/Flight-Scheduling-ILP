@@ -7,10 +7,18 @@ Solving the flight scheduling problem using Integer Linear Programming (ILP), ba
 - `column_generation/`: pricing, restricted master LP, final ILP, and the current runner.
 - `historical_code/`: the earlier matrix-based solver and its runner.
 - `tests/`: unit tests; `tests/diagnostics/` contains coverage and tracing tools.
-- `data/inputs/`: flight and crew-base CSV files; `data/generated/` contains the padded week. The original archive can be kept locally in `data/source/` and is ignored by Git.
+- `data/inputs/`: flight and crew-base CSV files; `data/generated/` contains the padded weeks. The original archive can be kept locally in `data/source/` and is ignored by Git.
 - `docs/`: design notes; `reports/column_generation/`: saved summaries.
 
 Edit `crew_pairing/config.py` for crew legality limits and padding dates. Edit `column_generation/config.py` for initial pool, pricing, solver, and runner defaults. Function arguments can still override many limits for an individual call. CSV column names remain with the CSV parser.
+
+The active input is `data/generated/week_3_with_start_end_padding.csv`: January
+15-21, 2000 is required, January 12-14 is start padding, and January 22-24 is end
+padding. `PADDING_DATE_RANGES` defines inclusive intervals by departure date.
+Padding flights can support pairings but are covered at most once; required
+flights must be covered exactly once. When changing datasets, update both the
+input path and the padding intervals. For the original week-one padded CSV,
+use the single interval January 8-10, 2000.
 
 Run commands from this directory using module names so package imports resolve:
 

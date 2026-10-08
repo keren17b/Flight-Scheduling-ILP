@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Dict, List
 
-from crew_pairing.config import PADDING_END_DATE, PADDING_START_DATE
+from crew_pairing.config import PADDING_DATE_RANGES
 from crew_pairing.flights_graph import Flight
 
 
@@ -13,8 +13,9 @@ REQUIRED_TAG = "required"
 
 
 def is_padding_flight(flight: Flight) -> bool:
+    """Return whether departure falls in any configured padding interval."""
     departure_date = flight.departure_datetime.date()
-    return PADDING_START_DATE <= departure_date <= PADDING_END_DATE
+    return any(start <= departure_date <= end for start, end in PADDING_DATE_RANGES)
 
 
 def flight_constraint_tags(flights: Dict[str, Flight]) -> List[str]:

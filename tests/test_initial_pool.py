@@ -13,8 +13,8 @@ from crew_pairing.flights_graph import Airport, Flight
 class InitialPoolTests(unittest.TestCase):
     def setUp(self) -> None:
         self.base = Airport("BASE", 1)
-        self.required_departure = datetime(2026, 9, 1, 8)
-        self.padding_departure = datetime(2000, 1, 8, 8)
+        self.required_departure = datetime(2000, 1, 15, 8)
+        self.padding_departure = datetime(2000, 1, 12, 8)
 
     def _flight(
         self,

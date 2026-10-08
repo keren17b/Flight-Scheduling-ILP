@@ -24,5 +24,5 @@ SELECTION_THRESHOLD = 0.5
 ARTIFICIAL_TOLERANCE = 1e-6
 
 # data
-FLIGHTS_FILE_PATH = GENERATED_DIR / "week_1_with_padding.csv"
+FLIGHTS_FILE_PATH = GENERATED_DIR / "week_3_with_start_end_padding.csv"
 HUBS_FILE_PATH = INPUT_DIR / "listOfBases.csv"

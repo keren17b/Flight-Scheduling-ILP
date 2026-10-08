@@ -1,0 +1,667 @@
+{
+  "pairings": 172,
+  "source_csv_flights": 1013,
+  "repository_flights": 1013,
+  "flight_data_mismatches": [],
+  "operating_tokens": 1013,
+  "unique_operating_flights": 1013,
+  "deadhead_tokens": 40,
+  "unique_deadhead_flights": 38,
+  "missing_referenced_flights": {},
+  "uncovered_source_flights": [],
+  "multiply_operated_source_flights": {},
+  "airport_discontinuities": [],
+  "negative_gaps": [],
+  "gaps_longer_than_8_hours": 206,
+  "minimum_gap_longer_than_8_hours": 541.0,
+  "long_gap_under_10h_histogram": {
+    "580.0": 2,
+    "541.0": 3,
+    "558.0": 11,
+    "599.0": 13,
+    "588.0": 1,
+    "545.0": 1,
+    "570.0": 1
+  },
+  "nine59_count": 13,
+  "nine59_pairs": [
+    {
+      "pairing": 25,
+      "base": "BASE2",
+      "first": "LEG_08_25",
+      "second": "LEG_08_27",
+      "airport": "AIR12",
+      "airport_continuity": true,
+      "gap_minutes": 599.0
+    },
+    {
+      "pairing": 44,
+      "base": "BASE1",
+      "first": "LEG_09_25",
+      "second": "LEG_09_27",
+      "airport": "AIR12",
+      "airport_continuity": true,
+      "gap_minutes": 599.0
+    },
+    {
+      "pairing": 71,
+      "base": "BASE2",
+      "first": "LEG_10_25",
+      "second": "LEG_10_27",
+      "airport": "AIR12",
+      "airport_continuity": true,
+      "gap_minutes": 599.0
+    },
+    {
+      "pairing": 93,
+      "base": "BASE2",
+      "first": "LEG_05_22",
+      "second": "LEG_05_24",
+      "airport": "AIR12",
+      "airport_continuity": true,
+      "gap_minutes": 599.0
+    },
+    {
+      "pairing": 95,
+      "base": "BASE2",
+      "first": "LEG_02_25",
+      "second": "LEG_02_27",
+      "airport": "AIR12",
+      "airport_continuity": true,
+      "gap_minutes": 599.0
+    },
+    {
+      "pairing": 122,
+      "base": "BASE2",
+      "first": "LEG_13_22",
+      "second": "LEG_13_24",
+      "airport": "AIR12",
+      "airport_continuity": true,
+      "gap_minutes": 599.0
+    },
+    {
+      "pairing": 123,
+      "base": "BASE2",
+      "first": "LEG_14_26",
+      "second": "LEG_14_28",
+      "airport": "AIR12",
+      "airport_continuity": true,
+      "gap_minutes": 599.0
+    },
+    {
+      "pairing": 127,
+      "base": "BASE2",
+      "first": "LEG_03_25",
+      "second": "LEG_03_27",
+      "airport": "AIR12",
+      "airport_continuity": true,
+      "gap_minutes": 599.0
+    },
+    {
+      "pairing": 128,
+      "base": "BASE2",
+      "first": "LEG_04_25",
+      "second": "LEG_04_27",
+      "airport": "AIR12",
+      "airport_continuity": true,
+      "gap_minutes": 599.0
+    },
+    {
+      "pairing": 131,
+      "base": "BASE2",
+      "first": "LEG_12_22",
+      "second": "LEG_12_24",
+      "airport": "AIR12",
+      "airport_continuity": true,
+      "gap_minutes": 599.0
+    },
+    {
+      "pairing": 139,
+      "base": "BASE2",
+      "first": "LEG_11_25",
+      "second": "LEG_11_27",
+      "airport": "AIR12",
+      "airport_continuity": true,
+      "gap_minutes": 599.0
+    },
+    {
+      "pairing": 145,
+      "base": "BASE2",
+      "first": "LEG_07_25",
+      "second": "LEG_07_27",
+      "airport": "AIR12",
+      "airport_continuity": true,
+      "gap_minutes": 599.0
+    },
+    {
+      "pairing": 162,
+      "base": "BASE2",
+      "first": "LEG_06_22",
+      "second": "LEG_06_24",
+      "airport": "AIR12",
+      "airport_continuity": true,
+      "gap_minutes": 599.0
+    }
+  ],
+  "target_contexts": [
+    {
+      "pairing": 8,
+      "base": "BASE2",
+      "legs": [
+        {
+          "token": "LEG_01_30",
+          "flight_id": "LEG_01_30",
+          "route": "BASE2->AIR12",
+          "departure": "2000-01-01 12:59:00",
+          "arrival": "2000-01-01 15:46:00"
+        },
+        {
+          "token": "LEG_01_28",
+          "flight_id": "LEG_01_28",
+          "route": "AIR12->BASE2",
+          "departure": "2000-01-01 17:00:00",
+          "arrival": "2000-01-01 19:52:00"
+        }
+      ]
+    },
+    {
+      "pairing": 95,
+      "base": "BASE2",
+      "legs": [
+        {
+          "token": "LEG_02_25",
+          "flight_id": "LEG_02_25",
+          "route": "BASE2->AIR12",
+          "departure": "2000-01-02 01:04:00",
+          "arrival": "2000-01-02 03:46:00"
+        },
+        {
+          "token": "LEG_02_27",
+          "flight_id": "LEG_02_27",
+          "route": "AIR12->BASE2",
+          "departure": "2000-01-02 13:45:00",
+          "arrival": "2000-01-02 16:34:00"
+        },
+        {
+          "token": "LEG_02_21",
+          "flight_id": "LEG_02_21",
+          "route": "BASE2->AIR5",
+          "departure": "2000-01-02 17:56:00",
+          "arrival": "2000-01-02 19:10:00"
+        },
+        {
+          "token": "LEG_02_4",
+          "flight_id": "LEG_02_4",
+          "route": "AIR5->BASE2",
+          "departure": "2000-01-02 20:35:00",
+          "arrival": "2000-01-02 21:49:00"
+        },
+        {
+          "token": "LEG_02_5",
+          "flight_id": "LEG_02_5",
+          "route": "BASE2->AIR4",
+          "departure": "2000-01-02 23:11:00",
+          "arrival": "2000-01-03 00:22:00"
+        },
+        {
+          "token": "LEG_03_7",
+          "flight_id": "LEG_03_7",
+          "route": "AIR4->BASE2",
+          "departure": "2000-01-03 12:20:00",
+          "arrival": "2000-01-03 13:26:00"
+        },
+        {
+          "token": "LEG_03_6",
+          "flight_id": "LEG_03_6",
+          "route": "BASE2->AIR6",
+          "departure": "2000-01-03 14:21:00",
+          "arrival": "2000-01-03 16:54:00"
+        },
+        {
+          "token": "LEG_03_8",
+          "flight_id": "LEG_03_8",
+          "route": "AIR6->BASE2",
+          "departure": "2000-01-03 17:40:00",
+          "arrival": "2000-01-03 20:23:00"
+        }
+      ]
+    }
+  ],
+  "schedule_count": 33,
+  "short_long_gap_details": [
+    {
+      "pairing": 1,
+      "first": "LEG_30_11",
+      "second": "LEG_30_0",
+      "airport": "BASE1",
+      "arrival": "2000-01-30 03:20:00",
+      "departure": "2000-01-30 13:00:00",
+      "gap_minutes": 580.0
+    },
+    {
+      "pairing": 6,
+      "first": "LEG_29_27",
+      "second": "LEG_29_14",
+      "airport": "AIR3",
+      "arrival": "2000-01-29 02:59:00",
+      "departure": "2000-01-29 12:00:00",
+      "gap_minutes": 541.0
+    },
+    {
+      "pairing": 15,
+      "first": "LEG_17_17",
+      "second": "LEG_17_26",
+      "airport": "AIR2",
+      "arrival": "2000-01-17 01:52:00",
+      "departure": "2000-01-17 11:10:00",
+      "gap_minutes": 558.0
+    },
+    {
+      "pairing": 20,
+      "first": "LEG_15_17",
+      "second": "LEG_15_26",
+      "airport": "AIR2",
+      "arrival": "2000-01-15 01:52:00",
+      "departure": "2000-01-15 11:10:00",
+      "gap_minutes": 558.0
+    },
+    {
+      "pairing": 25,
+      "first": "LEG_08_25",
+      "second": "LEG_08_27",
+      "airport": "AIR12",
+      "arrival": "2000-01-08 03:46:00",
+      "departure": "2000-01-08 13:45:00",
+      "gap_minutes": 599.0
+    },
+    {
+      "pairing": 35,
+      "first": "LEG_24_17",
+      "second": "LEG_24_26",
+      "airport": "AIR2",
+      "arrival": "2000-01-24 01:52:00",
+      "departure": "2000-01-24 11:10:00",
+      "gap_minutes": 558.0
+    },
+    {
+      "pairing": 44,
+      "first": "LEG_09_25",
+      "second": "LEG_09_27",
+      "airport": "AIR12",
+      "arrival": "2000-01-09 03:46:00",
+      "departure": "2000-01-09 13:45:00",
+      "gap_minutes": 599.0
+    },
+    {
+      "pairing": 46,
+      "first": "LEG_16_17",
+      "second": "LEG_16_26",
+      "airport": "AIR2",
+      "arrival": "2000-01-16 01:52:00",
+      "departure": "2000-01-16 11:10:00",
+      "gap_minutes": 558.0
+    },
+    {
+      "pairing": 56,
+      "first": "LEG_19_12",
+      "second": "LEG_19_23",
+      "airport": "AIR2",
+      "arrival": "2000-01-19 01:52:00",
+      "departure": "2000-01-19 11:10:00",
+      "gap_minutes": 558.0
+    },
+    {
+      "pairing": 59,
+      "first": "LEG_20_12",
+      "second": "LEG_20_1",
+      "airport": "AIR2",
+      "arrival": "2000-01-20 01:52:00",
+      "departure": "2000-01-20 11:40:00",
+      "gap_minutes": 588.0
+    },
+    {
+      "pairing": 61,
+      "first": "LEG_21_16",
+      "second": "LEG_21_25",
+      "airport": "AIR2",
+      "arrival": "2000-01-21 01:52:00",
+      "departure": "2000-01-21 11:10:00",
+      "gap_minutes": 558.0
+    },
+    {
+      "pairing": 67,
+      "first": "LEG_25_17",
+      "second": "LEG_25_26",
+      "airport": "AIR2",
+      "arrival": "2000-01-25 01:52:00",
+      "departure": "2000-01-25 11:10:00",
+      "gap_minutes": 558.0
+    },
+    {
+      "pairing": 68,
+      "first": "LEG_27_0",
+      "second": "LEG_27_12",
+      "airport": "AIR18",
+      "arrival": "2000-01-27 04:15:00",
+      "departure": "2000-01-27 13:20:00",
+      "gap_minutes": 545.0
+    },
+    {
+      "pairing": 71,
+      "first": "LEG_10_25",
+      "second": "LEG_10_27",
+      "airport": "AIR12",
+      "arrival": "2000-01-10 03:46:00",
+      "departure": "2000-01-10 13:45:00",
+      "gap_minutes": 599.0
+    },
+    {
+      "pairing": 76,
+      "first": "LEG_22_17",
+      "second": "LEG_22_26",
+      "airport": "AIR2",
+      "arrival": "2000-01-22 01:52:00",
+      "departure": "2000-01-22 11:10:00",
+      "gap_minutes": 558.0
+    },
+    {
+      "pairing": 89,
+      "first": "TDH_LEG_28_12",
+      "second": "LEG_28_13",
+      "airport": "BASE1",
+      "arrival": "2000-01-28 03:20:00",
+      "departure": "2000-01-28 12:50:00",
+      "gap_minutes": 570.0
+    },
+    {
+      "pairing": 93,
+      "first": "LEG_05_22",
+      "second": "LEG_05_24",
+      "airport": "AIR12",
+      "arrival": "2000-01-05 03:46:00",
+      "departure": "2000-01-05 13:45:00",
+      "gap_minutes": 599.0
+    },
+    {
+      "pairing": 95,
+      "first": "LEG_02_25",
+      "second": "LEG_02_27",
+      "airport": "AIR12",
+      "arrival": "2000-01-02 03:46:00",
+      "departure": "2000-01-02 13:45:00",
+      "gap_minutes": 599.0
+    },
+    {
+      "pairing": 102,
+      "first": "LEG_31_27",
+      "second": "LEG_31_14",
+      "airport": "AIR3",
+      "arrival": "2000-01-31 02:59:00",
+      "departure": "2000-01-31 12:00:00",
+      "gap_minutes": 541.0
+    },
+    {
+      "pairing": 105,
+      "first": "LEG_23_17",
+      "second": "LEG_23_26",
+      "airport": "AIR2",
+      "arrival": "2000-01-23 01:52:00",
+      "departure": "2000-01-23 11:10:00",
+      "gap_minutes": 558.0
+    },
+    {
+      "pairing": 114,
+      "first": "LEG_26_12",
+      "second": "LEG_26_23",
+      "airport": "AIR2",
+      "arrival": "2000-01-26 01:52:00",
+      "departure": "2000-01-26 11:10:00",
+      "gap_minutes": 558.0
+    },
+    {
+      "pairing": 122,
+      "first": "LEG_13_22",
+      "second": "LEG_13_24",
+      "airport": "AIR12",
+      "arrival": "2000-01-13 03:46:00",
+      "departure": "2000-01-13 13:45:00",
+      "gap_minutes": 599.0
+    },
+    {
+      "pairing": 123,
+      "first": "LEG_14_26",
+      "second": "LEG_14_28",
+      "airport": "AIR12",
+      "arrival": "2000-01-14 03:46:00",
+      "departure": "2000-01-14 13:45:00",
+      "gap_minutes": 599.0
+    },
+    {
+      "pairing": 127,
+      "first": "LEG_03_25",
+      "second": "LEG_03_27",
+      "airport": "AIR12",
+      "arrival": "2000-01-03 03:46:00",
+      "departure": "2000-01-03 13:45:00",
+      "gap_minutes": 599.0
+    },
+    {
+      "pairing": 128,
+      "first": "LEG_04_25",
+      "second": "LEG_04_27",
+      "airport": "AIR12",
+      "arrival": "2000-01-04 03:46:00",
+      "departure": "2000-01-04 13:45:00",
+      "gap_minutes": 599.0
+    },
+    {
+      "pairing": 131,
+      "first": "LEG_12_22",
+      "second": "LEG_12_24",
+      "airport": "AIR12",
+      "arrival": "2000-01-12 03:46:00",
+      "departure": "2000-01-12 13:45:00",
+      "gap_minutes": 599.0
+    },
+    {
+      "pairing": 135,
+      "first": "LEG_31_11",
+      "second": "LEG_31_0",
+      "airport": "BASE1",
+      "arrival": "2000-01-31 03:20:00",
+      "departure": "2000-01-31 13:00:00",
+      "gap_minutes": 580.0
+    },
+    {
+      "pairing": 137,
+      "first": "LEG_30_27",
+      "second": "LEG_30_14",
+      "airport": "AIR3",
+      "arrival": "2000-01-30 02:59:00",
+      "departure": "2000-01-30 12:00:00",
+      "gap_minutes": 541.0
+    },
+    {
+      "pairing": 139,
+      "first": "LEG_11_25",
+      "second": "LEG_11_27",
+      "airport": "AIR12",
+      "arrival": "2000-01-11 03:46:00",
+      "departure": "2000-01-11 13:45:00",
+      "gap_minutes": 599.0
+    },
+    {
+      "pairing": 145,
+      "first": "LEG_07_25",
+      "second": "LEG_07_27",
+      "airport": "AIR12",
+      "arrival": "2000-01-07 03:46:00",
+      "departure": "2000-01-07 13:45:00",
+      "gap_minutes": 599.0
+    },
+    {
+      "pairing": 162,
+      "first": "LEG_06_22",
+      "second": "LEG_06_24",
+      "airport": "AIR12",
+      "arrival": "2000-01-06 03:46:00",
+      "departure": "2000-01-06 13:45:00",
+      "gap_minutes": 599.0
+    },
+    {
+      "pairing": 164,
+      "first": "LEG_18_17",
+      "second": "LEG_18_26",
+      "airport": "AIR2",
+      "arrival": "2000-01-18 01:52:00",
+      "departure": "2000-01-18 11:10:00",
+      "gap_minutes": 558.0
+    }
+  ],
+  "duty_split_compatibility": {
+    "10h": {
+      "passes_our_other_limits_counting_all_travel_in_flight_time": 128,
+      "fails": 44,
+      "failed_pairing_ids": [
+        1,
+        6,
+        12,
+        15,
+        20,
+        23,
+        25,
+        31,
+        35,
+        37,
+        42,
+        44,
+        46,
+        56,
+        59,
+        61,
+        64,
+        67,
+        68,
+        71,
+        72,
+        76,
+        84,
+        89,
+        93,
+        95,
+        97,
+        102,
+        105,
+        108,
+        114,
+        116,
+        122,
+        123,
+        127,
+        128,
+        131,
+        135,
+        137,
+        139,
+        145,
+        162,
+        164,
+        171
+      ]
+    },
+    "9h59": {
+      "passes_our_other_limits_counting_all_travel_in_flight_time": 141,
+      "fails": 31,
+      "failed_pairing_ids": [
+        1,
+        6,
+        12,
+        15,
+        20,
+        23,
+        31,
+        35,
+        37,
+        42,
+        46,
+        56,
+        59,
+        61,
+        64,
+        67,
+        68,
+        72,
+        76,
+        84,
+        89,
+        97,
+        102,
+        105,
+        108,
+        114,
+        116,
+        135,
+        137,
+        164,
+        171
+      ]
+    },
+    "9h": {
+      "passes_our_other_limits_counting_all_travel_in_flight_time": 160,
+      "fails": 12,
+      "failed_pairing_ids": [
+        12,
+        23,
+        31,
+        37,
+        42,
+        64,
+        72,
+        84,
+        97,
+        108,
+        116,
+        171
+      ]
+    }
+  },
+  "pairing_95_split_with_9h59_rest": [
+    {
+      "flights": [
+        "LEG_02_25"
+      ],
+      "start": "2000-01-02 01:04:00",
+      "end": "2000-01-02 03:46:00",
+      "elapsed_minutes": 162.0,
+      "rest_after_minutes": 599.0
+    },
+    {
+      "flights": [
+        "LEG_02_27",
+        "LEG_02_21",
+        "LEG_02_4",
+        "LEG_02_5"
+      ],
+      "start": "2000-01-02 13:45:00",
+      "end": "2000-01-03 00:22:00",
+      "elapsed_minutes": 637.0,
+      "rest_after_minutes": 718.0
+    },
+    {
+      "flights": [
+        "LEG_03_7",
+        "LEG_03_6",
+        "LEG_03_8"
+      ],
+      "start": "2000-01-03 12:20:00",
+      "end": "2000-01-03 20:23:00",
+      "elapsed_minutes": 483.0,
+      "rest_after_minutes": null
+    }
+  ],
+  "limitations": [
+    "Initial solution contains no explicit duty boundaries or numerical minimum-rest rule.",
+    "Gaps >8h cannot be same-duty connections under OUR maximum connection rule.",
+    "Deadhead-inclusive compatibility audit is not a claim about the original solver duty rules."
+  ]
+}

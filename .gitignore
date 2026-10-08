@@ -203,6 +203,8 @@ cython_debug/
 # .vscode/
 # Temporary file for partial code execution
 tempCodeRunnerFile.py
+/tmp/
+node_modules/
 
 # Ruff stuff:
 .ruff_cache/
