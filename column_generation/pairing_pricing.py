@@ -21,6 +21,7 @@ from crew_pairing.pairings import (
 )
 from column_generation.config import (
     MAX_NEGATIVE_PAIRINGS_PER_START,
+    MAX_PRICING_DFS_STATES,
     MAX_PRICING_DFS_STATES_PER_START,
     MAX_PRICING_PAIRINGS,
     TOP_K_SUCCESSORS,
@@ -74,11 +75,12 @@ def generate_pricing_pairings(
     max_negative_pairings_per_start: int = MAX_NEGATIVE_PAIRINGS_PER_START,
     top_k_successors: int = TOP_K_SUCCESSORS,
     cost_function: PairingCostFunction = current_pairing_cost,
+    max_dfs_states: int = MAX_PRICING_DFS_STATES,
 ) -> Dict[str, Pairing]:
     """
     Search the duty graph for new pairings with negative reduced cost.
 
-    The original DFS structure is kept, with four bounded-search additions:
+    The original DFS structure is kept, with five bounded-search additions:
 
     1. Every legal starting duty gets its own DFS-state budget.
     2. Every starting duty may contribute only a bounded number of new,
@@ -87,10 +89,12 @@ def generate_pricing_pairings(
        only the best top_k_successors are explored.
     4. The selected Top-K successors and the starting duties are shuffled to
        avoid always exploring the same branch first.
+    5. A global DFS-state budget limits the total exploration per pricing call.
 
     There is intentionally no post-pricing filter here. Every new, unique
     pairing with negative reduced cost is kept immediately, until the global
-    max_pairings limit is reached.
+    max_pairings limit or the global DFS-state budget is reached. Pairings
+    found before either limit are returned. Each call gets a fresh budget.
 
     Accepted signatures are added to the supplied set in place; only the new
     pairings are returned.
@@ -104,6 +108,8 @@ def generate_pricing_pairings(
         raise ValueError("max_duties must be at least 1")
     if max_pairings < 1:
         raise ValueError("max_pairings must be at least 1")
+    if max_dfs_states < 1:
+        raise ValueError("max_dfs_states must be at least 1")
     if max_dfs_states_per_start < 1:
         raise ValueError("max_dfs_states_per_start must be at least 1")
     if max_negative_pairings_per_start < 1:
@@ -115,8 +121,11 @@ def generate_pricing_pairings(
     ticker = ProgressTicker("Pricing search")
     searched_paths = 0
 
-    def global_pairing_limit_reached() -> bool:
-        return len(pairings) >= max_pairings
+    def global_budget_exhausted() -> bool:
+        return (
+            len(pairings) >= max_pairings
+            or searched_paths >= max_dfs_states
+        )
 
     def dfs(
         current_duty: Duty,
@@ -130,7 +139,7 @@ def generate_pricing_pairings(
             return
         if local_negative_saved[0] >= max_negative_pairings_per_start:
             return
-        if global_pairing_limit_reached():
+        if global_budget_exhausted():
             return
 
         local_states[0] += 1
@@ -162,7 +171,7 @@ def generate_pricing_pairings(
             return
         if local_negative_saved[0] >= max_negative_pairings_per_start:
             return
-        if global_pairing_limit_reached():
+        if global_budget_exhausted():
             return
 
         feasible_successors: List[Duty] = []
@@ -202,7 +211,7 @@ def generate_pricing_pairings(
                 return
             if local_negative_saved[0] >= max_negative_pairings_per_start:
                 return
-            if global_pairing_limit_reached():
+            if global_budget_exhausted():
                 return
 
     starting_duties: List[Duty] = []
@@ -217,7 +226,7 @@ def generate_pricing_pairings(
     rng.shuffle(starting_duties)
 
     for first_duty in starting_duties:
-        if global_pairing_limit_reached():
+        if global_budget_exhausted():
             break
 
         dfs(

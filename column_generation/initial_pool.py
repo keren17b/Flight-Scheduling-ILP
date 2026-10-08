@@ -66,6 +66,8 @@ def generate_initial_pairings(
         for flight_id, flight in flights.items()
         if not is_padding_flight(flight)
     }
+    # Required flights whose coverage has not yet reached the target.
+    remaining_required_flights = len(coverage_count)
     ticker = ProgressTicker("Initial pairing search")
     global_states = 0
 
@@ -77,10 +79,7 @@ def generate_initial_pairings(
         ]
 
     def enough_required_coverage() -> bool:
-        return all(
-            count >= min_cover_per_flight
-            for count in coverage_count.values()
-        )
+        return remaining_required_flights == 0
 
     def pool_or_global_budget_exhausted() -> bool:
         return (
@@ -95,7 +94,7 @@ def generate_initial_pairings(
         local_states: List[int],
         local_saved: List[int],
     ) -> None:
-        nonlocal global_states
+        nonlocal global_states, remaining_required_flights
 
         if local_states[0] >= max_dfs_states_per_start:
             return
@@ -131,7 +130,10 @@ def generate_initial_pairings(
                 local_saved[0] += 1
                 for flight_id in covered:
                     if flight_id in coverage_count:
-                        coverage_count[flight_id] += 1
+                        previous_count = coverage_count[flight_id]
+                        coverage_count[flight_id] = previous_count + 1
+                        if previous_count < min_cover_per_flight <= coverage_count[flight_id]:
+                            remaining_required_flights -= 1
 
         if len(path) >= max_duties:
             return
