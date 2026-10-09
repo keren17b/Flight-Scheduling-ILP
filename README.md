@@ -80,3 +80,11 @@ If required flights still have positive artificial coverage in the restricted
 master LP, the runner prints those flights and stops before the final ILP.
 Pricing is a bounded heuristic; the final ILP optimizes over the generated
 columns and does not establish global optimality over all possible pairings.
+
+The restored [pricing configuration benchmark](experiments/pricing_configuration_benchmark/README.md)
+compares search budgets using the current pricing implementation and writes CSV
+results. Run it from the repository root:
+
+```powershell
+python experiments/pricing_configuration_benchmark/benchmark_pricing_configuration.py
+```
