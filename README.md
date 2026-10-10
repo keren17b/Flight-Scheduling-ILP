@@ -70,7 +70,8 @@ $env:ILP_PROGRESS = '0'
 
 Results are printed to the terminal: generated column count, restricted master
 LP objective, final solution dimensions, total cost, and selected pairing count.
-The runner does not write result files. To save its terminal output, redirect it:
+Chosen pairings are also written to `results/selected_pairings.json`, with each
+pairing's duties and flights. To save terminal output as well, redirect it:
 
 ```powershell
 .\.venv\Scripts\python.exe -m column_generation.main_column_generation > solver-output.log

@@ -8,9 +8,13 @@ from crew_pairing.config import FLIGHTS_FILE_PATH, HUBS_FILE_PATH
 from column_generation.column_generation import run_column_generation
 from column_generation.config import (
     ARTIFICIAL_TOLERANCE,
-    SELECTION_THRESHOLD,
+    SELECTED_PAIRINGS_PATH,
 )
 from column_generation.master_ilp import solve_ilp
+from column_generation.solution_export import (
+    save_selected_pairings,
+    selected_pairings,
+)
 from run_progress import progress
 
 
@@ -55,12 +59,16 @@ def main() -> None:
         return
     solution, total_cost = ilp_result
     progress("Final ILP finished")
-    selected_count = sum(
-        1 for value in solution.values() if value > SELECTION_THRESHOLD
+    chosen = selected_pairings(pairings, solution)
+    output_path = save_selected_pairings(
+        chosen,
+        SELECTED_PAIRINGS_PATH,
+        total_cost=total_cost,
     )
     print(f"Solution list dimensions: {len(solution)}")
     print(f"Total cost: {total_cost}")
-    print(f"Selected pairings: {selected_count}")
+    print(f"Selected pairings: {len(chosen)}")
+    print(f"Wrote selected pairings to {output_path}")
 
 
 if __name__ == "__main__":
