@@ -6,8 +6,8 @@ from crew_pairing.data_paths import GENERATED_DIR, INPUT_DIR
 
 
 # Active input files.
-FLIGHTS_FILE_PATH = GENERATED_DIR / "week_3_with_start_end_padding.csv"
-HUBS_FILE_PATH = INPUT_DIR / "listOfBases.csv"
+FLIGHTS_FILE_PATH = GENERATED_DIR / "instance1_week_3_with_start_end_padding.csv"
+HUBS_FILE_PATH = INPUT_DIR / "instance1_listOfBases.csv"
 
 # Flight connections.
 DEFAULT_MIN_CONNECTION = timedelta(minutes=30)

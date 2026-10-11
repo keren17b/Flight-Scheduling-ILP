@@ -79,11 +79,12 @@ class RunSummary:
 
 @dataclass
 class BatchSummary:
-    schema_version: int = 2
+    schema_version: int = 3
     batch_id: str = field(default_factory=lambda: uuid4().hex)
     started_at: str = field(default_factory=run_timestamp)
     finished_at: str | None = None
     random_seed: int | None = None
+    seed_strategy: str = "shared_stream"
     requested_runs: int = 5
     completed_runs: int = 0
     runtime_seconds: dict[str, float | None] = field(

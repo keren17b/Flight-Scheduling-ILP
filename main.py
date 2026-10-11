@@ -1,6 +1,7 @@
 """Run several heuristic attempts, saving the best solution and a comparison."""
 
 from time import perf_counter
+from dataclasses import dataclass
 import random
 import sys
 import traceback
@@ -15,12 +16,14 @@ from crew_pairing.config import FLIGHTS_FILE_PATH, HUBS_FILE_PATH
 from crew_pairing.duties import generate_duties
 from crew_pairing.duty_graph import DutyGraph, build_duty_graph
 from crew_pairing.flights_graph import Flight, load_flight_network
-from run_progress import progress
+from run_progress import observe_messages, observe_stages, progress, stage
 
 
 def prepare_graphs() -> tuple[DutyGraph, dict[str, Flight]]:
+    stage("loading data")
     progress(f"Loading flights from {FLIGHTS_FILE_PATH} and building flight graph")
     airports, flights, graph = load_flight_network(FLIGHTS_FILE_PATH, HUBS_FILE_PATH)
+    stage("building graphs")
     progress(f"Flight graph ready: {len(flights):,} flights, {len(airports):,} airports")
     progress("Generating duties")
     duties = generate_duties(graph)
@@ -69,10 +72,34 @@ def _error_details(error: Exception) -> dict[str, str]:
     }
 
 
+@dataclass
+class BatchResult:
+    summary: BatchSummary
+    best: RunSummary | None
+
+
 def main(seed: int | None = 42, num_runs: int = 5) -> RunSummary | None:
+    """Preserve the CLI's advancing shared random stream and return type."""
+    return run_batch(seed, num_runs).best
+
+
+def run_batch(seed: int | None = 42, num_runs: int = 5, *,
+              consecutive_seeds: bool = False, on_progress=None, on_message=None) -> BatchResult:
+    """Shared orchestration, selection and persistence for CLI and local UI.
+
+    The UI opts into independently reproducible seeds seed + zero-based index.
+    Observers receive (stage_name, one_based_run_index_or_None).
+    on_message receives raw ProgressMessage events without elapsed-time prefixes.
+    """
     if not isinstance(num_runs, int) or isinstance(num_runs, bool) or num_runs < 1:
         raise ValueError("num_runs must be a positive integer")
+    with observe_stages(on_progress), observe_messages(on_message):
+        return _run_batch(seed, num_runs, consecutive_seeds)
+
+
+def _run_batch(seed, num_runs, consecutive_seeds) -> BatchResult:
     batch = BatchSummary(requested_runs=num_runs)
+    batch.seed_strategy = "consecutive" if consecutive_seeds else "shared_stream"
     best: RunSummary | None = None
     started = perf_counter()
     try:
@@ -87,9 +114,12 @@ def main(seed: int | None = 42, num_runs: int = 5) -> RunSummary | None:
         rng = random.Random(seed)
         batch.random_seed = seed
         for index in range(num_runs):
+            run_seed = seed + index if consecutive_seeds else seed
+            run_rng = random.Random(run_seed) if consecutive_seeds else rng
+            stage("initial pool", index + 1)
             progress(f"Run {index + 1}/{num_runs}")
             result = run_once(
-                duty_graph, flights, seed=seed, rng=rng, batch_run_index=index + 1,
+                duty_graph, flights, seed=run_seed, rng=run_rng, batch_run_index=index + 1,
             )
             batch.runs.append(compact_run_record(result))
             batch.completed_runs += 1
@@ -114,7 +144,7 @@ def main(seed: int | None = 42, num_runs: int = 5) -> RunSummary | None:
             print(f"Wrote best run result to {path}")
         else:
             print("No feasible integer solution was found in this batch; see the run comparison for each outcome.")
-        return best
+        return BatchResult(batch, best)
     except Exception as error:
         batch.outcome = "execution_error"
         batch.error = _error_details(error)

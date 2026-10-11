@@ -26,7 +26,7 @@ from crew_pairing.pairing_cost import (
 )
 from crew_pairing.pairings import Pairing
 
-from run_progress import progress
+from run_progress import progress, stage
 
 
 def run_column_generation(
@@ -51,6 +51,7 @@ def run_column_generation(
     # ---------------------------------------------------------
     # 1. Generate initial pairing pool
     # ---------------------------------------------------------
+    stage("initial pool")
     progress(
         f"Searching initial pairings "
         f"(limit {max_initial_pairings:,})"
@@ -67,6 +68,7 @@ def run_column_generation(
     if summary is not None:
         summary.column_generation.pairing_pool_size = len(columns)
 
+    stage("column generation")
     with measure_runtime(summary, "column_generation"):
         return _run_cg_iterations(
             graph, flights, columns, existing_pairing_signature,
@@ -102,7 +104,8 @@ def _run_cg_iterations(
 
     progress(
         f"First master LP solved: "
-        f"objective {master_result.objective:,.2f}"
+        f"objective {master_result.objective:,.2f}",
+        lp_objective=master_result.objective,
     )
 
     # ---------------------------------------------------------
@@ -111,7 +114,8 @@ def _run_cg_iterations(
     for iteration in range(1, max_iterations + 1):
         progress(
             f"Iteration {iteration}/{max_iterations}: "
-            f"pricing {len(columns):,} existing columns"
+            f"pricing {len(columns):,} existing columns",
+            iteration=iteration,
         )
 
         # Check whether artificial variables still remain.
@@ -160,7 +164,8 @@ def _run_cg_iterations(
                 f"Iteration {iteration}: "
                 f"pricing attempt "
                 f"{attempt}/{max_pricing_attempts} "
-                "found no new pairings"
+                "found no new pairings",
+                new_pairings=0,
             )
 
         # -----------------------------------------------------
@@ -192,7 +197,8 @@ def _run_cg_iterations(
         # -----------------------------------------------------
         progress(
             f"Iteration {iteration}: "
-            f"found {len(new_pairings):,} new pairings"
+            f"found {len(new_pairings):,} new pairings",
+            new_pairings=len(new_pairings),
         )
 
         for pairing in new_pairings.values():
@@ -222,7 +228,8 @@ def _run_cg_iterations(
         progress(
             f"Iteration {iteration}: "
             f"master LP objective "
-            f"{master_result.objective:,.2f}"
+            f"{master_result.objective:,.2f}",
+            lp_objective=master_result.objective,
         )
 
     # ---------------------------------------------------------

@@ -195,6 +195,8 @@ def load_flight_network(
         airports, flights, adjacency_list
     """
     airports, flights = load_flights(flights_csv_path, hubs_csv_path)
+    from run_progress import stage
+    stage("building graphs")
     graph = build_flight_graph(
         flights.values(),
         min_connection=min_connection,

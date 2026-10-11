@@ -59,6 +59,18 @@ The flight CSV fields are `leg_nb`, `airport_dep`, `date_dep`, `hour_dep`,
 
 ## Run the solver
 
+For the local Streamlit/Plotly demonstration, see [UI instructions and validation](UI/README.md).
+From this repository root:
+
+```powershell
+python -m pip install -r UI/requirements.txt
+python -m streamlit run UI/app.py
+```
+
+The UI delegates execution, best-solution selection, and JSON saving to the
+shared run manager, using consecutive seeds beginning with the entered seed.
+The command-line default described below continues to use the shared RNG stream.
+
 Run from the repository root so package imports resolve:
 
 ```powershell

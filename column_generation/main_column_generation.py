@@ -20,7 +20,7 @@ from column_generation.solution_export import (
     selected_pairings_payload,
     selected_pairings,
 )
-from run_progress import progress
+from run_progress import progress, stage
 
 
 def main(
@@ -69,6 +69,7 @@ def main(
     print(f"Generated columns: {len(pairings)}")
     print(f"Restricted master LP objective: {master_result.objective}")
 
+    stage("final ILP")
     progress(f"Starting final ILP with {len(pairings):,} pairings")
     summary.ilp.attempted = True
     summary.ilp.skip_reason = None
