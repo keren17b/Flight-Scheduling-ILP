@@ -4,6 +4,7 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 SELECTED_PAIRINGS_PATH = REPO_ROOT / "results" / "selected_pairings.json"
+RUN_RESULTS_DIR = REPO_ROOT / "results" / "runs"
 
 
 # initial pairings configurations

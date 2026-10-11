@@ -5,14 +5,15 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Dict, Iterator, List, Tuple
 
-from mosek.fusion import Model, Domain, Expr, ObjectiveSense
+from mosek.fusion import Model, Domain, Expr, ObjectiveSense, SolutionStatus
 
 from crew_pairing.flights_graph import Flight
 from crew_pairing.padding_flights import PADDING_TAG, REQUIRED_TAG, flight_constraint_tags
 from crew_pairing.pairing_cost import PairingCostFunction, current_pairing_cost
 from crew_pairing.pairings import Pairing
 
-from column_generation.config import ARTIFICIAL_COST
+from column_generation.config import ARTIFICIAL_COST, ARTIFICIAL_TOLERANCE
+from column_generation.run_summary import LpSummary, RunSummary
 from run_progress import ProgressTicker, progress
 
 
@@ -21,6 +22,9 @@ class MasterLpResult:
     duals: Dict[str, float]
     objective: float
     artificial_values: Dict[str, float]
+    problem_status: str | None = None
+    solution_status: str | None = None
+    dual_solution_status: str | None = None
 
 
 def _pairing_flight_ids(pairing: Pairing) -> Iterator[str]:
@@ -55,6 +59,8 @@ def solve_master_lp(
     pairings: Dict[str, Pairing],
     flights: Dict[str, Flight],
     cost_function: PairingCostFunction = current_pairing_cost,
+    *,
+    summary: RunSummary | None = None,
 ) -> MasterLpResult:
     """
     Solve the restricted master as a continuous LP.
@@ -62,6 +68,9 @@ def solve_master_lp(
     Required flights are covered exactly once, with an artificial variable
     on each required constraint. Padding flights are covered at most once.
     """
+    if summary is not None:
+        # A failed new solve must not appear to have the previous LP's values.
+        summary.lp = LpSummary()
     flight_ids = list(flights.keys())
     progress(f"Building master LP coverage for {len(pairings):,} pairings and {len(flights):,} flights")
     flight_tags = flight_constraint_tags(flights)
@@ -119,6 +128,25 @@ def solve_master_lp(
         M.solve()
         progress("MOSEK: master LP solve finished")
 
+        problem_status = str(M.getProblemStatus())
+        primal_status = M.getPrimalSolutionStatus()
+        dual_status = M.getDualSolutionStatus()
+        solution_status = str(primal_status)
+        dual_solution_status = str(dual_status)
+        if summary is not None:
+            summary.lp.problem_status = problem_status
+            summary.lp.solution_status = solution_status
+            summary.lp.dual_solution_status = dual_solution_status
+
+        # Keep Fusion's existing optimal-only value access and exceptions.
+        # Record an unavailable LP solution before that access raises.
+        if summary is not None and (
+            primal_status != SolutionStatus.Optimal
+            or dual_status != SolutionStatus.Optimal
+        ):
+            summary.outcome = "solver_no_conclusion"
+            summary.outcome_detail = "MOSEK did not provide the optimal primal and dual LP solution required for CG."
+
         a_level = a.level()
         artificial_values = {
             flight_id: float(a_level[index])
@@ -130,8 +158,18 @@ def solve_master_lp(
             for flight_id, constraint in flight_constraints.items()
         }
 
+        objective = float(M.primalObjValue())
+        if summary is not None:
+            summary.lp.objective_value = objective
+            summary.lp.artificials_above_tolerance = sum(
+                value > ARTIFICIAL_TOLERANCE for value in artificial_values.values()
+            )
+
         return MasterLpResult(
             duals=duals,
-            objective=float(M.primalObjValue()),
+            objective=objective,
             artificial_values=artificial_values,
+            problem_status=problem_status,
+            solution_status=solution_status,
+            dual_solution_status=dual_solution_status,
         )

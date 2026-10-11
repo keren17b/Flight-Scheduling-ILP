@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Dict, Mapping
 
 from column_generation.config import SELECTION_THRESHOLD
+from column_generation.run_summary import run_timestamp
 from crew_pairing.duties import Duty
 from crew_pairing.flights_graph import DATETIME_FORMAT, Flight
 from crew_pairing.pairing_cost import PairingCostFunction, current_pairing_cost
@@ -37,19 +38,29 @@ def save_selected_pairings(
     path = Path(output_path)
     path.parent.mkdir(parents=True, exist_ok=True)
 
+    payload = selected_pairings_payload(pairings, total_cost, cost_function)
+    path.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+    return path
+
+
+def selected_pairings_payload(
+    pairings: Mapping[str, Pairing],
+    total_cost: float | None = None,
+    cost_function: PairingCostFunction = current_pairing_cost,
+) -> dict:
+    """Build the existing export payload for standalone or combined results."""
     ordered = sorted(
         pairings.values(),
         key=lambda pairing: (pairing.start_time, pairing.pairing_id),
     )
-    payload = {
+    return {
+        "generated_at": run_timestamp(),
         "total_cost": total_cost,
         "selected_count": len(ordered),
         "pairings": [
             _pairing_record(pairing, cost_function(pairing)) for pairing in ordered
         ],
     }
-    path.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
-    return path
 
 
 def _pairing_record(pairing: Pairing, cost: float) -> dict:
