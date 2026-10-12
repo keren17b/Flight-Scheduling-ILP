@@ -27,13 +27,16 @@ standard MOSEK license location or set `MOSEKLM_LICENSE_FILE` to its path.
 
 The current local configuration uses these instance 1 input files:
 
-- `data/generated/instance1_week_3_with_start_end_padding.csv`: 428 flights departing
-  January 12-24, 2000. The 227 flights departing January 15-21 are required;
-  the remaining 201 flights are optional start/end padding.
+- `data/generated/archive_instance1_2000-01-14_padding3_flights.csv`: 430 flights
+  departing January 11-23, 2000. The 230 flights departing January 14-20 are
+  required; the remaining 200 flights are optional start/end padding.
 - `data/inputs/instance1_listOfBases.csv`: airport codes and crew-base status.
 
 To use another dataset, set both `FLIGHTS_FILE_PATH` and `HUBS_FILE_PATH` in
 `crew_pairing/config.py` and align its padding dates with the flight schedule.
+The three retained datasets and matching configuration snippets are in
+`data/generated/`, named `archive_instance*_padding3_flights.csv` and
+`archive_instance*_padding3_config.txt`.
 
 `crew_pairing/config.py` contains input paths, crew legality limits, and padding
 intervals.

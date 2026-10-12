@@ -1,0 +1,7 @@
+# Required flights: 2000-01-06 through 2000-01-12; three padding days each side.
+FLIGHTS_FILE_PATH = GENERATED_DIR / 'archive_instance2_2000-01-06_padding3_flights.csv'
+HUBS_FILE_PATH = INPUT_DIR / 'instance2_listOfBases.csv'
+PADDING_DATE_RANGES = (
+    (date(2000, 1, 3), date(2000, 1, 5)),
+    (date(2000, 1, 13), date(2000, 1, 15)),
+)

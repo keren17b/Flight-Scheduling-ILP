@@ -6,8 +6,8 @@ from crew_pairing.data_paths import GENERATED_DIR, INPUT_DIR
 
 
 # Active input files.
-FLIGHTS_FILE_PATH = GENERATED_DIR / "instance1_week_3_with_start_end_padding.csv"
-HUBS_FILE_PATH = INPUT_DIR / "instance1_listOfBases.csv"
+FLIGHTS_FILE_PATH = GENERATED_DIR / "archive_instance1_2000-01-14_padding3_flights.csv"
+HUBS_FILE_PATH =  INPUT_DIR / "instance1_listOfBases.csv"
 
 # Flight connections.
 DEFAULT_MIN_CONNECTION = timedelta(minutes=30)
@@ -27,9 +27,10 @@ MAX_PAIRING_TIME = timedelta(days=5)
 MAX_DUTIES_PER_PAIRING = 5
 
 # Inclusive departure-date intervals for the active dataset.
-# January 15-21 is required; the surrounding days are optional padding.
+# January 14-20 is required; the surrounding days are optional padding.
 # Keep these ranges aligned with FLIGHTS_FILE_PATH above.
+
 PADDING_DATE_RANGES = (
-    (date(2000, 1, 12), date(2000, 1, 14)),
-    (date(2000, 1, 22), date(2000, 1, 24)),
+    (date(2000, 1, 11), date(2000, 1, 13)),
+    (date(2000, 1, 21), date(2000, 1, 23)),
 )

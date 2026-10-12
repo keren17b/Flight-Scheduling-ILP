@@ -72,9 +72,9 @@ Input paths and legality limits are in
 
 The current local configuration uses these instance 1 inputs:
 
-- `data/generated/instance1_week_3_with_start_end_padding.csv`: 428 flights departing
-  January 12-24, 2000, including 227 required flights departing January 15-21
-  and 201 optional padding flights.
+- `data/generated/archive_instance1_2000-01-14_padding3_flights.csv`: 430 flights
+  departing January 11-23, 2000, including 230 required flights departing
+  January 14-20 and 200 optional padding flights.
 - `data/inputs/instance1_listOfBases.csv`: airport codes and crew-base status.
 
 To switch datasets, update both `FLIGHTS_FILE_PATH` and `HUBS_FILE_PATH` in
