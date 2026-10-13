@@ -11,6 +11,8 @@ from time import perf_counter
 from typing import Iterator
 from uuid import uuid4
 
+from crew_pairing.solution_validator import ValidationResult
+
 
 RUN_DATETIME_FORMAT = "%d/%m/%y %H:%M"
 
@@ -42,6 +44,7 @@ class IlpSummary:
     skip_reason: str | None = "run_did_not_reach_final_ilp"
     problem_status: str | None = None
     solution_status: str | None = None
+    validation: ValidationResult | None = None
 
 
 @dataclass

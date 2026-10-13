@@ -4,6 +4,7 @@ import random
 
 from crew_pairing.duty_graph import DutyGraph
 from crew_pairing.flights_graph import Flight
+from crew_pairing.solution_validator import validate_solution
 
 from column_generation.column_generation import run_column_generation
 from column_generation.config import (
@@ -82,6 +83,16 @@ def main(
     solution, total_cost = ilp_result
     progress("Final ILP finished")
     chosen = selected_pairings(pairings, solution)
+    validation = validate_solution(chosen, flights, total_cost)
+    summary.ilp.validation = validation
+    print(f"Solution validation: {'VALID' if validation.is_valid else 'INVALID'}")
+    if not validation.is_valid:
+        for error in validation.errors:
+            print(f"  {error}")
+        summary.integer_solution = None
+        summary.outcome = "solution_validation_failed"
+        summary.outcome_detail = "Selected integer solution failed independent validation; see ilp.validation.errors."
+        return summary
     summary.integer_solution = IntegerSolutionSummary(total_cost, len(chosen))
     # Reuse the existing pairing serializer inside the single run result.
     payload = selected_pairings_payload(chosen, total_cost=total_cost)

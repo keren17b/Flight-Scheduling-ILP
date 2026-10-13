@@ -1,6 +1,6 @@
 # Project Planning and Flow - Airline Crew Pairing
 
-Updated October 11, 2026, for the current column-generation implementation.
+Updated October 13, 2026, to include independent post-ILP solution validation.
 Restored from the project's earlier flow document and revised against the
 current code. See [README.md](README.md) for installation and run instructions.
 
@@ -15,8 +15,10 @@ The root runner prepares the graphs once, then performs five attempts by
 default using one shared `random.Random(42)` instance. Each attempt generates
 a fresh bounded initial pairing pool, adds promising pairings through heuristic
 pricing and a restricted master LP, and solves a final binary ILP over the
-resulting columns using MOSEK Fusion. Results return to the root runner in memory.
-It saves the cheapest feasible integer solution and one comparison of all attempts.
+resulting columns using MOSEK Fusion. Every attempt that produces an ILP solution
+validates its selected pairings before accepting or serializing them. Results
+return to the root runner in memory. It saves the cheapest validated integer
+solution and one comparison of all attempts.
 
 The batch flow is:
 
@@ -27,10 +29,10 @@ flowchart TD
     C --> D[Create one Random instance with seed 42]
     D --> E[Run next attempt with shared graphs and RNG]
     E --> F[Collect summary and solution if available]
-    F --> G[Keep cheapest feasible integer solution]
+    F --> G[Keep cheapest validated integer solution]
     G --> H{All five attempts completed?}
     H -->|No| E
-    H -->|Yes| I{Any feasible integer solution?}
+    H -->|Yes| I{Any validated integer solution?}
     I -->|Yes| J[Save best result with full chosen pairings]
     J --> K[Save one comparison of all run summaries]
     I -->|No| K
@@ -52,7 +54,11 @@ flowchart TD
     F -->|Iteration limit reached| J
     J -->|Above tolerance| K[Return summary with LP artificials remaining]
     J -->|Within tolerance| L[Final binary ILP]
-    L -->|Feasible or optimal solution| M[Return summary and selected pairing records]
+    L -->|Feasible or optimal solution| M[Extract selected Pairing objects]
+    M --> P[Validate coverage, legality, and cost against input flights]
+    P --> Q{Validation passed?}
+    Q -->|VALID| R[Prepare pairing records and return accepted solution summary]
+    Q -->|INVALID| S[Print all errors and return validation-failure summary without a solution]
     L -->|Infeasible within generated pool| N[Return generated-pool infeasibility summary]
     L -->|No conclusion| O[Record statuses and error, then return summary]
 ```
@@ -72,9 +78,9 @@ Input paths and legality limits are in
 
 The current local configuration uses these instance 1 inputs:
 
-- `data/generated/archive_instance1_2000-01-14_padding3_flights.csv`: 430 flights
-  departing January 11-23, 2000, including 230 required flights departing
-  January 14-20 and 200 optional padding flights.
+- `data/generated/instance1_week_3_with_start_end_padding.csv`: 428 flights
+  departing January 12-24, 2000, including 227 required flights departing
+  January 15-21 and 201 optional padding flights.
 - `data/inputs/instance1_listOfBases.csv`: airport codes and crew-base status.
 
 To switch datasets, update both `FLIGHTS_FILE_PATH` and `HUBS_FILE_PATH` in
@@ -204,7 +210,7 @@ cost(pairing) = (pairing.rest + pairing.sitting_time).total_seconds() / 3600
 ```
 
 Pairings store the time components rather than a fixed cost. LP, pricing, ILP,
-and export functions accept a replaceable `cost_function`. Use the same function
+validation, and export functions accept a replaceable `cost_function`. Use the same function
 through those stages when introducing another objective. Pricing's successor
 ranking remains based on the default rest-and-sitting model; complete pairing
 acceptance uses the supplied cost function.
@@ -312,13 +318,67 @@ minimize sum(cost[p] * x[p])
 ```
 
 It returns `(solution, total_cost)`, where `solution` maps pairing IDs to numeric
-selection values. Values above `SELECTION_THRESHOLD = 0.5` count as selected.
+selection values and `total_cost` is MOSEK's actual primal objective, read with
+`Model.primalObjValue()`. It is not a separate sum of selected pairing costs;
+the validator independently recalculates those costs for comparison. The return
+format remains the same two-value tuple. Values above
+`SELECTION_THRESHOLD = 0.5` count as selected.
 If MOSEK reports primal infeasibility, it prints a message and returns `None`.
 Other solution statuses without a feasible or optimal primal solution raise an
 error. Infeasibility of this restricted ILP does not establish infeasibility
 over all possible legal pairings.
 
-## 10. Runner and Result Export
+## 10. Independent Post-ILP Solution Validation
+
+Implementation: [crew_pairing/solution_validator.py](crew_pairing/solution_validator.py),
+`validate_solution(selected_pairings, flights, total_cost, cost_function=current_pairing_cost)`.
+
+In [column_generation/main_column_generation.py](column_generation/main_column_generation.py),
+validation runs immediately after `chosen = selected_pairings(pairings, solution)`.
+It runs for every attempt that produces an ILP solution, including UI-started
+runs, before creating `IntegerSolutionSummary`, serializing selected pairings,
+or marking the attempt successful. If an attempt stops before producing an ILP
+solution, there is no solution to validate and `ilp.validation` remains `null`.
+
+The validator inspects only selected pairings. It uses the original flight data
+as the source of truth and checks:
+
+- Every required flight is covered exactly once, and every padding flight at
+  most once, using the existing padding classification.
+- Flight IDs do not repeat within a pairing, including across duties, or across
+  selected pairings. Every referenced ID exists, and its flight data matches
+  the original input.
+- Pairings start at a crew base, return to the same base, contain duties, and
+  satisfy the configured duty-count and elapsed pairing-duration limits.
+- Duties contain flights with positive durations in chronological order,
+  connect at the same airport, and satisfy the configured minimum/maximum
+  connection times, elapsed duty time, actual flight time, and flight count.
+- Consecutive duties connect at the same airport and satisfy the configured
+  minimum rest and maximum layover limits.
+- Duty and pairing time components can be reconstructed consistently from the
+  original flights. Temporary copies are passed to the existing cost function;
+  calculated costs and the solver objective must be finite. The independently
+  recalculated total must match the objective within `1e-6` absolute or `1e-9`
+  relative tolerance.
+
+All scheduling limits come from `crew_pairing/config.py`. Validation does not
+use MOSEK, run optimization, or modify selected pairings or input flights. It
+collects all detectable failures in `ValidationResult(is_valid, errors)` and
+stores that object in `summary.ilp.validation`.
+
+For a valid solution, the runner prints `Solution validation: VALID`, prepares
+the normal solution payload, sets `outcome = "integer_solution_found"`, and
+continues with the existing cost and selected-pairing output. This attempt is
+eligible for Best Run selection.
+
+For an invalid solution, the runner prints `Solution validation: INVALID` and
+every error, sets `outcome = "solution_validation_failed"`, leaves
+`integer_solution = None`, and returns before preparing pairing records. It
+cannot become Best Run. The batch retains its report and continues later attempts.
+Validation checks correctness under the configured rules; it does not certify
+global optimality or add scheduling rules.
+
+## 11. Runner and Result Export
 
 The entry point is [main.py](main.py), with five attempts sharing one
 `random.Random(42)` instance by default.
@@ -332,10 +392,13 @@ The root runner loads data, builds the flight graph, generates duties, and
 builds the duty graph once for the batch. For each attempt it passes the prepared
 duty graph, flights, the shared RNG, and a fresh run summary to
 [column_generation/main_column_generation.py](column_generation/main_column_generation.py),
-which handles CG, the artificial-coverage check, final ILP, and selected pairing
-records. Each attempt returns its result in memory. The root runner keeps the
-cheapest feasible integer solution and saves its full combined result at the
-end, plus one compact comparison of all attempts. The RNG is seeded once and
+which handles CG, the artificial-coverage check, final ILP, independent validation,
+and accepted selected-pairing records. `RunSummary` is a dataclass; a fresh
+`RunSummary()` object holds each attempt's statuses, timings, validation report,
+and accepted solution when available. Each attempt returns its result in memory.
+The root runner keeps the cheapest validated integer solution and saves its
+full combined result at the end, plus one compact comparison of all attempts.
+The RNG is seeded once and
 continues its stream across attempts; summaries record the shared seed and
 one-based batch run index. Replaying a batch with the same seed and run order
 reproduces its random sequence. A later attempt needs the preceding RNG state;
@@ -349,11 +412,12 @@ Progress messages are controlled by `ILP_PROGRESS`; set it to `0` to silence the
 
 [column_generation/solution_export.py](column_generation/solution_export.py)
 maps selected IDs back to `Pairing` objects and serializes the selected pairing
-records. The root runner writes `results/runs/best_<batch_id>.json` for the cheapest
-feasible solution, combining its summary and `integer_solution.pairings`, and
+records after validation succeeds. The root runner writes
+`results/runs/best_<batch_id>.json` for the cheapest validated solution,
+combining its summary and `integer_solution.pairings`, and
 `results/runs/comparison_<batch_id>.json` for all compact run summaries.
 Selection compares final integer cost, measured in rest plus sitting hours;
-equal costs keep the first feasible run. If no feasible solution is found,
+equal costs keep the first validated run. If no accepted solution is found,
 only the comparison is written. No per-attempt files or separate selected-pairing
 export are written by this runner. The comparison excludes full pairing records
 and includes the winning run ID, cost, and full-result path, or `null`.
@@ -367,33 +431,72 @@ The comparison records shared graph preparation time once at batch level.
 Each run records `build_graphs: 0`, plus separate `initial_pool`,
 `column_generation`, `final_ilp`, and `total` runtimes in seconds. CG time
 includes the first LP, pricing and its retries, and all LP re-solves.
-Run total includes preparing the pairing records and excludes shared setup and
-JSON writing. Batch total includes setup, attempts, and saving the best result;
+Run total includes validation and preparing the pairing records and excludes
+shared setup and JSON writing. Batch total includes setup, attempts, and saving the best result;
 it is measured before writing the comparison. Interrupted phases retain their
 elapsed time and unstarted phases are `null`.
 The summary includes completed CG iterations, pairing-pool size, CG termination
 reason, solver statuses, LP objective and artificial count, ILP attempted/skipped
-reason, integer cost and count when available, outcome, and error details.
+reason, independent validation result, integer cost and count when available,
+outcome, and error details. The existing `final_ilp` timing measures the solver
+call; validation occurs afterward and is included in run total time.
 The initial LP is not an iteration; a completed empty-pricing pass counts as
 one iteration, and interrupted iterations do not. Each chosen pairing
 includes its ID, cost, airports, times, duration components, and nested duties
 and flights. Pairings are sorted by start time and then ID. Flight and pairing
 timestamps use `YYYY-MM-DD HH:MM`; durations are Python `timedelta` strings.
 
-The runner also prints column count, LP objective, solution dimensions, total
-cost, selected pairing count, and the output path. The main result is JSON;
+The runner also prints column count, LP objective, validation status and any
+validation errors, accepted solution dimensions, total cost, selected pairing
+count, and the output path. The main result is JSON;
 the separate pricing benchmark writes CSV files.
 
 Runs without a solution remain in the single comparison file, distinguishing
 remaining LP artificials, integer infeasibility within the generated pool,
-solver termination without a conclusion, and execution errors.
+solver termination without a conclusion, validation failures, and execution errors.
 The corresponding outcome codes are `lp_artificials_remaining`,
-`generated_pool_integer_infeasible`, `solver_no_conclusion`, and `execution_error`.
+`generated_pool_integer_infeasible`, `solver_no_conclusion`,
+`solution_validation_failed`, and `execution_error`.
 Successful runs use `integer_solution_found`. None of the first three failure
 outcomes proves that the full problem is infeasible. Error records contain the
 exception type, message, and traceback alongside any available measurements.
 
-## 11. File Responsibilities
+### Validation fields in JSON
+
+Both the winning run's full JSON and each compact run record in the comparison
+include `ilp.validation`. The existing dataclass serialization converts a
+completed validation report into this object:
+
+```json
+{
+  "ilp": {
+    "validation": {
+      "is_valid": true,
+      "errors": []
+    }
+  }
+}
+```
+
+Rejected attempts have `is_valid: false` and the collected error messages, with
+`outcome: "solution_validation_failed"` and `integer_solution: null`. Attempts
+that never reached validation have `validation: null`. These are additive fields
+in newly generated reports; existing JSON files are not rewritten. No separate
+validation output file is created.
+
+### Existing UI behavior
+
+The local UI calls the same batch runner, so its attempts pass through the same
+validation gate. It continues displaying the accepted Best Run's cost, pairing
+count, timeline, base filter, and duty/flight details. The downloaded solution
+JSON includes the validation report, while the display reads the existing
+solution fields. Validation introduces no new UI fields or layout changes.
+
+Detailed validation messages appear in the terminal and comparison JSON. If no
+attempt is accepted, the UI shows its existing
+`No run produced a feasible integer solution.` warning and displays no solution.
+
+## 12. File Responsibilities
 
 | File | Responsibility |
 | --- | --- |
@@ -405,6 +508,7 @@ exception type, message, and traceback alongside any available measurements.
 | [crew_pairing/pairings.py](crew_pairing/pairings.py) | Pairing model, construction, signatures |
 | [crew_pairing/pairing_cost.py](crew_pairing/pairing_cost.py) | Default cost and transition scoring cost |
 | [crew_pairing/padding_flights.py](crew_pairing/padding_flights.py) | Required/padding classification |
+| [crew_pairing/solution_validator.py](crew_pairing/solution_validator.py) | Independent selected-solution coverage, legality, and objective checks |
 | [column_generation/config.py](column_generation/config.py) | Search budgets, seed, solver tolerances, output path |
 | [column_generation/initial_pool.py](column_generation/initial_pool.py) | Bounded initial pairing search |
 | [column_generation/master_lp.py](column_generation/master_lp.py) | Coverage index, restricted LP, duals, artificials |
@@ -413,14 +517,15 @@ exception type, message, and traceback alongside any available measurements.
 | [column_generation/master_ilp.py](column_generation/master_ilp.py) | Final binary selection over generated columns |
 | [column_generation/solution_export.py](column_generation/solution_export.py) | Selected objects and JSON serialization |
 | [column_generation/run_summary.py](column_generation/run_summary.py) | Run/batch summary models, timestamps, phase timing, compact comparison records, and unique JSON files |
-| [column_generation/main_column_generation.py](column_generation/main_column_generation.py) | CG, final ILP, and selected pairing records for prepared inputs |
+| [column_generation/main_column_generation.py](column_generation/main_column_generation.py) | CG, final ILP, validation before acceptance, and selected pairing records for prepared inputs |
 | [main.py](main.py) | Shared graphs and RNG, repeated attempts, best selection, and comparison output |
 | [run_progress.py](run_progress.py) | Progress messages and tickers |
 
-## 12. Current Status and Further Work
+## 13. Current Status and Further Work
 
 The flight graph, duty DFS, duty graph, pairing model, initial pool, restricted
-LP, pricing, column-generation loop, final ILP, and JSON export are implemented.
+LP, pricing, column-generation loop, final ILP, independent solution validation,
+and JSON export are implemented.
 The previous standalone matrix-based solver path is no longer part of the
 current pipeline. This document describes the rules currently encoded in the
 project; airline-specific regulatory coverage requires separate validation.
@@ -437,8 +542,9 @@ Possible next steps are to measure runtime and solution quality across datasets,
 improve graph preparation and search where profiling justifies it, and compare
 heuristic pricing with an exact method if an optimality certificate is needed.
 Run summaries and batch comparisons now retain successful and failed attempts.
-A future UI can read these results to compare statuses, runtimes, and solution
-costs. Assigning individual crew members to selected pairings would be a
+The existing local UI displays the accepted best solution; detailed per-attempt
+statuses and validation reports remain in the JSON comparison. Assigning
+individual crew members to selected pairings would be a
 separate crew-scheduling extension.
 
 Each stage receives and returns explicit models or result objects. Keeping

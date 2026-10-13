@@ -46,7 +46,7 @@ class OptimizationJob:
             # Import lazily: viewing saved JSON does not load MOSEK or graphs.
             from main import run_batch
             batch = run_batch(
-                self.initial_seed, self.run_count, consecutive_seeds=True,
+                self.initial_seed, self.run_count, consecutive_seeds=False,
                 on_progress=self._progress,
             )
             path = batch.summary.best_solution_path

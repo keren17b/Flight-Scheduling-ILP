@@ -7,7 +7,6 @@ from typing import Dict, Tuple
 from mosek.fusion import Model, Domain, Expr, ObjectiveSense, ProblemStatus, SolutionStatus, AccSolutionStatus
 
 from crew_pairing.flights_graph import Flight
-from column_generation.config import SELECTION_THRESHOLD
 from column_generation.master_lp import _coverage_index
 from column_generation.run_summary import RunSummary
 from crew_pairing.padding_flights import PADDING_TAG, flight_constraint_tags
@@ -30,6 +29,7 @@ def solve_ilp(
     at most once. Coverage is built from flight IDs inside each pairing;
     the dense pairing-flight matrix is not built.
     Return None if the currently generated pairing pool is integer-infeasible.
+    Otherwise return variable levels and MOSEK's primal objective value.
     """
     flight_ids = list(flights.keys())
     progress(f"Building final ILP coverage for {len(pairings):,} pairings and {len(flights):,} flights")
@@ -93,12 +93,10 @@ def solve_ilp(
 
         solution_level = x.level()
 
-        total_cost = 0.0
+        total_cost = float(M.primalObjValue())
         solution: Dict[str, float] = {}
         for index, pairing_id in enumerate(pairing_ids):
             value = float(solution_level[index])
             solution[pairing_id] = value
-            if value > SELECTION_THRESHOLD:
-                total_cost += costs[index]
 
         return solution, total_cost

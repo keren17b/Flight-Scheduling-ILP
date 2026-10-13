@@ -87,7 +87,8 @@ def run_batch(seed: int | None = 42, num_runs: int = 5, *,
               consecutive_seeds: bool = False, on_progress=None, on_message=None) -> BatchResult:
     """Shared orchestration, selection and persistence for CLI and local UI.
 
-    The UI opts into independently reproducible seeds seed + zero-based index.
+    The CLI and UI use one seeded random stream that advances across attempts.
+    consecutive_seeds optionally starts each attempt with seed + zero-based index.
     Observers receive (stage_name, one_based_run_index_or_None).
     on_message receives raw ProgressMessage events without elapsed-time prefixes.
     """
