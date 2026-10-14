@@ -4,23 +4,19 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime, timedelta
-from pathlib import Path
 from typing import Dict, List, Tuple
 
-from flights_graph import (
-    DEFAULT_MAX_CONNECTION,
-    DEFAULT_MIN_CONNECTION,
+from crew_pairing.config import (
+    MAX_ACTUAL_FLIGHT_TIME,
+    MAX_ELAPSED_DUTY_TIME,
+    MAX_FLIGHTS_PER_DUTY,
+)
+from crew_pairing.flights_graph import (
     Airport,
     Flight,
     FlightGraph,
-    load_flight_network,
 )
-
-
-# Duty-level limits. These are separate from the connection-time limits in flights_graph.py.
-MAX_ELAPSED_DUTY_TIME = timedelta(hours=12)
-MAX_FLIGHTS_PER_DUTY = 5
-MAX_ACTUAL_FLIGHT_TIME = timedelta(hours=8)
+from run_progress import ProgressTicker
 
 
 @dataclass(frozen=True)
@@ -84,6 +80,8 @@ def generate_duties(
         raise ValueError("max_actual_flight_time must be positive")
 
     duties: Dict[str, Duty] = {}
+    ticker = ProgressTicker("Duty search")
+    searched_paths = 0
 
     def dfs(
         current_flight: Flight,
@@ -91,6 +89,10 @@ def generate_duties(
         flight_time: timedelta,
         sitting_time: timedelta,
     ) -> None:
+        nonlocal searched_paths
+        searched_paths += 1
+        if searched_paths % 10_000 == 0:
+            ticker.update(searched_paths, f"{len(duties):,} duties found")
         total_time = flight_time + sitting_time
         duty_id = f"D{len(duties) + 1}"
         duties[duty_id] = Duty(

@@ -1,0 +1,175 @@
+"""Restricted Master LP for column generation."""
+
+from __future__ import annotations
+
+from dataclasses import dataclass
+from typing import Dict, Iterator, List, Tuple
+
+from mosek.fusion import Model, Domain, Expr, ObjectiveSense, SolutionStatus
+
+from crew_pairing.flights_graph import Flight
+from crew_pairing.padding_flights import PADDING_TAG, REQUIRED_TAG, flight_constraint_tags
+from crew_pairing.pairing_cost import PairingCostFunction, current_pairing_cost
+from crew_pairing.pairings import Pairing
+
+from column_generation.config import ARTIFICIAL_COST, ARTIFICIAL_TOLERANCE
+from column_generation.results_to_json import LpSummary, RunSummary
+from run_progress import ProgressTicker, progress
+
+
+@dataclass(frozen=True)
+class MasterLpResult:
+    duals: Dict[str, float]
+    objective: float
+    artificial_values: Dict[str, float]
+    problem_status: str | None = None
+    solution_status: str | None = None
+    dual_solution_status: str | None = None
+
+
+def _pairing_flight_ids(pairing: Pairing) -> Iterator[str]:
+    return (
+        flight.flight_id
+        for duty in pairing.duties
+        for flight in duty.flights
+    )
+
+
+def _coverage_index(
+    pairings: Dict[str, Pairing],
+    flight_ids: List[str],
+    cost_function: PairingCostFunction,
+) -> Tuple[List[str], List[float], Dict[str, List[int]]]:
+    pairing_ids = list(pairings.keys())
+    covering = {flight_id: [] for flight_id in flight_ids}
+    costs: List[float] = []
+    ticker = ProgressTicker("Coverage index")
+
+    for pairing_index, pairing in enumerate(pairings.values()):
+        costs.append(cost_function(pairing))
+        for flight_id in _pairing_flight_ids(pairing):
+            if flight_id in covering:
+                covering[flight_id].append(pairing_index)
+        ticker.update(pairing_index + 1, f"of {len(pairings):,} pairings")
+
+    return pairing_ids, costs, covering
+
+
+def solve_master_lp(
+    pairings: Dict[str, Pairing],
+    flights: Dict[str, Flight],
+    cost_function: PairingCostFunction = current_pairing_cost,
+    *,
+    summary: RunSummary | None = None,
+) -> MasterLpResult:
+    """
+    Solve the restricted master as a continuous LP.
+
+    Required flights are covered exactly once, with an artificial variable
+    on each required constraint. Padding flights are covered at most once.
+    """
+    if summary is not None:
+        # A failed new solve must not appear to have the previous LP's values.
+        summary.lp = LpSummary()
+    flight_ids = list(flights.keys())
+    progress(f"Building master LP coverage for {len(pairings):,} pairings and {len(flights):,} flights")
+    flight_tags = flight_constraint_tags(flights)
+    pairing_ids, costs, covering = _coverage_index(
+        pairings,
+        flight_ids,
+        cost_function,
+    )
+
+    required_ids = [
+        flight_id
+        for flight_id, tag in zip(flight_ids, flight_tags)
+        if tag == REQUIRED_TAG
+    ]
+    artificial_index = {
+        flight_id: index for index, flight_id in enumerate(required_ids)
+    }
+
+    with Model("restricted_master_lp") as M:
+        x = M.variable("x", len(pairing_ids), Domain.inRange(0.0, 1.0))
+        a = M.variable("artificial", len(required_ids), Domain.inRange(0.0, 1.0))
+
+        M.objective(
+            "minimize_cost",
+            ObjectiveSense.Minimize,
+            Expr.add(
+                Expr.dot(costs, x),
+                Expr.mul(ARTIFICIAL_COST, Expr.sum(a)),
+            ),
+        )
+
+        flight_constraints = {}
+        for flight_id, tag in zip(flight_ids, flight_tags):
+            covering_indices = covering[flight_id]
+            if covering_indices:
+                coverage = Expr.sum(x.pick(covering_indices))
+            else:
+                coverage = Expr.constTerm(0.0)
+
+            if tag == PADDING_TAG:
+                flight_constraints[flight_id] = M.constraint(
+                    f"flight_{flight_id}_{PADDING_TAG}",
+                    coverage,
+                    Domain.lessThan(1.0),
+                )
+                continue
+
+            flight_constraints[flight_id] = M.constraint(
+                f"flight_{flight_id}_covered_once",
+                Expr.add(coverage, a.index(artificial_index[flight_id])),
+                Domain.equalsTo(1.0),
+            )
+
+        progress("MOSEK: solving master LP")
+        M.solve()
+        progress("MOSEK: master LP solve finished")
+
+        problem_status = str(M.getProblemStatus())
+        primal_status = M.getPrimalSolutionStatus()
+        dual_status = M.getDualSolutionStatus()
+        solution_status = str(primal_status)
+        dual_solution_status = str(dual_status)
+        if summary is not None:
+            summary.lp.problem_status = problem_status
+            summary.lp.solution_status = solution_status
+            summary.lp.dual_solution_status = dual_solution_status
+
+        # Keep Fusion's existing optimal-only value access and exceptions.
+        # Record an unavailable LP solution before that access raises.
+        if summary is not None and (
+            primal_status != SolutionStatus.Optimal
+            or dual_status != SolutionStatus.Optimal
+        ):
+            summary.outcome = "solver_no_conclusion"
+            summary.outcome_detail = "MOSEK did not provide the optimal primal and dual LP solution required for CG."
+
+        a_level = a.level()
+        artificial_values = {
+            flight_id: float(a_level[index])
+            for flight_id, index in artificial_index.items()
+        }
+
+        duals = {
+            flight_id: float(constraint.dual()[0])
+            for flight_id, constraint in flight_constraints.items()
+        }
+
+        objective = float(M.primalObjValue())
+        if summary is not None:
+            summary.lp.objective_value = objective
+            summary.lp.artificials_above_tolerance = sum(
+                value > ARTIFICIAL_TOLERANCE for value in artificial_values.values()
+            )
+
+        return MasterLpResult(
+            duals=duals,
+            objective=objective,
+            artificial_values=artificial_values,
+            problem_status=problem_status,
+            solution_status=solution_status,
+            dual_solution_status=dual_solution_status,
+        )

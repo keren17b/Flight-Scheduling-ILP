@@ -3,16 +3,15 @@
 from __future__ import annotations
 
 from datetime import timedelta
-from typing import Dict, Iterable, List, Mapping
+from typing import Dict, Iterable, List
 
-from duties import Duty
+from crew_pairing.config import (
+    MAX_LAYOVER_BETWEEN_DUTIES,
+    MIN_REST_BETWEEN_DUTIES,
+)
+from crew_pairing.duties import Duty
+from run_progress import ProgressTicker
 
-
-# Legality / safety: minimum rest required between consecutive duties.
-MIN_REST_BETWEEN_DUTIES = timedelta(hours=12)
-
-# Modeling / pruning: maximum layover allowed when linking two duties.
-MAX_LAYOVER_BETWEEN_DUTIES = timedelta(hours=48)
 
 DutyGraph = Dict[Duty, List[Duty]]
 
@@ -55,12 +54,14 @@ def build_duty_graph(
     duty_list = list(duties)
 
     graph: DutyGraph = {duty: [] for duty in duty_list}
+    ticker = ProgressTicker("Duty graph")
 
-    for first in duty_list:
+    for index, first in enumerate(duty_list, start=1):
         for second in duty_list:
             if first is second:
                 continue
             if can_connect_duties(first, second, min_rest, max_layover):
                 graph[first].append(second)
+        ticker.update(index, f"of {len(duty_list):,} duties")
 
     return graph

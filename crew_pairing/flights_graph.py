@@ -6,11 +6,10 @@ import csv
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Dict, Iterable, List, Mapping, Optional
+from typing import Dict, Iterable, List, Mapping
 
-
-DEFAULT_MIN_CONNECTION = timedelta(minutes=30)
-DEFAULT_MAX_CONNECTION = timedelta(hours=8)
+from crew_pairing.config import DEFAULT_MAX_CONNECTION, DEFAULT_MIN_CONNECTION
+from run_progress import ProgressTicker
 
 FLIGHT_ID_FIELD = "leg_nb"
 ORIGIN_FIELD = "airport_dep"
@@ -90,6 +89,9 @@ def load_flights(
     """
     Load flights and airports from CSV files.
 
+    Flight IDs must be unique strings and flight durations strictly positive.
+    Duplicate IDs or nonpositive durations raise ValueError.
+
     Returns:
         airports: unique airports keyed by port_name
         flights: flights keyed by flight_id
@@ -107,6 +109,10 @@ def load_flights(
             row = _clean_row(raw_row)
 
             flight_id = row[FLIGHT_ID_FIELD]
+            if flight_id in flights:
+                raise ValueError(
+                    f"Duplicate flight ID {flight_id!r} in {flights_csv_path}"
+                )
             origin = _get_or_create_airport(airports, row[ORIGIN_FIELD], hub_status)
             destination = _get_or_create_airport(airports, row[DESTINATION_FIELD], hub_status)
             departure_datetime = _parse_datetime(
@@ -117,6 +123,11 @@ def load_flights(
                 row[ARRIVAL_DATE_FIELD],
                 row[ARRIVAL_TIME_FIELD],
             )
+            if arrival_datetime <= departure_datetime:
+                raise ValueError(
+                    f"Flight {flight_id!r} must have a strictly positive duration: "
+                    f"arrival {arrival_datetime} must be after departure {departure_datetime}"
+                )
 
             flights[flight_id] = Flight(
                 flight_id=flight_id,
@@ -158,13 +169,15 @@ def build_flight_graph(
     """
     flight_list = list(flights)
     graph: FlightGraph = {flight: [] for flight in flight_list}
+    ticker = ProgressTicker("Flight graph")
 
-    for first in flight_list:
+    for index, first in enumerate(flight_list, start=1):
         for second in flight_list:
             if first is second:
                 continue
             if can_connect(first, second, min_connection, max_connection):
                 graph[first].append(second)
+        ticker.update(index, f"of {len(flight_list):,} flights")
 
     return graph
 
@@ -182,6 +195,8 @@ def load_flight_network(
         airports, flights, adjacency_list
     """
     airports, flights = load_flights(flights_csv_path, hubs_csv_path)
+    from run_progress import stage
+    stage("building graphs")
     graph = build_flight_graph(
         flights.values(),
         min_connection=min_connection,
