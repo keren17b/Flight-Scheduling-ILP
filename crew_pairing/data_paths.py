@@ -4,5 +4,5 @@ from pathlib import Path
 
 
 DATA_DIR = Path(__file__).resolve().parents[1] / "data"
-INPUT_DIR = DATA_DIR / "inputs"
-GENERATED_DIR = DATA_DIR / "generated"
+BASES_DIR = DATA_DIR / "bases"
+FLIGHTS_DIR = DATA_DIR / "flights"

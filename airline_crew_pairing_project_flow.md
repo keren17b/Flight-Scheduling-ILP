@@ -78,10 +78,10 @@ Input paths and legality limits are in
 
 The current local configuration uses these instance 1 inputs:
 
-- `data/generated/instance1_week_3_with_start_end_padding.csv`: 428 flights
+- `data/flights/instance1_week_3_with_start_end_padding.csv`: 428 flights
   departing January 12-24, 2000, including 227 required flights departing
   January 15-21 and 201 optional padding flights.
-- `data/inputs/instance1_listOfBases.csv`: airport codes and crew-base status.
+- `data/bases/instance1_listOfBases.csv`: airport codes and crew-base status.
 
 To switch datasets, update both `FLIGHTS_FILE_PATH` and `HUBS_FILE_PATH` in
 `crew_pairing/config.py` and align the padding dates with the chosen schedule.

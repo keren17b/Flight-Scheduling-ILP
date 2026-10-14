@@ -107,22 +107,22 @@ The project uses flight data from the GERAD dataset.
 
 The current runner reads:
 
-- [data/generated/instance1_week_3_with_start_end_padding.csv](data/generated/instance1_week_3_with_start_end_padding.csv)
-- [data/inputs/instance1_listOfBases.csv](data/inputs/instance1_listOfBases.csv)
+- [data/flights/instance1_week_3_with_start_end_padding.csv](data/flights/instance1_week_3_with_start_end_padding.csv)
+- [data/bases/instance1_listOfBases.csv](data/bases/instance1_listOfBases.csv)
 
 With the current assignments in `crew_pairing/config.py`, the required planning
 period is January 15-21, 2000. The active CSV contains **428 flights** departing
 January 12-24: **227 required flights** and **201 optional padding flights**,
 with three days of padding on each side.
 
-Three archive datasets are also retained in `data/generated/`. Their matching
+Three archive datasets are also retained in `data/flights/`. Their matching
 `*_padding3_config.txt` snippets select the archived CSV and its padding dates:
 
 | Archive dataset | Required departure dates (January 2000) | Required / total flights | Config snippet |
 | --- | --- | --- | --- |
-| [Instance 1 archive](data/generated/archive_instance1_2000-01-14_padding3_flights.csv) | 14-20 | 230 / 430 | [Config](data/generated/archive_instance1_2000-01-14_padding3_config.txt) |
-| [Instance 2 archive](data/generated/archive_instance2_2000-01-06_padding3_flights.csv) | 6-12 | 353 / 650 | [Config](data/generated/archive_instance2_2000-01-06_padding3_config.txt) |
-| [Instance 2 archive](data/generated/archive_instance2_2000-01-11_padding3_flights.csv) | 11-17 | 353 / 652 | [Config](data/generated/archive_instance2_2000-01-11_padding3_config.txt) |
+| [Instance 1 archive](data/flights/archive_instance1_2000-01-14_padding3_flights.csv) | 14-20 | 230 / 430 | [Config](data/flights/archive_instance1_2000-01-14_padding3_config.txt) |
+| [Instance 2 archive](data/flights/archive_instance2_2000-01-06_padding3_flights.csv) | 6-12 | 353 / 650 | [Config](data/flights/archive_instance2_2000-01-06_padding3_config.txt) |
+| [Instance 2 archive](data/flights/archive_instance2_2000-01-11_padding3_flights.csv) | 11-17 | 353 / 652 | [Config](data/flights/archive_instance2_2000-01-11_padding3_config.txt) |
 
 Each archived schedule also has three days of padding on each side. The
 230-required / 430-total figures describe the instance 1 archive above; the
@@ -392,8 +392,8 @@ generator across pricing iterations and retries.
 | `crew_pairing/` | Flight loading, connection graphs, duties, pairings, legality settings, costs, and independent solution validation |
 | `column_generation/` | Initial pairing pool, master LP, pricing search, column generation loop, and final ILP |
 | `UI/` | Streamlit app, background optimization job, and timeline |
-| `data/inputs/` | Crew-base files for the retained instances |
-| `data/generated/` | Active week 3 flight dataset and three archive datasets with matching archive config snippets |
+| `data/bases/` | Crew-base files for the retained instances |
+| `data/flights/` | Active week 3 flight dataset and three archive datasets with matching archive config snippets |
 | `diagnostics/` | Coverage analysis and witness report |
 | `experiments/` | Pricing configuration benchmarks |
 | `main.py` | CLI entry point, shared graph preparation, batch selection, and persistence |
