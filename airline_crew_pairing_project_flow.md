@@ -410,7 +410,7 @@ comparison with zero completed attempts, and propagate the exception.
 The previous module command forwards to the root runner.
 Progress messages are controlled by `ILP_PROGRESS`; set it to `0` to silence them.
 
-[column_generation/solution_export.py](column_generation/solution_export.py)
+[column_generation/results_to_json.py](column_generation/results_to_json.py)
 maps selected IDs back to `Pairing` objects and serializes the selected pairing
 records after validation succeeds. The root runner writes
 `results/runs/best_<batch_id>.json` for the cheapest validated solution,
@@ -515,8 +515,7 @@ attempt is accepted, the UI shows its existing
 | [column_generation/pairing_pricing.py](column_generation/pairing_pricing.py) | Bounded search for negative reduced-cost pairings |
 | [column_generation/column_generation.py](column_generation/column_generation.py) | LP/pricing loop and shared signatures |
 | [column_generation/master_ilp.py](column_generation/master_ilp.py) | Final binary selection over generated columns |
-| [column_generation/solution_export.py](column_generation/solution_export.py) | Selected objects and JSON serialization |
-| [column_generation/run_summary.py](column_generation/run_summary.py) | Run/batch summary models, timestamps, phase timing, compact comparison records, and unique JSON files |
+| [column_generation/results_to_json.py](column_generation/results_to_json.py) | Run/batch summaries, timestamps, phase timing, compact comparison records, selected pairing serialization, and JSON files |
 | [column_generation/main_column_generation.py](column_generation/main_column_generation.py) | CG, final ILP, validation before acceptance, and selected pairing records for prepared inputs |
 | [main.py](main.py) | Shared graphs and RNG, repeated attempts, best selection, and comparison output |
 | [run_progress.py](run_progress.py) | Progress messages and tickers |

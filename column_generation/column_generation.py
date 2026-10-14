@@ -16,7 +16,7 @@ from column_generation.config import (
 from column_generation.initial_pool import generate_initial_pairings
 from column_generation.master_lp import MasterLpResult, solve_master_lp
 from column_generation.pairing_pricing import generate_pricing_pairings
-from column_generation.run_summary import RunSummary, measure_runtime
+from column_generation.results_to_json import RunSummary, measure_runtime
 
 from crew_pairing.duty_graph import DutyGraph
 from crew_pairing.flights_graph import Flight

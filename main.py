@@ -8,7 +8,7 @@ import traceback
 
 from column_generation import main_column_generation
 from column_generation.config import RUN_RESULTS_DIR
-from column_generation.run_summary import (
+from column_generation.results_to_json import (
     BatchSummary, RunSummary, compact_run_record,
     run_timestamp, save_best_run, save_run_comparison,
 )

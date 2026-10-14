@@ -13,7 +13,7 @@ from crew_pairing.pairing_cost import PairingCostFunction, current_pairing_cost
 from crew_pairing.pairings import Pairing
 
 from column_generation.config import ARTIFICIAL_COST, ARTIFICIAL_TOLERANCE
-from column_generation.run_summary import LpSummary, RunSummary
+from column_generation.results_to_json import LpSummary, RunSummary
 from run_progress import ProgressTicker, progress
 
 

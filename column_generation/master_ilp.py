@@ -8,7 +8,7 @@ from mosek.fusion import Model, Domain, Expr, ObjectiveSense, ProblemStatus, Sol
 
 from crew_pairing.flights_graph import Flight
 from column_generation.master_lp import _coverage_index
-from column_generation.run_summary import RunSummary
+from column_generation.results_to_json import RunSummary
 from crew_pairing.padding_flights import PADDING_TAG, flight_constraint_tags
 from crew_pairing.pairing_cost import PairingCostFunction, current_pairing_cost
 from crew_pairing.pairings import Pairing
